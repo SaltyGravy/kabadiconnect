@@ -1,6 +1,6 @@
 name: Sync live scrap prices from MetalMandi
 
-on:
+"on":
   schedule:
     # Every 3 hours. MetalMandi's own site shows an "updated just now"
     # timestamp implying frequent internal updates, but scrap rates don't
