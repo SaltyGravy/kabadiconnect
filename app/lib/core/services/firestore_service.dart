@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../models/collector_profile.dart';
+import '../models/live_scrap_price.dart';
 import '../models/lot.dart';
 import '../models/recycler.dart';
 import '../models/traceability_record.dart';
@@ -18,6 +19,12 @@ class FirestoreService {
   CollectionReference<Map<String, dynamic>> get _recyclers => _db.collection('recyclers');
   CollectionReference<Map<String, dynamic>> get _collectors => _db.collection('collectors');
   CollectionReference<Map<String, dynamic>> get _priceHistory => _db.collection('price_history');
+  CollectionReference<Map<String, dynamic>> get _liveScrapPrices => _db.collection('live_scrap_prices');
+
+  // ---- Live scrap prices (see ml/sync_metalmandi_prices.py) ----
+  Stream<List<LiveScrapPrice>> watchLiveScrapPrices() {
+    return _liveScrapPrices.snapshots().map((s) => s.docs.map((d) => LiveScrapPrice.fromMap(d.data())).toList());
+  }
 
   // ---- Lots ----
   Future<void> upsertLot(Lot lot) => _lots.doc(lot.lotId).set(lot.toMap(), SetOptions(merge: true));

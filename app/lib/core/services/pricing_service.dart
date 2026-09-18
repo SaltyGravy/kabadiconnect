@@ -1,7 +1,9 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 import '../constants.dart';
+import '../models/live_scrap_price.dart';
 
 class PriceEntry {
   final String unit;
@@ -44,8 +46,9 @@ class PriceEntry {
 /// its accuracy metrics) bundled as an asset, so valuation works fully
 /// offline and instantly on-device. When online, SeedDataService/Firestore
 /// can refresh this table with newer transaction-derived prices.
-class PricingService {
+class PricingService extends ChangeNotifier {
   Map<String, Map<String, PriceEntry>>? _table; // category -> location -> entry
+  final Map<String, Map<String, double>> _liveRates = {}; // category -> location -> rate_per_kg
 
   Future<void> load() async {
     if (_table != null) return;
@@ -55,6 +58,30 @@ class PricingService {
           cat,
           (locMap as Map<String, dynamic>).map((loc, entry) => MapEntry(loc, PriceEntry.fromMap(entry as Map<String, dynamic>))),
         ));
+  }
+
+  /// Called whenever FirestoreService.watchLiveScrapPrices emits -- layers
+  /// fresh area-wise rates over the static table and notifies listeners so
+  /// any screen showing prices (Rate List, the home dashboard teaser)
+  /// updates immediately, no app restart needed.
+  void applyLiveUpdates(List<LiveScrapPrice> prices) {
+    for (final p in prices) {
+      _liveRates.putIfAbsent(p.category, () => {})[p.location] = p.ratePerKg;
+    }
+    notifyListeners();
+  }
+
+  /// The live per-kg rate for this category/location, if the sync job has
+  /// one -- null for categories the feed doesn't cover (e.g. Mixed
+  /// Plastics) or before the first sync has landed.
+  double? liveRateFor(MaterialCategory category, String location) => _liveRates[category.key]?[location];
+
+  /// What to actually show/charge: the live rate when available, otherwise
+  /// the static baseline's latest informal price.
+  double? currentRate(MaterialCategory category, String location) {
+    final live = liveRateFor(category, location);
+    if (live != null) return live;
+    return bestEntryFor(category, location)?.latestInformalPrice;
   }
 
   PriceEntry? entryFor(MaterialCategory category, String location) {
@@ -83,7 +110,7 @@ class PricingService {
     // per-piece clamp below is for rounding up fractional piece counts
     // (e.g. 0.5 -> 1), not for treating an unset weight as one piece.
     if (entry == null || weightKg <= 0) return 0;
-    double perUnit = entry.latestInformalPrice;
+    double perUnit = liveRateFor(category, location) ?? entry.latestInformalPrice;
     // condition adjustment -- simple, explainable multiplier (documented
     // heuristic layered on top of the trained price model's output).
     switch (condition) {

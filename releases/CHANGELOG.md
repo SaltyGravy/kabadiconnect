@@ -7,6 +7,35 @@ phone from the last ~8 years; use the `armeabi-v7a` one only for very old
 warn on install; that's expected for a non-Play-Store build, not a sign of
 a problem.
 
+## v1.5.0 (2026-09-19)
+
+**Live, area-wise scrap prices.** A new backend job
+(`ml/sync_metalmandi_prices.py`, run every 3 hours by a GitHub Actions
+cron -- see the new `kabadiconnect` GitHub repo) pulls real scrap rates
+from metalmandi.in per city and writes them into a new Firestore
+collection (`live_scrap_prices`). The app layers these over the static
+offline price table via a real-time listener, so both the Rate List and
+the home dashboard's rate preview update automatically as new data lands
+-- no app update needed. A small "LIVE" tag marks rows backed by this feed.
+
+Category mapping (MetalMandi doesn't use our exact taxonomy):
+CRT<-Display/CRT TV, LCD_LED<-Display/LCD+LED, PCB<-PCB, CABLES<-Wire,
+BATTERIES<-Li-ion Battery, MOTORS_MAGNETS<-Magnet, MIXED_OTHER<-E-waste.
+**Mixed Plastics has no live source** -- MetalMandi is metal-scrap-focused
+and doesn't cover plastics, so that category keeps using the static
+offline price only.
+
+Locations map to MetalMandi's district-level city IDs (Pune, Mumbai,
+Nagpur, Nashik all direct matches; Pimpri-Chinchwad reuses Pune's district;
+Chhatrapati Sambhajinagar matches under MetalMandi's still-used pre-2023
+name "Aurangabad").
+
+Important caveat: MetalMandi's `/api/crm-proxy` is not a documented public
+API -- it's their own frontend's internal backend call, reachable
+directly. It works today (verified 2026-09-19) but could change or be
+blocked without notice, and this is best-effort reuse of a third party's
+data, not a guaranteed integration.
+
 ## v1.4.0 (2026-09-19)
 
 **Collector home screen redesign**, built from a hand-drawn mockup:

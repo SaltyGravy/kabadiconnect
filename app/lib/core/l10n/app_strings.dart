@@ -35,6 +35,7 @@ class AppStrings {
     'home': {AppLocale.en: 'Home', AppLocale.hi: 'होम', AppLocale.mr: 'मुख्यपृष्ठ'},
     'welcome': {AppLocale.en: 'Welcome,', AppLocale.hi: 'नमस्ते,', AppLocale.mr: 'नमस्कार,'},
     'todaysRates': {AppLocale.en: "Today's Rates", AppLocale.hi: 'आज के भाव', AppLocale.mr: 'आजचे भाव'},
+    'liveTag': {AppLocale.en: 'LIVE', AppLocale.hi: 'लाइव', AppLocale.mr: 'लाइव्ह'},
     'newLot': {AppLocale.en: 'New Lot', AppLocale.hi: 'नया लॉट', AppLocale.mr: 'नवीन लॉट'},
     'myLots': {AppLocale.en: 'My Lots', AppLocale.hi: 'मेरे लॉट', AppLocale.mr: 'माझे लॉट'},
     'priceBoard': {AppLocale.en: 'Price Board', AppLocale.hi: 'भाव बोर्ड', AppLocale.mr: 'भाव फलक'},

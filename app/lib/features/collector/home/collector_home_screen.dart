@@ -47,7 +47,7 @@ class CollectorHomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final appState = context.watch<AppState>();
     String t(String k) => AppStrings.t(k, appState.locale);
-    final pricing = context.read<PricingService>();
+    final pricing = context.watch<PricingService>();
     final location = _priceLocationKey(appState);
 
     return Scaffold(
@@ -109,8 +109,7 @@ class CollectorHomeScreen extends StatelessWidget {
                   mainAxisSpacing: 12,
                   crossAxisSpacing: 12,
                   children: _previewCategories.map((cat) {
-                    final entry = pricing.bestEntryFor(cat, location);
-                    final rate = entry?.latestInformalPrice;
+                    final rate = pricing.currentRate(cat, location);
                     return _RateCard(
                       icon: cat.icon,
                       color: cat.color,

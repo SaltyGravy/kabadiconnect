@@ -28,7 +28,7 @@ class _PriceBoardScreenState extends State<PriceBoardScreen> {
   Widget build(BuildContext context) {
     final appState = context.watch<AppState>();
     String t(String k) => AppStrings.t(k, appState.locale);
-    final pricing = context.read<PricingService>();
+    final pricing = context.watch<PricingService>();
     final tts = context.read<TtsService>();
     // collector.operatingLocation is now a full Places address (e.g. "Pune,
     // Maharashtra, India"), not one of the six city keys the price table is
@@ -76,6 +76,8 @@ class _PriceBoardScreenState extends State<PriceBoardScreen> {
                         ? Colors.red
                         : Colors.grey;
                 final trendKey = entry.trendDirection == 'up' ? 'trendUp' : (entry.trendDirection == 'down' ? 'trendDown' : 'trendStable');
+                final isLive = pricing.liveRateFor(cat, _location) != null;
+                final displayRate = pricing.currentRate(cat, _location) ?? entry.latestInformalPrice;
 
                 return Card(
                   margin: const EdgeInsets.only(bottom: 10),
@@ -87,20 +89,28 @@ class _PriceBoardScreenState extends State<PriceBoardScreen> {
                         Icon(trendIcon, size: 14, color: trendColor),
                         const SizedBox(width: 4),
                         Text(t(trendKey), style: TextStyle(color: trendColor, fontSize: 12)),
+                        if (isLive) ...[
+                          const SizedBox(width: 8),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
+                            decoration: BoxDecoration(color: kBrandGreen.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(8)),
+                            child: Text(t('liveTag'), style: const TextStyle(color: kBrandGreen, fontSize: 10, fontWeight: FontWeight.bold)),
+                          ),
+                        ],
                       ],
                     ),
                     trailing: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        Text('₹${entry.latestInformalPrice.toStringAsFixed(0)}${entry.unit == 'per piece' ? '' : t('perKg')}',
+                        Text('₹${displayRate.toStringAsFixed(0)}${entry.unit == 'per piece' ? '' : t('perKg')}',
                             style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
                         IconButton(
                           padding: EdgeInsets.zero,
                           constraints: const BoxConstraints(),
                           icon: const Icon(Icons.volume_up, size: 20, color: kBrandGreen),
                           onPressed: () => tts.speak(
-                            '${t('cat_${cat.key}')}. ${t('priceBoard')}: ${entry.latestInformalPrice.toStringAsFixed(0)} rupees. ${t(trendKey)}.',
+                            '${t('cat_${cat.key}')}. ${t('priceBoard')}: ${displayRate.toStringAsFixed(0)} rupees. ${t(trendKey)}.',
                             appState.locale,
                           ),
                         ),

@@ -40,6 +40,12 @@ Future<void> main() async {
   final pricingService = PricingService();
   await pricingService.load();
 
+  final firestoreService = FirestoreService();
+  // Live, area-wise scrap rates (see ml/sync_metalmandi_prices.py) layer
+  // over the bundled static table as they arrive -- no app release needed
+  // to pick up a price change.
+  firestoreService.watchLiveScrapPrices().listen(pricingService.applyLiveUpdates);
+
   final carbonCreditService = CarbonCreditService();
   await carbonCreditService.load();
 
@@ -56,9 +62,9 @@ Future<void> main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider.value(value: appState),
-        Provider.value(value: FirestoreService()),
+        Provider.value(value: firestoreService),
         Provider.value(value: AuthService()),
-        Provider.value(value: pricingService),
+        ChangeNotifierProvider.value(value: pricingService),
         Provider.value(value: carbonCreditService),
         Provider.value(value: AnomalyDetectionService(pricingService)),
         Provider.value(value: RecyclerMatchingService()),
