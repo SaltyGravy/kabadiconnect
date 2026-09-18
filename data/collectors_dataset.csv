@@ -1,0 +1,23 @@
+collector_id,display_name,phone_last4,preferred_language,operating_location,years_active,typical_materials,is_field_research,notes
+COL-001,Collector A (FIELD RESEARCH - REPLACE),TODO,mr,"TODO: village/area, district",TODO,"TODO e.g. cables, PCB, batteries",True,Placeholder — team must replace with real interview data from a working scrap collector before submission.
+COL-002,Collector B (FIELD RESEARCH - REPLACE),TODO,hi,"TODO: village/area, district",TODO,TODO,True,Placeholder — team must replace with real interview data from a working scrap collector/aggregator before submission.
+COL-003,Sunita (Pimpri-Chinchwad),1409,en,Pimpri-Chinchwad,5,CABLES,False,
+COL-004,Sunita (Mumbai),9935,mr,Mumbai,10,"CRT, MIXED_OTHER",False,
+COL-005,Vithal (Pune),4811,en,Pune,10,CABLES,False,
+COL-006,Kavita (Pimpri-Chinchwad),7873,mr,Pimpri-Chinchwad,8,"BATTERIES, MIXED_PLASTICS, CRT",False,
+COL-007,Farida (Mumbai),6574,hi,Mumbai,3,MOTORS_MAGNETS,False,
+COL-008,Sunita (Pune),7224,mr,Pune,6,"BATTERIES, MIXED_PLASTICS",False,
+COL-009,Anil (Pune),9785,mr,Pune,15,"LCD_LED, BATTERIES",False,
+COL-010,Suresh (Nagpur),6925,en,Nagpur,4,"LCD_LED, CRT, MOTORS_MAGNETS",False,
+COL-011,Meena (Mumbai),2307,mr,Mumbai,14,MIXED_PLASTICS,False,
+COL-012,Anil (Nagpur),6977,mr,Nagpur,6,"CABLES, MOTORS_MAGNETS",False,
+COL-013,Sunita (Nagpur),3803,en,Nagpur,12,PCB,False,
+COL-014,Farida (Nashik),5422,en,Nashik,12,"CABLES, MOTORS_MAGNETS, PCB",False,
+COL-015,Vithal (Pune),1525,hi,Pune,7,"LCD_LED, MIXED_OTHER",False,
+COL-016,Ganesh (Chhatrapati Sambhajinagar),4483,en,Chhatrapati Sambhajinagar,8,"MIXED_OTHER, LCD_LED",False,
+COL-017,Iqbal (Nagpur),5040,en,Nagpur,9,"BATTERIES, MOTORS_MAGNETS, MIXED_OTHER",False,
+COL-018,Suresh (Nashik),7543,hi,Nashik,4,MIXED_OTHER,False,
+COL-019,Ramesh (Pune),2796,mr,Pune,11,MIXED_PLASTICS,False,
+COL-020,Sunita (Chhatrapati Sambhajinagar),7304,hi,Chhatrapati Sambhajinagar,10,"BATTERIES, MIXED_OTHER",False,
+COL-021,Sunita (Pune),9797,hi,Pune,13,"MOTORS_MAGNETS, CRT, PCB",False,
+COL-022,Iqbal (Nashik),8433,mr,Nashik,12,"BATTERIES, MIXED_OTHER, LCD_LED",False,

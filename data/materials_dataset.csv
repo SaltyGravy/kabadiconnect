@@ -1,0 +1,81 @@
+material_id,material_category,sub_category,material_description,image_ref,typical_weight_kg,condition,source_type,estimated_value_per_unit,unit
+MAT-0001,CRT,CRT TV,CRT TV (intact),assets/material_icons/crt.png,11.17,intact,repair_shop,303.35,per piece
+MAT-0002,CRT,CRT TV,CRT TV (partially damaged),assets/material_icons/crt.png,19.88,partially_damaged,repair_shop,347.66,per piece
+MAT-0003,CRT,CRT TV,CRT TV (burnt/tampered),assets/material_icons/crt.png,7.24,burnt/tampered,small_industrial,250.56,per piece
+MAT-0004,CRT,CRT TV,CRT TV (mixed lot),assets/material_icons/crt.png,20.5,mixed_lot,repair_shop,351.84,per piece
+MAT-0005,CRT,CRT Monitor,CRT Monitor (intact),assets/material_icons/crt.png,5.77,intact,repair_shop,194.21,per piece
+MAT-0006,CRT,CRT Monitor,CRT Monitor (partially damaged),assets/material_icons/crt.png,1.35,partially_damaged,street_collection,333.38,per piece
+MAT-0007,CRT,CRT Monitor,CRT Monitor (burnt/tampered),assets/material_icons/crt.png,19.26,burnt/tampered,street_collection,274.33,per piece
+MAT-0008,CRT,CRT Monitor,CRT Monitor (mixed lot),assets/material_icons/crt.png,15.82,mixed_lot,repair_shop,365.5,per piece
+MAT-0009,LCD_LED,LCD Panel,LCD Panel (intact),assets/material_icons/lcd_led.png,9.72,intact,street_collection,221.99,per piece
+MAT-0010,LCD_LED,LCD Panel,LCD Panel (partially damaged),assets/material_icons/lcd_led.png,16.47,partially_damaged,household,546.33,per piece
+MAT-0011,LCD_LED,LCD Panel,LCD Panel (burnt/tampered),assets/material_icons/lcd_led.png,21.54,burnt/tampered,household,489.21,per piece
+MAT-0012,LCD_LED,LCD Panel,LCD Panel (mixed lot),assets/material_icons/lcd_led.png,5.63,mixed_lot,small_industrial,332.27,per piece
+MAT-0013,LCD_LED,LED TV Panel,LED TV Panel (intact),assets/material_icons/lcd_led.png,14.02,intact,household,328.23,per piece
+MAT-0014,LCD_LED,LED TV Panel,LED TV Panel (partially damaged),assets/material_icons/lcd_led.png,20.08,partially_damaged,small_industrial,593.95,per piece
+MAT-0015,LCD_LED,LED TV Panel,LED TV Panel (burnt/tampered),assets/material_icons/lcd_led.png,14.97,burnt/tampered,street_collection,406.33,per piece
+MAT-0016,LCD_LED,LED TV Panel,LED TV Panel (mixed lot),assets/material_icons/lcd_led.png,18.04,mixed_lot,small_industrial,313.37,per piece
+MAT-0017,LCD_LED,Laptop Screen,Laptop Screen (intact),assets/material_icons/lcd_led.png,22.69,intact,street_collection,548.6,per piece
+MAT-0018,LCD_LED,Laptop Screen,Laptop Screen (partially damaged),assets/material_icons/lcd_led.png,18.64,partially_damaged,street_collection,325.03,per piece
+MAT-0019,LCD_LED,Laptop Screen,Laptop Screen (burnt/tampered),assets/material_icons/lcd_led.png,18.84,burnt/tampered,office_itad,482.91,per piece
+MAT-0020,LCD_LED,Laptop Screen,Laptop Screen (mixed lot),assets/material_icons/lcd_led.png,13.13,mixed_lot,repair_shop,237.3,per piece
+MAT-0021,PCB,Mobile PCB,Mobile PCB (intact),assets/material_icons/pcb.png,2.12,intact,office_itad,360.56,per kg
+MAT-0022,PCB,Mobile PCB,Mobile PCB (partially damaged),assets/material_icons/pcb.png,8.53,partially_damaged,small_industrial,242.04,per kg
+MAT-0023,PCB,Mobile PCB,Mobile PCB (burnt/tampered),assets/material_icons/pcb.png,3.94,burnt/tampered,street_collection,714.34,per kg
+MAT-0024,PCB,Mobile PCB,Mobile PCB (mixed lot),assets/material_icons/pcb.png,17.72,mixed_lot,household,499.45,per kg
+MAT-0025,PCB,Computer Motherboard,Computer Motherboard (intact),assets/material_icons/pcb.png,8.41,intact,street_collection,500.15,per kg
+MAT-0026,PCB,Computer Motherboard,Computer Motherboard (partially damaged),assets/material_icons/pcb.png,5.33,partially_damaged,street_collection,479.9,per kg
+MAT-0027,PCB,Computer Motherboard,Computer Motherboard (burnt/tampered),assets/material_icons/pcb.png,19.29,burnt/tampered,household,839.68,per kg
+MAT-0028,PCB,Computer Motherboard,Computer Motherboard (mixed lot),assets/material_icons/pcb.png,19.19,mixed_lot,street_collection,547.27,per kg
+MAT-0029,PCB,TV/Appliance PCB,TV/Appliance PCB (intact),assets/material_icons/pcb.png,23.58,intact,office_itad,760.18,per kg
+MAT-0030,PCB,TV/Appliance PCB,TV/Appliance PCB (partially damaged),assets/material_icons/pcb.png,21.37,partially_damaged,street_collection,594.43,per kg
+MAT-0031,PCB,TV/Appliance PCB,TV/Appliance PCB (burnt/tampered),assets/material_icons/pcb.png,18.42,burnt/tampered,small_industrial,871.31,per kg
+MAT-0032,PCB,TV/Appliance PCB,TV/Appliance PCB (mixed lot),assets/material_icons/pcb.png,12.31,mixed_lot,office_itad,515.59,per kg
+MAT-0033,CABLES,Copper Wire,Copper Wire (intact),assets/material_icons/cables.png,0.92,intact,office_itad,420.66,per kg
+MAT-0034,CABLES,Copper Wire,Copper Wire (partially damaged),assets/material_icons/cables.png,19.99,partially_damaged,repair_shop,472.15,per kg
+MAT-0035,CABLES,Copper Wire,Copper Wire (burnt/tampered),assets/material_icons/cables.png,23.0,burnt/tampered,small_industrial,380.24,per kg
+MAT-0036,CABLES,Copper Wire,Copper Wire (mixed lot),assets/material_icons/cables.png,22.69,mixed_lot,small_industrial,389.32,per kg
+MAT-0037,CABLES,Mixed Cable,Mixed Cable (intact),assets/material_icons/cables.png,0.87,intact,street_collection,260.71,per kg
+MAT-0038,CABLES,Mixed Cable,Mixed Cable (partially damaged),assets/material_icons/cables.png,11.65,partially_damaged,household,298.05,per kg
+MAT-0039,CABLES,Mixed Cable,Mixed Cable (burnt/tampered),assets/material_icons/cables.png,8.32,burnt/tampered,street_collection,318.05,per kg
+MAT-0040,CABLES,Mixed Cable,Mixed Cable (mixed lot),assets/material_icons/cables.png,19.08,mixed_lot,street_collection,303.48,per kg
+MAT-0041,CABLES,USB/Data Cable,USB/Data Cable (intact),assets/material_icons/cables.png,23.79,intact,street_collection,295.68,per kg
+MAT-0042,CABLES,USB/Data Cable,USB/Data Cable (partially damaged),assets/material_icons/cables.png,2.23,partially_damaged,household,444.71,per kg
+MAT-0043,CABLES,USB/Data Cable,USB/Data Cable (burnt/tampered),assets/material_icons/cables.png,1.49,burnt/tampered,office_itad,287.27,per kg
+MAT-0044,CABLES,USB/Data Cable,USB/Data Cable (mixed lot),assets/material_icons/cables.png,1.9,mixed_lot,household,446.27,per kg
+MAT-0045,BATTERIES,Li-ion (Mobile/Laptop),Li-ion (Mobile/Laptop) (intact),assets/material_icons/batteries.png,23.75,intact,repair_shop,157.49,per kg
+MAT-0046,BATTERIES,Li-ion (Mobile/Laptop),Li-ion (Mobile/Laptop) (partially damaged),assets/material_icons/batteries.png,15.61,partially_damaged,repair_shop,57.67,per kg
+MAT-0047,BATTERIES,Li-ion (Mobile/Laptop),Li-ion (Mobile/Laptop) (burnt/tampered),assets/material_icons/batteries.png,16.8,burnt/tampered,small_industrial,172.69,per kg
+MAT-0048,BATTERIES,Li-ion (Mobile/Laptop),Li-ion (Mobile/Laptop) (mixed lot),assets/material_icons/batteries.png,11.73,mixed_lot,office_itad,147.37,per kg
+MAT-0049,BATTERIES,Lead-Acid,Lead-Acid (intact),assets/material_icons/batteries.png,4.36,intact,small_industrial,174.92,per kg
+MAT-0050,BATTERIES,Lead-Acid,Lead-Acid (partially damaged),assets/material_icons/batteries.png,18.02,partially_damaged,repair_shop,175.06,per kg
+MAT-0051,BATTERIES,Lead-Acid,Lead-Acid (burnt/tampered),assets/material_icons/batteries.png,2.88,burnt/tampered,household,170.04,per kg
+MAT-0052,BATTERIES,Lead-Acid,Lead-Acid (mixed lot),assets/material_icons/batteries.png,14.48,mixed_lot,street_collection,95.53,per kg
+MAT-0053,BATTERIES,Ni-Cd/Ni-MH,Ni-Cd/Ni-MH (intact),assets/material_icons/batteries.png,17.93,intact,household,122.89,per kg
+MAT-0054,BATTERIES,Ni-Cd/Ni-MH,Ni-Cd/Ni-MH (partially damaged),assets/material_icons/batteries.png,20.8,partially_damaged,repair_shop,54.27,per kg
+MAT-0055,BATTERIES,Ni-Cd/Ni-MH,Ni-Cd/Ni-MH (burnt/tampered),assets/material_icons/batteries.png,19.36,burnt/tampered,small_industrial,152.77,per kg
+MAT-0056,BATTERIES,Ni-Cd/Ni-MH,Ni-Cd/Ni-MH (mixed lot),assets/material_icons/batteries.png,19.95,mixed_lot,small_industrial,149.57,per kg
+MAT-0057,MOTORS_MAGNETS,AC/DC Motor,AC/DC Motor (intact),assets/material_icons/motors_magnets.png,8.81,intact,street_collection,315.38,per kg
+MAT-0058,MOTORS_MAGNETS,AC/DC Motor,AC/DC Motor (partially damaged),assets/material_icons/motors_magnets.png,1.91,partially_damaged,office_itad,153.16,per kg
+MAT-0059,MOTORS_MAGNETS,AC/DC Motor,AC/DC Motor (burnt/tampered),assets/material_icons/motors_magnets.png,10.62,burnt/tampered,street_collection,176.38,per kg
+MAT-0060,MOTORS_MAGNETS,AC/DC Motor,AC/DC Motor (mixed lot),assets/material_icons/motors_magnets.png,24.03,mixed_lot,street_collection,326.83,per kg
+MAT-0061,MOTORS_MAGNETS,Speaker Magnet,Speaker Magnet (intact),assets/material_icons/motors_magnets.png,11.0,intact,small_industrial,391.37,per kg
+MAT-0062,MOTORS_MAGNETS,Speaker Magnet,Speaker Magnet (partially damaged),assets/material_icons/motors_magnets.png,6.9,partially_damaged,small_industrial,343.66,per kg
+MAT-0063,MOTORS_MAGNETS,Speaker Magnet,Speaker Magnet (burnt/tampered),assets/material_icons/motors_magnets.png,11.73,burnt/tampered,small_industrial,217.1,per kg
+MAT-0064,MOTORS_MAGNETS,Speaker Magnet,Speaker Magnet (mixed lot),assets/material_icons/motors_magnets.png,21.32,mixed_lot,household,219.73,per kg
+MAT-0065,MOTORS_MAGNETS,HDD Magnet Assembly,HDD Magnet Assembly (intact),assets/material_icons/motors_magnets.png,11.38,intact,street_collection,292.46,per kg
+MAT-0066,MOTORS_MAGNETS,HDD Magnet Assembly,HDD Magnet Assembly (partially damaged),assets/material_icons/motors_magnets.png,16.77,partially_damaged,office_itad,157.17,per kg
+MAT-0067,MOTORS_MAGNETS,HDD Magnet Assembly,HDD Magnet Assembly (burnt/tampered),assets/material_icons/motors_magnets.png,21.3,burnt/tampered,repair_shop,271.89,per kg
+MAT-0068,MOTORS_MAGNETS,HDD Magnet Assembly,HDD Magnet Assembly (mixed lot),assets/material_icons/motors_magnets.png,9.0,mixed_lot,office_itad,235.08,per kg
+MAT-0069,MIXED_PLASTICS,ABS Casing,ABS Casing (intact),assets/material_icons/mixed_plastics.png,22.03,intact,office_itad,30.34,per kg
+MAT-0070,MIXED_PLASTICS,ABS Casing,ABS Casing (partially damaged),assets/material_icons/mixed_plastics.png,13.01,partially_damaged,repair_shop,14.83,per kg
+MAT-0071,MIXED_PLASTICS,ABS Casing,ABS Casing (burnt/tampered),assets/material_icons/mixed_plastics.png,18.06,burnt/tampered,street_collection,30.32,per kg
+MAT-0072,MIXED_PLASTICS,ABS Casing,ABS Casing (mixed lot),assets/material_icons/mixed_plastics.png,6.16,mixed_lot,street_collection,33.31,per kg
+MAT-0073,MIXED_PLASTICS,Mixed E-plastic,Mixed E-plastic (intact),assets/material_icons/mixed_plastics.png,12.37,intact,household,15.07,per kg
+MAT-0074,MIXED_PLASTICS,Mixed E-plastic,Mixed E-plastic (partially damaged),assets/material_icons/mixed_plastics.png,5.7,partially_damaged,repair_shop,22.1,per kg
+MAT-0075,MIXED_PLASTICS,Mixed E-plastic,Mixed E-plastic (burnt/tampered),assets/material_icons/mixed_plastics.png,14.62,burnt/tampered,street_collection,30.26,per kg
+MAT-0076,MIXED_PLASTICS,Mixed E-plastic,Mixed E-plastic (mixed lot),assets/material_icons/mixed_plastics.png,8.73,mixed_lot,small_industrial,22.92,per kg
+MAT-0077,MIXED_OTHER,Mixed/Unsorted E-waste,Mixed/Unsorted E-waste (intact),assets/material_icons/mixed_other.png,17.63,intact,office_itad,41.46,per kg
+MAT-0078,MIXED_OTHER,Mixed/Unsorted E-waste,Mixed/Unsorted E-waste (partially damaged),assets/material_icons/mixed_other.png,5.92,partially_damaged,repair_shop,42.09,per kg
+MAT-0079,MIXED_OTHER,Mixed/Unsorted E-waste,Mixed/Unsorted E-waste (burnt/tampered),assets/material_icons/mixed_other.png,18.62,burnt/tampered,repair_shop,33.41,per kg
+MAT-0080,MIXED_OTHER,Mixed/Unsorted E-waste,Mixed/Unsorted E-waste (mixed lot),assets/material_icons/mixed_other.png,18.52,mixed_lot,office_itad,70.72,per kg

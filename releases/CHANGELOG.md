@@ -1,0 +1,220 @@
+# KabadiConnect — Release History
+
+Each version gets its own folder here (`releases/vX.Y.Z/`) with the built
+APKs. Install `kabadiconnect-vX.Y.Z-arm64.apk` on virtually any Android
+phone from the last ~8 years; use the `armeabi-v7a` one only for very old
+32-bit devices. Built with debug signing (see README.md) -- Android may
+warn on install; that's expected for a non-Play-Store build, not a sign of
+a problem.
+
+## v1.4.0 (2026-09-19)
+
+**Collector home screen redesign**, built from a hand-drawn mockup:
+- The whole collector experience is now a persistent bottom-tab shell
+  (My Lots / Rate List / Wallet / Profile) with a centre-docked camera
+  button for starting a new lot -- tapping any tab keeps the bar visible,
+  instead of the old grid-of-cards that pushed a full-screen route per tile.
+- Home tab: personalized "Welcome, {name}!" greeting, a swipeable safety-tip
+  carousel (taps into full Safety guidance), and a live "Today's Rates"
+  preview grid for 4 categories (Cables, PCB, Batteries, Motors & Magnets)
+  pulled from the same pricing data as the full Rate List.
+  a quick health-and-safety icon jumps straight to Safety guidance.
+  A gear icon in the top bar jumps to the Profile tab; the globe icon keeps
+  the existing language picker.
+  Each non-home tab (My Lots, Rate List, Wallet, Profile) got a small home
+  icon in its own app bar to jump back to the dashboard, since it's no
+  longer reachable by "going back" once tabs are true persistent state.
+- No change to branding -- still KabadiConnect throughout.
+- The other 4 categories from the full price table (CRT, LCD/LED, Mixed
+  Plastics, Mixed/Other) aren't in the home teaser grid, only in the full
+  Rate List tab -- picked 4 representative ones to keep the dashboard glanceable.
+
+## v1.3.1 (2026-09-17)
+
+Each material row on the Create Lot page now shows its own small copy of
+the photo with *only that row's* box marked (the other detected boxes are
+hidden) -- so confirming "yes, item 2 is this part of the photo" doesn't
+require squinting at the shared photo up top with every box overlapping.
+Verified live on-device: each row's thumbnail correctly shows just its own
+numbered box.
+
+## v1.3.0 (2026-09-17)
+
+**Real multi-item object detection.** Taking one photo no longer just
+classifies "the one dominant material" -- a new on-device detector (see
+`ml/train_detector.py`) finds each distinct item in the photo, draws a
+numbered, colour-coded box around it, and creates one editable row per
+detection automatically. This replaces the old single-classification flow
+for photos where anything is confidently found; if nothing is, it falls
+back to the old single-suggestion behaviour so there's always a starting
+point. Every row -- detected or manually added -- still starts at 0 kg,
+requiring a real weight before checkout.
+
+How it was built, and its real limits (read this before relying on it):
+- There are no real photos of mixed e-waste piles with per-item bounding
+  boxes anywhere in this project, so the detector was trained on a
+  *synthetic* dataset: your real single-item photos pasted at random
+  non-overlapping positions onto generated backgrounds (see
+  `ml/generate_detection_dataset.py`). It genuinely learned to localize and
+  classify multiple items in one image, but there's a real domain gap
+  between "photos of collages" and "photos of an actual messy pile."
+- Verified live on a real device: taking a photo reliably produces
+  multiple numbered/coloured boxes with matching editable rows, and the
+  whole flow (detect -> rows -> weights -> checkout) works without
+  crashing.
+- Known rough edges: category confusion is common (e.g. a car engine
+  photographed for the composite dataset getting boxed as "Batteries"
+  instead of "Motors & Magnets") -- localization (finding *that* something
+  is there) is more reliable than classification (naming *what* it is) at
+  this stage. Large objects can also occasionally produce two overlapping
+  boxes for the same item, since a big item can make more than one grid
+  cell "claim" it; basic overlap + same-class-center de-duplication is
+  in place but doesn't catch every case. "Not correct?" on any row lets
+  the collector fix a wrong category by hand.
+- Getting meaningfully better accuracy from here needs real photos of
+  actual mixed piles with real bounding-box annotations, not more
+  synthetic composites -- a data collection task, not a code change.
+
+## v1.2.3 (2026-09-17)
+
+Bug fixes found while testing v1.2.1 live on a real device:
+- Fixed a pricing bug: for "per piece" priced categories (e.g. LCD/LED
+  panels), the instant value estimate showed a nonzero amount even at the
+  new 0 kg default (it was treating an unset weight as "at least one
+  piece"). Now 0 kg always means ₹0, for every category.
+- Fixed a state bug in Create Lot: if you reopened a material row's
+  category picker (tapped "Not correct?"/"Change material") and then
+  removed an *earlier* row, the picker you had open would silently close
+  instead of staying open -- confirmed and reproduced live, then fixed by
+  correctly shifting the "currently editing" row index when a row before it
+  is removed.
+- Renamed the confusing "Back" link on a manually-added material row to
+  "Change material" (it reopens the category picker, it doesn't navigate
+  back).
+- The "+ Add another material" button no longer appears while the first
+  row's AI detection is still running, avoiding an odd half-loaded state.
+
+## v1.2.1 (2026-09-17)
+
+**Create Lot rewritten: every material is now its own row on the same
+page**, instead of a single "draft" slot you filled in and tapped "Add to
+Lot" one at a time:
+- Taking a photo still auto-detects the first material via AI, but it now
+  shows up immediately as Row 1 on the page rather than a separate
+  "detected" card you had to confirm first.
+- "+ Add another material" adds a new row right there on the page (pick its
+  category from the icon grid) -- you can have as many rows as needed, all
+  visible together, each numbered and colour-coded so it's clear which row
+  is which material.
+- **Every row's weight defaults to 0 kg**, including the AI-suggested one --
+  the collector must type a real weight into every row before "Review &
+  Checkout" enables. A row with 0 kg shows an inline hint ("Enter a weight
+  for every material to continue") instead of silently letting a fake
+  default weight through.
+- Each row shows its own live value estimate as you edit it.
+
+Note on scope: the on-device AI classifier is a single-label model (it
+picks the one best-matching category for the whole photo) -- it cannot
+detect and separate multiple physical objects within one image on its own.
+"Multiple items from one photo" here means the collector adds each
+material they can see in that one photo as its own row on this same page;
+it is not automatic multi-object detection.
+
+## v1.2.0 (2026-09-17)
+
+**Checkout page** — creating a lot no longer saves it straight away. After
+adding materials, the collector now goes through a Checkout screen first:
+- Full breakdown of every item in the lot (numbered, with icon/colour per
+  category so a multi-material photo is unambiguous about "which one is
+  what"), total weight, and materials subtotal.
+- **Carbon credit cashback**: estimated CO2 saved (kg) for this lot, plus a
+  real "Green Bonus" cashback amount added on top of the materials price --
+  a KabadiConnect incentive, not something deducted from the recycler's own
+  payment. Per-category CO2-per-kg factors live in
+  `assets/ml/carbon_factors.json`; clearly labelled as an estimate, not a
+  certified/tradeable carbon credit.
+- **Logistics choice**: "I'll handle it myself" (free) vs "Let
+  KabadiConnect handle it" (a nominal weight-based pickup fee, deducted from
+  the payout). Choosing platform pickup also nudges recycler matching
+  toward facilities that support pickup.
+- Bottom line: an "Estimated total you'll receive" combining materials +
+  green bonus - logistics fee, before the lot is ever created.
+- Only confirming on this screen actually writes the lot and moves on to
+  recycler matching.
+
+**Receipt** — once a recycler confirms receiving a handed-over lot, both
+sides get a "View Receipt" button (on the collector's Lot Detail screen and
+the recycler's Lot Review screen) showing a single itemized summary: every
+material + weight, materials price, CO2 saved + green bonus, logistics fee,
+net total, recycler name, and the handover reference number/GPS.
+
+Lot Detail and Lot Review screens also now show the green bonus, logistics
+fee, and a computed total payout inline, and the recycler review screen
+flags when a collector has requested platform-arranged pickup.
+
+## v1.1.1 (2026-09-15)
+
+**Real photos in the material classifier** — the on-device AI classifier was
+trained entirely on procedurally-generated placeholder shapes until now
+(never real photos). Replaced its training data with real field photos for
+7 of the 8 categories:
+- BATTERIES, CABLES, PCB, LCD_LED, MIXED_PLASTICS, MOTORS_MAGNETS, CRT now
+  train on real photos (deduped, junk-filtered, including photos that had
+  been pasted into Word docs rather than saved as loose image files).
+- MIXED_OTHER has no real photos supplied yet, so it still falls back to the
+  synthetic placeholder set -- treat that one category as unproven until
+  real photos are added for it too.
+- Validation accuracy on the real-photo set is ~76% (vs. the old ~99% on
+  synthetic shapes, which never meant anything about real-world accuracy --
+  this number is the first real signal we have).
+- No app code changed in this release, only the bundled model
+  (`classifier.tflite`) and its labels -- same UI, same features as v1.1.0.
+
+## v1.1.0 (2026-09-13)
+
+**Multi-item lots** — a lot can now bundle several distinct materials from
+one photo instead of forcing one category per lot:
+- "Add to Lot" flow in Create Lot: AI detects the first material, then add
+  more manually (category + weight + condition each), with a running list
+  and running total value.
+- Recycler matching ranks by category *coverage* ("covers 2/3 materials")
+  instead of requiring one exact category match.
+- Quoted price sums each material against the chosen recycler's own rate.
+- Anomaly detection compares the recycler's lump-sum final price against
+  the *summed* expected baseline across all materials.
+- Detail screens show the full itemized breakdown; list screens show "+N
+  more" for multi-item lots.
+- Old single-category lots already in the live database still read fine
+  (backward-compatible parsing).
+
+**Bug fixes bundled into this release:**
+- Fixed a login-flash bug: the wrong screen (profile setup, or "not an
+  authorized recycler") would flash for a frame after every login, because
+  Firebase's own sign-in state updated before the app had loaded the actual
+  profile. Now gated behind an explicit "still resolving" flag.
+- Fixed 7 `TextEditingController` instances across 6 screens that were
+  never disposed (memory leak).
+- Fixed the Price Board defaulting to an arbitrary city's prices instead of
+  the collector's own area -- a mismatch left over from adding Places
+  address search (raw formatted address vs. the six known price-table city
+  keys).
+- Fixed a missing Firestore composite index that made the recycler's
+  "Incoming Lots" and the collector's "My Lots" screens spin forever on the
+  real (non-emulator) project.
+- Fixed a `WriteBatch`-reuse-after-commit bug in the seed script that had
+  silently dropped 92 of 480 price records from the live database;
+  backfilled the missing records.
+- Removed a dead, permission-rejected cross-role Firestore write in the
+  "mark lot as paid" flow (recycler trying to write to the collector's
+  profile, which security rules correctly block; the earnings ledger never
+  actually depended on it).
+
+## v1.0.0 (2026-09-05 – 2026-09-12, untagged builds)
+
+Initial build: collector + recycler roles, phone+password auth (see
+docs/dataset_documentation.md for why not OTP), lot creation with on-device
+AI material classification, price board with trends + TTS, GPS-tracked
+recycler matching, QR-based handover records, earnings ledger, safety
+guidance, Hindi/Marathi/English localization, offline-first Firestore sync,
+Places API address search. Structured datasets in `data/`. See root
+README.md for the full picture and known gaps.

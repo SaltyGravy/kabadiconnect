@@ -1,0 +1,24 @@
+name: Sync live scrap prices from MetalMandi
+
+on:
+  schedule:
+    # Every 3 hours. MetalMandi's own site shows an "updated just now"
+    # timestamp implying frequent internal updates, but scrap rates don't
+    # move fast enough to need tighter than this, and it keeps this job
+    # well within GitHub Actions' free minutes.
+    - cron: '0 */3 * * *'
+  workflow_dispatch: {} # lets you trigger a run manually from the Actions tab
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install requests
+      - run: python ml/sync_metalmandi_prices.py
+        env:
+          PRICEBOT_EMAIL: ${{ secrets.PRICEBOT_EMAIL }}
+          PRICEBOT_PASSWORD: ${{ secrets.PRICEBOT_PASSWORD }}

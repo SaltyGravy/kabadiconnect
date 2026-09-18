@@ -1,0 +1,85 @@
+rules_version = '2';
+
+// Real security rules for the deployed (non-emulator) project. Every write
+// is scoped to a verified Firebase Auth identity (phone auth -- see
+// AuthService in the app). There is no admin/service-account seeding step:
+// the app itself seeds reference data (recyclers, price history) on first
+// run using the ordinary client SDK, which is why "create" on those
+// collections is gated by `!exists()` instead of by a special role -- it
+// allows exactly one write per document id and blocks everything after.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    // Collector profile: document id IS the collector's Firebase Auth uid.
+    match /collectors/{collectorId} {
+      allow read: if signedIn();
+      allow create, update: if signedIn() && request.auth.uid == collectorId;
+      allow delete: if false;
+    }
+
+    // Recyclers are a pre-registered, admin-curated directory (see
+    // ml/generate_datasets.py / SeedDataService). A recycler "claims" their
+    // facility by setting linked_auth_uid exactly once, after the app has
+    // matched their verified phone number to this document's contact_phone.
+    match /recyclers/{recyclerId} {
+      allow read: if true; // public authorization/price transparency
+      allow create: if signedIn() && !exists(/databases/$(database)/documents/recyclers/$(recyclerId));
+      allow update: if signedIn() && (
+        resource.data.linked_auth_uid == request.auth.uid ||
+        (resource.data.linked_auth_uid == null && request.resource.data.linked_auth_uid == request.auth.uid)
+      );
+      allow delete: if false;
+    }
+
+    // Lots: created by the owning collector; status/price transitions after
+    // matching are made by whoever has claimed the matched recycler.
+    match /lots/{lotId} {
+      allow read: if signedIn();
+      allow create: if signedIn() && request.auth.uid == request.resource.data.collector_id;
+      allow update: if signedIn() && (
+        resource.data.collector_id == request.auth.uid ||
+        (
+          resource.data.recycler_id != null &&
+          get(/databases/$(database)/documents/recyclers/$(resource.data.recycler_id)).data.linked_auth_uid == request.auth.uid
+        )
+      );
+      allow delete: if false;
+    }
+
+    // Traceability: created by the collector at handover, confirmed by the
+    // matched recycler.
+    match /traceability/{lotId} {
+      allow read: if signedIn();
+      allow create: if signedIn() &&
+        get(/databases/$(database)/documents/lots/$(lotId)).data.collector_id == request.auth.uid;
+      allow update: if signedIn() &&
+        get(/databases/$(database)/documents/lots/$(lotId)).data.recycler_id != null &&
+        get(/databases/$(database)/documents/recyclers/
+            $(get(/databases/$(database)/documents/lots/$(lotId)).data.recycler_id)
+           ).data.linked_auth_uid == request.auth.uid;
+      allow delete: if false;
+    }
+
+    // Price history: public reference dataset, seeded once per doc id.
+    match /price_history/{priceId} {
+      allow read: if true;
+      allow create: if signedIn() && !exists(/databases/$(database)/documents/price_history/$(priceId));
+      allow update, delete: if false;
+    }
+
+    // Live scrap prices: refreshed on a schedule from a third-party feed
+    // (see ml/sync_metalmandi_prices.py, run by a GitHub Actions cron).
+    // Public read like price_history; write is restricted to that one
+    // dedicated "price bot" service account, not the !exists()-gated
+    // one-time-seed pattern used elsewhere, since this data is REPLACED
+    // on every sync run rather than written once.
+    match /live_scrap_prices/{docId} {
+      allow read: if true;
+      allow write: if signedIn() && request.auth.uid == 'UJyalx4zWuVgv5FaU2QxOmGlgyv1';
+    }
+  }
+}

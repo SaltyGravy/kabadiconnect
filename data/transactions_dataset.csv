@@ -1,0 +1,221 @@
+lot_id,collector_id,material_category,weight_kg,quoted_price,final_price,recycler_id,collection_location,handover_location,date_time,payment_status,transaction_status,is_flagged_anomaly
+KC-20260905-BE204D,COL-022,BATTERIES,32.46,3153.37,,REC-005,"Nashik, Maharashtra","Mumbai, Maharashtra",2026-05-28T17:37:51,pending,matched,False
+KC-20260905-746299,COL-011,CABLES,16.69,6320.31,,REC-002,"Nagpur, Maharashtra","Mumbai, Maharashtra",2026-05-14T17:37:51,pending,handed_over,False
+KC-20260905-B92D5C,COL-001,CRT,31.33,7716.71,7042.99,REC-012,"Nashik, Maharashtra","Pune, Maharashtra",2026-08-13T17:37:51,paid,completed,False
+KC-20260905-482915,COL-018,PCB,11.96,3593.31,3631.36,REC-007,"Pimpri-Chinchwad, Maharashtra","Nashik, Maharashtra",2026-07-09T17:37:51,partial,confirmed,False
+KC-20260905-074308,COL-017,LCD_LED,6.7,1634.56,1551.95,REC-010,"Nashik, Maharashtra","Pune, Maharashtra",2026-08-26T17:37:51,paid,completed,False
+KC-20260905-13011B,COL-005,MIXED_PLASTICS,3.85,56.82,19.55,REC-012,"Nagpur, Maharashtra","Pune, Maharashtra",2026-01-28T17:37:51,paid,completed,True
+KC-20260905-9185D9,COL-020,CABLES,20.74,4602.2,,REC-007,"Nagpur, Maharashtra","Nashik, Maharashtra",2026-05-20T17:37:51,pending,handed_over,False
+KC-20260905-E410D2,COL-003,MIXED_PLASTICS,11.5,250.93,245.03,REC-002,"Nashik, Maharashtra","Mumbai, Maharashtra",2026-04-15T17:37:51,paid,paid,False
+KC-20260905-03C02E,COL-015,LCD_LED,16.2,3454.57,3553.25,REC-006,"Chhatrapati Sambhajinagar, Maharashtra","Pimpri-Chinchwad, Maharashtra",2026-08-30T17:37:51,paid,paid,False
+KC-20260905-B01F24,COL-007,PCB,10.37,3030.0,3165.16,REC-012,"Nashik, Maharashtra","Pune, Maharashtra",2026-04-07T17:37:51,paid,paid,False
+KC-20260905-ACB3CC,COL-010,MIXED_PLASTICS,6.45,146.77,132.26,REC-012,"Nagpur, Maharashtra","Pune, Maharashtra",2026-02-04T17:37:51,partial,confirmed,False
+KC-20260905-632200,COL-021,MOTORS_MAGNETS,28.5,8225.1,7536.55,REC-006,"Nagpur, Maharashtra","Pimpri-Chinchwad, Maharashtra",2026-05-10T17:37:51,paid,completed,False
+KC-20260905-39A2A4,COL-006,CRT,7.06,2079.55,,REC-008,"Pimpri-Chinchwad, Maharashtra","Pimpri-Chinchwad, Maharashtra",2026-08-05T17:37:51,pending,created,False
+KC-20260905-E5A6D3,COL-021,PCB,6.02,5093.9,,REC-012,"Chhatrapati Sambhajinagar, Maharashtra","Pune, Maharashtra",2026-05-04T17:37:51,pending,created,False
+KC-20260905-BABC18,COL-022,BATTERIES,24.8,2316.59,,REC-005,"Chhatrapati Sambhajinagar, Maharashtra","Mumbai, Maharashtra",2026-06-15T17:37:51,pending,in_transit,False
+KC-20260905-B3C970,COL-020,CABLES,10.42,3902.48,4074.29,REC-008,"Chhatrapati Sambhajinagar, Maharashtra","Pimpri-Chinchwad, Maharashtra",2026-04-04T17:37:51,paid,completed,False
+KC-20260905-3ED56D,COL-001,MIXED_OTHER,6.44,166.61,156.2,REC-008,"Nashik, Maharashtra","Pimpri-Chinchwad, Maharashtra",2026-07-22T17:37:51,partial,confirmed,False
+KC-20260905-600491,COL-020,MIXED_OTHER,25.64,2065.69,,REC-006,"Pune, Maharashtra","Pimpri-Chinchwad, Maharashtra",2026-06-08T17:37:51,pending,created,False
+KC-20260905-3EB604,COL-014,BATTERIES,15.01,2308.23,2373.6,REC-007,"Pimpri-Chinchwad, Maharashtra","Nashik, Maharashtra",2026-06-19T17:37:51,paid,paid,False
+KC-20260905-E3FFA0,COL-006,BATTERIES,5.5,631.2,640.75,REC-005,"Chhatrapati Sambhajinagar, Maharashtra","Mumbai, Maharashtra",2026-08-10T17:37:51,partial,confirmed,False
+KC-20260905-E316F8,COL-007,MIXED_OTHER,9.66,354.14,328.88,REC-006,"Pune, Maharashtra","Pimpri-Chinchwad, Maharashtra",2026-02-17T17:37:51,paid,completed,False
+KC-20260905-602685,COL-005,CRT,26.76,6640.12,,REC-008,"Nashik, Maharashtra","Pimpri-Chinchwad, Maharashtra",2026-05-20T17:37:51,pending,in_transit,False
+KC-20260905-75857B,COL-013,MIXED_PLASTICS,12.81,375.53,401.23,REC-012,"Nashik, Maharashtra","Pune, Maharashtra",2026-06-07T17:37:51,paid,completed,False
+KC-20260905-8DCFFA,COL-018,MIXED_PLASTICS,31.66,1102.32,2779.01,REC-009,"Nashik, Maharashtra","Chhatrapati Sambhajinagar, Maharashtra",2026-03-12T17:37:51,partial,confirmed,True
+KC-20260905-4EC085,COL-007,MIXED_PLASTICS,39.92,1696.4,,REC-010,"Chhatrapati Sambhajinagar, Maharashtra","Pune, Maharashtra",2026-01-24T17:37:51,pending,in_transit,False
+KC-20260905-A6CB80,COL-007,CRT,8.2,2626.19,2844.59,REC-007,"Nagpur, Maharashtra","Nashik, Maharashtra",2026-04-24T17:37:51,paid,completed,False
+KC-20260905-C67B84,COL-021,BATTERIES,39.83,5395.66,,REC-006,"Nashik, Maharashtra","Pimpri-Chinchwad, Maharashtra",2026-08-25T17:37:51,pending,matched,False
+KC-20260905-AEEF0C,COL-016,CRT,19.87,6020.29,2236.66,REC-008,"Pimpri-Chinchwad, Maharashtra","Pimpri-Chinchwad, Maharashtra",2026-05-12T17:37:51,paid,completed,True
+KC-20260905-9D3486,COL-005,PCB,33.91,7671.29,,REC-002,"Nashik, Maharashtra","Mumbai, Maharashtra",2026-02-04T17:37:51,pending,matched,False
+KC-20260905-C47ED4,COL-007,BATTERIES,1.16,188.72,196.62,REC-008,"Chhatrapati Sambhajinagar, Maharashtra","Pimpri-Chinchwad, Maharashtra",2026-03-01T17:37:51,partial,confirmed,False
+KC-20260905-02EBD2,COL-022,CRT,26.88,4388.77,4079.37,REC-007,"Nashik, Maharashtra","Nashik, Maharashtra",2026-02-03T17:37:51,paid,completed,False
+KC-20260905-420386,COL-017,CABLES,30.0,13438.26,,REC-009,"Mumbai, Maharashtra","Chhatrapati Sambhajinagar, Maharashtra",2026-03-27T17:37:51,pending,handed_over,False
+KC-20260905-4832F3,COL-019,LCD_LED,36.76,6739.6,2418.6,REC-012,"Pune, Maharashtra","Pune, Maharashtra",2026-08-07T17:37:51,partial,confirmed,True
+KC-20260905-AACFFC,COL-008,LCD_LED,37.73,20580.29,19800.24,REC-008,"Pimpri-Chinchwad, Maharashtra","Pimpri-Chinchwad, Maharashtra",2026-03-25T17:37:51,paid,completed,False
+KC-20260905-D44EF8,COL-014,MOTORS_MAGNETS,35.4,6736.41,6419.19,REC-006,"Mumbai, Maharashtra","Pimpri-Chinchwad, Maharashtra",2026-06-28T17:37:51,paid,completed,False
+KC-20260905-9DCACB,COL-021,MIXED_OTHER,23.62,734.86,725.14,REC-006,"Pune, Maharashtra","Pimpri-Chinchwad, Maharashtra",2026-02-04T17:37:51,paid,completed,False
+KC-20260905-DB0FAC,COL-003,BATTERIES,9.12,727.29,746.36,REC-007,"Mumbai, Maharashtra","Nashik, Maharashtra",2026-07-01T17:37:51,paid,paid,False
+KC-20260905-89C2E5,COL-022,MIXED_PLASTICS,28.2,958.32,,REC-010,"Pune, Maharashtra","Pune, Maharashtra",2026-06-15T17:37:51,pending,created,False
+KC-20260905-46299D,COL-011,MOTORS_MAGNETS,14.64,2804.71,2770.5,REC-002,"Mumbai, Maharashtra","Mumbai, Maharashtra",2026-01-15T17:37:51,paid,completed,False
+KC-20260905-A15C0B,COL-016,MIXED_PLASTICS,15.24,359.11,392.92,REC-002,"Nagpur, Maharashtra","Mumbai, Maharashtra",2026-03-04T17:37:51,partial,confirmed,False
+KC-20260905-55EB00,COL-019,BATTERIES,6.98,432.98,450.09,REC-006,"Chhatrapati Sambhajinagar, Maharashtra","Pimpri-Chinchwad, Maharashtra",2026-08-29T17:37:51,paid,paid,False
+KC-20260905-FC1855,COL-002,MOTORS_MAGNETS,30.75,10729.47,,REC-002,"Nagpur, Maharashtra","Mumbai, Maharashtra",2026-02-15T17:37:51,pending,in_transit,True
+KC-20260905-AC31B6,COL-007,PCB,3.67,1288.63,,REC-005,"Nagpur, Maharashtra","Mumbai, Maharashtra",2026-06-19T17:37:51,pending,matched,False
+KC-20260905-D824FA,COL-001,MOTORS_MAGNETS,4.45,1265.63,,REC-012,"Mumbai, Maharashtra","Pune, Maharashtra",2026-06-09T17:37:51,pending,handed_over,False
+KC-20260905-CD6AF7,COL-013,LCD_LED,37.44,11035.67,11421.37,REC-005,"Nagpur, Maharashtra","Mumbai, Maharashtra",2026-02-22T17:37:51,partial,confirmed,False
+KC-20260905-5B5E7C,COL-022,MIXED_OTHER,35.48,1121.57,2916.94,REC-012,"Pune, Maharashtra","Pune, Maharashtra",2026-07-11T17:37:51,partial,confirmed,True
+KC-20260905-63481B,COL-002,CABLES,4.17,1353.12,,REC-006,"Nagpur, Maharashtra","Pimpri-Chinchwad, Maharashtra",2026-05-17T17:37:51,pending,in_transit,False
+KC-20260905-9B4B05,COL-002,MIXED_OTHER,6.96,487.4,446.72,REC-008,"Nashik, Maharashtra","Pimpri-Chinchwad, Maharashtra",2026-07-22T17:37:51,paid,paid,False
+KC-20260905-F774DE,COL-006,CRT,20.53,6949.56,7186.12,REC-006,"Mumbai, Maharashtra","Pimpri-Chinchwad, Maharashtra",2026-04-11T17:37:51,paid,completed,False
+KC-20260905-3F1B2A,COL-020,LCD_LED,31.35,14787.99,13639.47,REC-012,"Chhatrapati Sambhajinagar, Maharashtra","Pune, Maharashtra",2026-06-02T17:37:51,paid,completed,False
+KC-20260905-C705AF,COL-005,LCD_LED,28.45,6522.43,7007.97,REC-002,"Nagpur, Maharashtra","Mumbai, Maharashtra",2026-01-09T17:37:51,paid,completed,False
+KC-20260905-000223,COL-015,MIXED_OTHER,24.17,1099.98,3012.57,REC-008,"Pune, Maharashtra","Pimpri-Chinchwad, Maharashtra",2026-01-21T17:37:51,paid,completed,True
+KC-20260905-49277A,COL-011,MIXED_OTHER,24.03,1031.4,979.55,REC-008,"Pimpri-Chinchwad, Maharashtra","Pimpri-Chinchwad, Maharashtra",2026-08-27T17:37:51,paid,completed,False
+KC-20260905-4A652C,COL-014,MIXED_OTHER,27.72,1061.52,1110.92,REC-008,"Nagpur, Maharashtra","Pimpri-Chinchwad, Maharashtra",2026-05-11T17:37:51,paid,completed,False
+KC-20260905-44FCE9,COL-005,CRT,32.59,5884.6,5693.67,REC-008,"Pimpri-Chinchwad, Maharashtra","Pimpri-Chinchwad, Maharashtra",2026-03-26T17:37:51,paid,completed,False
+KC-20260905-605326,COL-021,BATTERIES,36.54,6586.88,7238.87,REC-008,"Pune, Maharashtra","Pimpri-Chinchwad, Maharashtra",2026-02-03T17:37:51,paid,paid,False
+KC-20260905-9331BD,COL-012,CRT,30.55,8799.1,8406.4,REC-008,"Nashik, Maharashtra","Pimpri-Chinchwad, Maharashtra",2026-07-12T17:37:51,paid,completed,False
+KC-20260905-BD87CF,COL-009,BATTERIES,1.24,117.03,,REC-001,"Nashik, Maharashtra","Chhatrapati Sambhajinagar, Maharashtra",2026-07-14T17:37:51,pending,handed_over,False
+KC-20260905-9535A5,COL-011,CRT,11.87,4457.18,4577.32,REC-005,"Pune, Maharashtra","Mumbai, Maharashtra",2026-04-02T17:37:51,paid,paid,False
+KC-20260905-A9D828,COL-011,MOTORS_MAGNETS,18.05,4908.28,,REC-009,"Nagpur, Maharashtra","Chhatrapati Sambhajinagar, Maharashtra",2026-02-07T17:37:51,pending,handed_over,False
+KC-20260905-246EFC,COL-021,LCD_LED,3.78,1797.04,1887.2,REC-012,"Chhatrapati Sambhajinagar, Maharashtra","Pune, Maharashtra",2026-06-09T17:37:51,partial,confirmed,False
+KC-20260905-B6190C,COL-020,PCB,16.91,13330.76,13981.44,REC-006,"Chhatrapati Sambhajinagar, Maharashtra","Pimpri-Chinchwad, Maharashtra",2026-05-18T17:37:51,partial,confirmed,False
+KC-20260905-B6C38B,COL-004,LCD_LED,39.69,14803.87,,REC-010,"Mumbai, Maharashtra","Pune, Maharashtra",2026-07-13T17:37:51,pending,in_transit,False
+KC-20260905-02FDFA,COL-018,MIXED_PLASTICS,9.1,371.21,380.88,REC-009,"Nagpur, Maharashtra","Chhatrapati Sambhajinagar, Maharashtra",2026-02-25T17:37:51,paid,completed,False
+KC-20260905-0EC87E,COL-017,MOTORS_MAGNETS,16.46,5464.02,5089.15,REC-010,"Mumbai, Maharashtra","Pune, Maharashtra",2026-01-29T17:37:51,paid,completed,False
+KC-20260905-46D699,COL-015,MOTORS_MAGNETS,4.38,1281.69,420.68,REC-004,"Pimpri-Chinchwad, Maharashtra","Mumbai, Maharashtra",2026-01-16T17:37:51,partial,confirmed,True
+KC-20260905-6A9A37,COL-020,LCD_LED,24.59,4562.16,12933.54,REC-010,"Pune, Maharashtra","Pune, Maharashtra",2026-06-14T17:37:51,paid,completed,True
+KC-20260905-E39304,COL-015,PCB,9.95,5523.61,,REC-006,"Pimpri-Chinchwad, Maharashtra","Pimpri-Chinchwad, Maharashtra",2026-01-25T17:37:51,pending,handed_over,False
+KC-20260905-59DB0B,COL-015,MIXED_OTHER,18.02,644.01,662.22,REC-006,"Pimpri-Chinchwad, Maharashtra","Pimpri-Chinchwad, Maharashtra",2026-04-04T17:37:51,paid,paid,False
+KC-20260905-635034,COL-015,CABLES,1.78,780.69,837.24,REC-004,"Pune, Maharashtra","Mumbai, Maharashtra",2026-02-26T17:37:51,paid,completed,False
+KC-20260905-00B843,COL-020,LCD_LED,33.2,4446.85,12082.43,REC-002,"Nashik, Maharashtra","Mumbai, Maharashtra",2026-05-05T17:37:51,paid,completed,True
+KC-20260905-DC858B,COL-014,MIXED_OTHER,33.96,2500.78,2611.81,REC-005,"Pune, Maharashtra","Mumbai, Maharashtra",2026-07-30T17:37:51,paid,completed,False
+KC-20260905-99515A,COL-007,MIXED_OTHER,25.86,677.28,642.7,REC-008,"Pune, Maharashtra","Pimpri-Chinchwad, Maharashtra",2026-06-13T17:37:51,paid,paid,False
+KC-20260905-F9E712,COL-009,MIXED_OTHER,1.91,57.04,,REC-012,"Nagpur, Maharashtra","Pune, Maharashtra",2026-04-06T17:37:51,pending,created,False
+KC-20260905-647568,COL-010,MOTORS_MAGNETS,22.92,5294.63,4928.71,REC-008,"Pimpri-Chinchwad, Maharashtra","Pimpri-Chinchwad, Maharashtra",2026-07-27T17:37:51,paid,completed,False
+KC-20260905-F237DD,COL-009,MIXED_PLASTICS,34.11,1028.34,,REC-012,"Mumbai, Maharashtra","Pune, Maharashtra",2026-08-29T17:37:51,pending,created,False
+KC-20260905-5184EE,COL-016,MIXED_PLASTICS,25.93,813.66,793.8,REC-010,"Mumbai, Maharashtra","Pune, Maharashtra",2026-06-09T17:37:51,paid,paid,False
+KC-20260905-9C6516,COL-016,PCB,37.9,16492.68,,REC-007,"Pune, Maharashtra","Nashik, Maharashtra",2026-03-18T17:37:51,pending,handed_over,False
+KC-20260905-1B654A,COL-016,MOTORS_MAGNETS,25.73,4034.96,4267.12,REC-012,"Chhatrapati Sambhajinagar, Maharashtra","Pune, Maharashtra",2026-01-15T17:37:51,paid,completed,False
+KC-20260905-64E09D,COL-021,MIXED_PLASTICS,3.15,95.65,102.78,REC-001,"Nagpur, Maharashtra","Chhatrapati Sambhajinagar, Maharashtra",2026-04-29T17:37:51,paid,completed,False
+KC-20260905-446035,COL-009,CABLES,26.21,7839.21,7118.37,REC-005,"Pimpri-Chinchwad, Maharashtra","Mumbai, Maharashtra",2026-01-09T17:37:51,paid,paid,False
+KC-20260905-96C3A1,COL-005,LCD_LED,9.49,3758.34,3786.1,REC-008,"Pune, Maharashtra","Pimpri-Chinchwad, Maharashtra",2026-07-14T17:37:51,paid,paid,False
+KC-20260905-FB4E72,COL-004,MIXED_OTHER,8.3,467.4,473.88,REC-009,"Pune, Maharashtra","Chhatrapati Sambhajinagar, Maharashtra",2026-05-07T17:37:51,paid,paid,False
+KC-20260905-BAE179,COL-019,CABLES,30.31,12127.34,,REC-010,"Pune, Maharashtra","Pune, Maharashtra",2026-07-03T17:37:51,pending,in_transit,False
+KC-20260905-F8813D,COL-021,BATTERIES,21.52,1922.18,1970.59,REC-005,"Nagpur, Maharashtra","Mumbai, Maharashtra",2026-01-26T17:37:51,paid,paid,False
+KC-20260905-7E662A,COL-016,MIXED_OTHER,30.54,1966.4,1904.43,REC-006,"Mumbai, Maharashtra","Pimpri-Chinchwad, Maharashtra",2026-08-20T17:37:51,paid,completed,False
+KC-20260905-8E69EC,COL-007,CABLES,13.14,4783.82,4888.61,REC-007,"Chhatrapati Sambhajinagar, Maharashtra","Nashik, Maharashtra",2026-06-19T17:37:51,partial,confirmed,False
+KC-20260905-A6E9DF,COL-006,MIXED_PLASTICS,6.71,306.43,324.13,REC-002,"Chhatrapati Sambhajinagar, Maharashtra","Mumbai, Maharashtra",2026-03-20T17:37:51,paid,completed,False
+KC-20260905-54375C,COL-012,BATTERIES,29.21,4475.27,4531.91,REC-002,"Nagpur, Maharashtra","Mumbai, Maharashtra",2026-06-12T17:37:51,partial,confirmed,False
+KC-20260905-5DE1A2,COL-012,MIXED_PLASTICS,30.8,397.36,,REC-012,"Mumbai, Maharashtra","Pune, Maharashtra",2026-05-12T17:37:51,pending,handed_over,False
+KC-20260905-6A6666,COL-013,MIXED_PLASTICS,29.69,1151.0,1098.97,REC-006,"Chhatrapati Sambhajinagar, Maharashtra","Pimpri-Chinchwad, Maharashtra",2026-04-15T17:37:51,paid,paid,False
+KC-20260905-3636B2,COL-002,MIXED_OTHER,28.41,1116.93,1018.49,REC-009,"Pimpri-Chinchwad, Maharashtra","Chhatrapati Sambhajinagar, Maharashtra",2026-01-16T17:37:51,paid,paid,False
+KC-20260905-43EC38,COL-004,BATTERIES,30.12,2644.17,2460.02,REC-006,"Mumbai, Maharashtra","Pimpri-Chinchwad, Maharashtra",2026-01-23T17:37:51,partial,confirmed,False
+KC-20260905-541E19,COL-008,MIXED_OTHER,30.63,1175.24,1062.85,REC-008,"Chhatrapati Sambhajinagar, Maharashtra","Pimpri-Chinchwad, Maharashtra",2026-04-19T17:37:51,partial,confirmed,False
+KC-20260905-99EBAC,COL-012,MOTORS_MAGNETS,8.99,2014.16,1892.9,REC-012,"Pimpri-Chinchwad, Maharashtra","Pune, Maharashtra",2026-01-22T17:37:51,partial,confirmed,False
+KC-20260905-55ABC6,COL-005,CRT,17.38,7012.82,6396.09,REC-002,"Pimpri-Chinchwad, Maharashtra","Mumbai, Maharashtra",2026-05-23T17:37:51,paid,completed,False
+KC-20260905-A91E5C,COL-017,CRT,21.78,5028.8,,REC-012,"Nagpur, Maharashtra","Pune, Maharashtra",2026-02-15T17:37:51,pending,matched,False
+KC-20260905-E88DA0,COL-018,LCD_LED,32.04,16070.68,16424.34,REC-004,"Chhatrapati Sambhajinagar, Maharashtra","Mumbai, Maharashtra",2026-07-27T17:37:51,paid,completed,False
+KC-20260905-4EB9E2,COL-015,BATTERIES,26.19,1334.8,1342.2,REC-006,"Pimpri-Chinchwad, Maharashtra","Pimpri-Chinchwad, Maharashtra",2026-07-29T17:37:51,partial,confirmed,False
+KC-20260905-813A66,COL-001,BATTERIES,0.84,69.01,70.17,REC-007,"Nashik, Maharashtra","Nashik, Maharashtra",2026-09-01T17:37:51,paid,completed,False
+KC-20260905-99014E,COL-019,MOTORS_MAGNETS,6.36,1386.84,528.55,REC-004,"Mumbai, Maharashtra","Mumbai, Maharashtra",2026-02-20T17:37:51,paid,paid,True
+KC-20260905-60F9C4,COL-008,MOTORS_MAGNETS,6.95,2690.55,7376.46,REC-006,"Mumbai, Maharashtra","Pimpri-Chinchwad, Maharashtra",2026-06-20T17:37:51,paid,completed,True
+KC-20260905-868C61,COL-007,MIXED_OTHER,17.82,620.55,573.97,REC-009,"Pune, Maharashtra","Chhatrapati Sambhajinagar, Maharashtra",2026-05-14T17:37:51,paid,paid,False
+KC-20260905-EDE877,COL-006,LCD_LED,19.82,8175.2,7669.94,REC-006,"Pune, Maharashtra","Pimpri-Chinchwad, Maharashtra",2026-01-08T17:37:51,partial,confirmed,False
+KC-20260905-A9099E,COL-015,LCD_LED,32.23,10019.81,10913.04,REC-002,"Pune, Maharashtra","Mumbai, Maharashtra",2026-05-31T17:37:51,partial,confirmed,False
+KC-20260905-3DBC98,COL-003,CABLES,38.08,11685.66,10846.01,REC-009,"Nashik, Maharashtra","Chhatrapati Sambhajinagar, Maharashtra",2026-09-01T17:37:51,partial,confirmed,False
+KC-20260905-F542BC,COL-016,PCB,24.05,8411.68,8609.45,REC-012,"Pune, Maharashtra","Pune, Maharashtra",2026-08-21T17:37:51,partial,confirmed,False
+KC-20260905-7EBCBD,COL-022,PCB,37.04,27732.65,,REC-005,"Nagpur, Maharashtra","Mumbai, Maharashtra",2026-01-23T17:37:51,pending,handed_over,False
+KC-20260905-260947,COL-001,MOTORS_MAGNETS,35.61,5856.22,5325.06,REC-001,"Nagpur, Maharashtra","Chhatrapati Sambhajinagar, Maharashtra",2026-08-29T17:37:51,paid,completed,False
+KC-20260905-3D0019,COL-001,LCD_LED,17.09,2382.42,2341.96,REC-009,"Mumbai, Maharashtra","Chhatrapati Sambhajinagar, Maharashtra",2026-08-13T17:37:51,paid,paid,False
+KC-20260905-2A0A83,COL-010,CRT,36.16,6921.26,7078.52,REC-007,"Nashik, Maharashtra","Nashik, Maharashtra",2026-01-18T17:37:51,partial,confirmed,False
+KC-20260905-C8070A,COL-005,CABLES,32.32,8628.22,9003.15,REC-006,"Chhatrapati Sambhajinagar, Maharashtra","Pimpri-Chinchwad, Maharashtra",2026-08-03T17:37:51,paid,completed,False
+KC-20260905-BDDA65,COL-022,PCB,38.97,27123.82,29204.67,REC-006,"Nagpur, Maharashtra","Pimpri-Chinchwad, Maharashtra",2026-03-08T17:37:51,paid,paid,False
+KC-20260905-D1F1D9,COL-019,PCB,36.29,16509.68,,REC-009,"Pune, Maharashtra","Chhatrapati Sambhajinagar, Maharashtra",2026-02-26T17:37:51,pending,handed_over,False
+KC-20260905-EA271B,COL-006,CABLES,23.1,8303.38,8829.8,REC-009,"Nagpur, Maharashtra","Chhatrapati Sambhajinagar, Maharashtra",2026-09-03T17:37:51,paid,completed,False
+KC-20260905-11101E,COL-018,BATTERIES,11.53,1773.86,1913.12,REC-006,"Pune, Maharashtra","Pimpri-Chinchwad, Maharashtra",2026-02-27T17:37:51,partial,confirmed,False
+KC-20260905-B04495,COL-022,LCD_LED,2.99,857.33,793.24,REC-009,"Chhatrapati Sambhajinagar, Maharashtra","Chhatrapati Sambhajinagar, Maharashtra",2026-06-30T17:37:51,paid,completed,False
+KC-20260905-F6BDF0,COL-005,BATTERIES,18.38,2253.84,2466.46,REC-009,"Nagpur, Maharashtra","Chhatrapati Sambhajinagar, Maharashtra",2026-06-19T17:37:51,paid,completed,False
+KC-20260905-C8963C,COL-001,CABLES,14.48,5594.23,5622.25,REC-006,"Pimpri-Chinchwad, Maharashtra","Pimpri-Chinchwad, Maharashtra",2026-02-27T17:37:51,paid,completed,False
+KC-20260905-852B2A,COL-012,PCB,7.04,4761.3,5000.42,REC-005,"Pune, Maharashtra","Mumbai, Maharashtra",2026-03-15T17:37:51,paid,completed,False
+KC-20260905-552567,COL-013,CRT,21.11,5820.68,6078.59,REC-006,"Nashik, Maharashtra","Pimpri-Chinchwad, Maharashtra",2026-01-18T17:37:51,partial,confirmed,False
+KC-20260905-95FC86,COL-007,BATTERIES,38.39,1837.28,,REC-008,"Chhatrapati Sambhajinagar, Maharashtra","Pimpri-Chinchwad, Maharashtra",2026-04-06T17:37:51,pending,in_transit,False
+KC-20260905-2436CD,COL-013,CABLES,15.94,4579.66,,REC-005,"Pimpri-Chinchwad, Maharashtra","Mumbai, Maharashtra",2026-05-21T17:37:51,pending,matched,False
+KC-20260905-DF9CCC,COL-005,BATTERIES,29.72,4939.83,5110.0,REC-006,"Pune, Maharashtra","Pimpri-Chinchwad, Maharashtra",2026-03-04T17:37:51,paid,paid,False
+KC-20260905-7260F3,COL-021,LCD_LED,17.81,9140.61,8507.49,REC-012,"Mumbai, Maharashtra","Pune, Maharashtra",2026-03-20T17:37:51,paid,completed,False
+KC-20260905-4427FE,COL-013,CRT,25.26,6783.92,7279.83,REC-012,"Nagpur, Maharashtra","Pune, Maharashtra",2026-08-08T17:37:51,paid,completed,False
+KC-20260905-F2971C,COL-008,MOTORS_MAGNETS,17.16,5505.23,5751.92,REC-012,"Pimpri-Chinchwad, Maharashtra","Pune, Maharashtra",2026-05-18T17:37:51,partial,confirmed,False
+KC-20260905-C848DD,COL-012,BATTERIES,28.67,3122.25,,REC-001,"Pune, Maharashtra","Chhatrapati Sambhajinagar, Maharashtra",2026-08-11T17:37:51,pending,handed_over,False
+KC-20260905-1ED8C7,COL-018,MIXED_OTHER,24.46,2012.66,,REC-012,"Chhatrapati Sambhajinagar, Maharashtra","Pune, Maharashtra",2026-06-01T17:37:51,pending,matched,False
+KC-20260905-27B8BD,COL-019,LCD_LED,9.93,3954.38,4203.73,REC-004,"Pune, Maharashtra","Mumbai, Maharashtra",2026-02-22T17:37:51,paid,completed,False
+KC-20260905-A5617C,COL-019,MIXED_OTHER,16.25,1271.27,1375.03,REC-012,"Pune, Maharashtra","Pune, Maharashtra",2026-01-08T17:37:51,partial,confirmed,False
+KC-20260905-9A06A6,COL-010,LCD_LED,18.54,9970.05,9675.69,REC-010,"Pune, Maharashtra","Pune, Maharashtra",2026-03-03T17:37:51,paid,completed,False
+KC-20260905-79679C,COL-021,MIXED_OTHER,22.56,1841.72,1935.03,REC-008,"Mumbai, Maharashtra","Pimpri-Chinchwad, Maharashtra",2026-07-14T17:37:51,paid,completed,False
+KC-20260905-C325C3,COL-012,MOTORS_MAGNETS,12.58,4567.03,4678.28,REC-006,"Nagpur, Maharashtra","Pimpri-Chinchwad, Maharashtra",2026-02-05T17:37:51,partial,confirmed,False
+KC-20260905-684717,COL-012,MIXED_OTHER,14.78,445.07,,REC-008,"Nashik, Maharashtra","Pimpri-Chinchwad, Maharashtra",2026-01-19T17:37:51,pending,created,False
+KC-20260905-24FF72,COL-017,BATTERIES,12.2,1397.82,1279.27,REC-008,"Pimpri-Chinchwad, Maharashtra","Pimpri-Chinchwad, Maharashtra",2026-04-15T17:37:51,paid,completed,False
+KC-20260905-764BCC,COL-009,MIXED_PLASTICS,21.55,563.53,,REC-002,"Pimpri-Chinchwad, Maharashtra","Mumbai, Maharashtra",2026-06-10T17:37:51,pending,in_transit,False
+KC-20260905-F273F2,COL-020,BATTERIES,39.98,3888.97,4019.27,REC-007,"Pune, Maharashtra","Nashik, Maharashtra",2026-06-15T17:37:51,paid,paid,False
+KC-20260905-BB876B,COL-008,CABLES,32.56,8408.82,9010.1,REC-006,"Nashik, Maharashtra","Pimpri-Chinchwad, Maharashtra",2026-03-24T17:37:51,paid,completed,False
+KC-20260905-EB8F65,COL-014,CABLES,16.28,6649.31,6332.13,REC-005,"Chhatrapati Sambhajinagar, Maharashtra","Mumbai, Maharashtra",2026-04-10T17:37:51,partial,confirmed,False
+KC-20260905-D06847,COL-012,MOTORS_MAGNETS,14.6,5479.17,6012.03,REC-006,"Nagpur, Maharashtra","Pimpri-Chinchwad, Maharashtra",2026-04-20T17:37:51,paid,completed,False
+KC-20260905-4A4137,COL-018,MIXED_OTHER,33.14,1173.24,1285.05,REC-008,"Pune, Maharashtra","Pimpri-Chinchwad, Maharashtra",2026-02-11T17:37:51,paid,completed,False
+KC-20260905-CAFC59,COL-015,CRT,23.85,4240.43,,REC-008,"Nashik, Maharashtra","Pimpri-Chinchwad, Maharashtra",2026-05-01T17:37:51,pending,created,False
+KC-20260905-1732C2,COL-012,CRT,3.02,809.3,,REC-007,"Pimpri-Chinchwad, Maharashtra","Nashik, Maharashtra",2026-07-30T17:37:51,pending,handed_over,False
+KC-20260905-BD5B59,COL-005,MIXED_PLASTICS,18.36,556.07,563.84,REC-009,"Mumbai, Maharashtra","Chhatrapati Sambhajinagar, Maharashtra",2026-03-20T17:37:51,partial,confirmed,False
+KC-20260905-166985,COL-001,MOTORS_MAGNETS,14.65,2761.66,2778.1,REC-001,"Pimpri-Chinchwad, Maharashtra","Chhatrapati Sambhajinagar, Maharashtra",2026-02-24T17:37:51,paid,completed,False
+KC-20260905-2B5BEE,COL-006,PCB,20.05,5229.8,5307.2,REC-002,"Pimpri-Chinchwad, Maharashtra","Mumbai, Maharashtra",2026-01-11T17:37:51,paid,completed,False
+KC-20260905-3523B8,COL-005,MIXED_OTHER,12.79,411.75,,REC-008,"Mumbai, Maharashtra","Pimpri-Chinchwad, Maharashtra",2026-08-12T17:37:51,pending,handed_over,False
+KC-20260905-7F0196,COL-011,LCD_LED,10.68,5510.4,5711.76,REC-012,"Pune, Maharashtra","Pune, Maharashtra",2026-04-24T17:37:51,paid,paid,False
+KC-20260905-606831,COL-011,CRT,32.1,10156.86,,REC-007,"Nagpur, Maharashtra","Nashik, Maharashtra",2026-08-29T17:37:51,pending,matched,False
+KC-20260905-BE7C21,COL-006,MIXED_OTHER,4.33,283.53,265.21,REC-012,"Mumbai, Maharashtra","Pune, Maharashtra",2026-06-09T17:37:51,partial,confirmed,False
+KC-20260905-A127D8,COL-001,MIXED_OTHER,21.73,1975.24,1900.84,REC-012,"Pune, Maharashtra","Pune, Maharashtra",2026-01-09T17:37:51,paid,completed,False
+KC-20260905-E36D29,COL-004,PCB,6.63,4253.5,4388.33,REC-007,"Mumbai, Maharashtra","Nashik, Maharashtra",2026-04-04T17:37:51,paid,paid,False
+KC-20260905-D60D1A,COL-011,LCD_LED,9.96,4909.64,4770.52,REC-006,"Nagpur, Maharashtra","Pimpri-Chinchwad, Maharashtra",2026-07-31T17:37:51,partial,confirmed,False
+KC-20260905-590981,COL-017,LCD_LED,13.16,4821.82,4719.78,REC-004,"Pimpri-Chinchwad, Maharashtra","Mumbai, Maharashtra",2026-03-22T17:37:51,paid,paid,False
+KC-20260905-68C47E,COL-010,CABLES,15.39,5645.33,5627.38,REC-009,"Nashik, Maharashtra","Chhatrapati Sambhajinagar, Maharashtra",2026-05-17T17:37:51,partial,confirmed,False
+KC-20260905-50C4CA,COL-017,CRT,37.9,9257.22,9336.44,REC-012,"Pune, Maharashtra","Pune, Maharashtra",2026-07-19T17:37:51,paid,completed,False
+KC-20260905-8150F8,COL-013,BATTERIES,2.57,414.72,416.71,REC-002,"Nagpur, Maharashtra","Mumbai, Maharashtra",2026-04-21T17:37:51,paid,completed,False
+KC-20260905-23922F,COL-004,CABLES,9.25,2986.44,3028.93,REC-010,"Mumbai, Maharashtra","Pune, Maharashtra",2026-01-20T17:37:51,paid,paid,False
+KC-20260905-42CBA5,COL-010,LCD_LED,32.64,17646.17,18798.72,REC-002,"Mumbai, Maharashtra","Mumbai, Maharashtra",2026-03-21T17:37:51,paid,completed,False
+KC-20260905-4AF738,COL-020,CABLES,23.04,11178.3,,REC-007,"Nashik, Maharashtra","Nashik, Maharashtra",2026-03-15T17:37:51,pending,handed_over,False
+KC-20260905-B3859E,COL-014,CRT,11.48,4978.13,5077.82,REC-012,"Nashik, Maharashtra","Pune, Maharashtra",2026-06-01T17:37:51,paid,paid,False
+KC-20260905-AA8050,COL-022,PCB,25.69,7182.27,6727.43,REC-009,"Mumbai, Maharashtra","Chhatrapati Sambhajinagar, Maharashtra",2026-08-18T17:37:51,paid,paid,False
+KC-20260905-AEB527,COL-010,MIXED_PLASTICS,34.29,725.85,781.83,REC-010,"Nagpur, Maharashtra","Pune, Maharashtra",2026-06-25T17:37:51,partial,confirmed,False
+KC-20260905-5442B5,COL-017,PCB,4.82,1773.36,,REC-002,"Nashik, Maharashtra","Mumbai, Maharashtra",2026-05-06T17:37:51,pending,handed_over,False
+KC-20260905-7590D9,COL-005,MIXED_OTHER,2.12,185.78,,REC-009,"Chhatrapati Sambhajinagar, Maharashtra","Chhatrapati Sambhajinagar, Maharashtra",2026-02-21T17:37:51,pending,handed_over,False
+KC-20260905-88B0F9,COL-011,PCB,7.43,4140.6,,REC-012,"Nagpur, Maharashtra","Pune, Maharashtra",2026-01-13T17:37:51,pending,matched,False
+KC-20260905-531E7B,COL-017,BATTERIES,25.27,2247.75,,REC-001,"Mumbai, Maharashtra","Chhatrapati Sambhajinagar, Maharashtra",2026-07-20T17:37:51,pending,created,False
+KC-20260905-03EF21,COL-020,CABLES,6.86,2587.1,,REC-012,"Nagpur, Maharashtra","Pune, Maharashtra",2026-04-16T17:37:51,pending,in_transit,False
+KC-20260905-5AF025,COL-020,CRT,37.35,9404.83,,REC-009,"Mumbai, Maharashtra","Chhatrapati Sambhajinagar, Maharashtra",2026-03-04T17:37:51,pending,in_transit,False
+KC-20260905-F0A7E6,COL-001,MIXED_PLASTICS,15.81,502.85,456.1,REC-010,"Pune, Maharashtra","Pune, Maharashtra",2026-02-09T17:37:51,paid,completed,False
+KC-20260905-D8D5F3,COL-010,MIXED_PLASTICS,18.26,682.14,661.01,REC-012,"Chhatrapati Sambhajinagar, Maharashtra","Pune, Maharashtra",2026-05-29T17:37:51,paid,completed,False
+KC-20260905-DCC581,COL-018,MIXED_OTHER,11.83,880.91,838.13,REC-008,"Mumbai, Maharashtra","Pimpri-Chinchwad, Maharashtra",2026-07-31T17:37:51,partial,confirmed,False
+KC-20260905-B30248,COL-002,PCB,35.25,30898.06,,REC-007,"Nashik, Maharashtra","Nashik, Maharashtra",2026-03-08T17:37:51,pending,in_transit,False
+KC-20260905-92E64B,COL-013,CABLES,29.47,10291.75,9933.62,REC-009,"Nashik, Maharashtra","Chhatrapati Sambhajinagar, Maharashtra",2026-05-11T17:37:51,partial,confirmed,False
+KC-20260905-E24E17,COL-019,CABLES,31.47,10316.48,10919.12,REC-006,"Pimpri-Chinchwad, Maharashtra","Pimpri-Chinchwad, Maharashtra",2026-03-21T17:37:51,paid,completed,False
+KC-20260905-036B37,COL-018,LCD_LED,33.4,16476.61,,REC-012,"Nagpur, Maharashtra","Pune, Maharashtra",2026-01-17T17:37:51,pending,matched,False
+KC-20260905-413250,COL-022,PCB,7.62,4047.76,4182.95,REC-007,"Chhatrapati Sambhajinagar, Maharashtra","Nashik, Maharashtra",2026-05-18T17:37:51,partial,confirmed,False
+KC-20260905-3CD09A,COL-019,MIXED_PLASTICS,13.0,267.64,266.93,REC-002,"Mumbai, Maharashtra","Mumbai, Maharashtra",2026-05-23T17:37:51,paid,completed,False
+KC-20260905-F98571,COL-022,CRT,1.35,596.42,547.51,REC-002,"Pune, Maharashtra","Mumbai, Maharashtra",2026-08-15T17:37:51,partial,confirmed,False
+KC-20260905-206DEB,COL-010,CABLES,36.42,14859.42,15464.51,REC-004,"Nagpur, Maharashtra","Mumbai, Maharashtra",2026-03-30T17:37:51,paid,paid,False
+KC-20260905-517D6D,COL-006,PCB,36.45,18170.64,18896.97,REC-007,"Pune, Maharashtra","Nashik, Maharashtra",2026-04-22T17:37:51,paid,completed,False
+KC-20260905-2B9445,COL-015,PCB,35.27,19144.85,19474.81,REC-002,"Pune, Maharashtra","Mumbai, Maharashtra",2026-08-02T17:37:51,paid,completed,False
+KC-20260905-4C5829,COL-015,PCB,22.89,20691.66,18907.58,REC-002,"Nashik, Maharashtra","Mumbai, Maharashtra",2026-03-18T17:37:51,paid,completed,False
+KC-20260905-93016D,COL-022,LCD_LED,12.05,6152.93,6748.01,REC-006,"Pimpri-Chinchwad, Maharashtra","Pimpri-Chinchwad, Maharashtra",2026-06-15T17:37:51,partial,confirmed,False
+KC-20260905-26E3A5,COL-012,PCB,20.78,20240.04,,REC-012,"Nagpur, Maharashtra","Pune, Maharashtra",2026-07-18T17:37:51,pending,created,False
+KC-20260905-38FEA0,COL-002,PCB,12.61,6584.34,,REC-009,"Mumbai, Maharashtra","Chhatrapati Sambhajinagar, Maharashtra",2026-03-10T17:37:51,pending,matched,False
+KC-20260905-CC2249,COL-022,MIXED_OTHER,1.74,147.03,,REC-005,"Nagpur, Maharashtra","Mumbai, Maharashtra",2026-04-17T17:37:51,pending,created,False
+KC-20260905-594F0C,COL-013,BATTERIES,15.84,2125.5,2068.87,REC-002,"Nashik, Maharashtra","Mumbai, Maharashtra",2026-05-31T17:37:51,partial,confirmed,False
+KC-20260905-DF11AE,COL-009,MOTORS_MAGNETS,11.03,4347.84,,REC-006,"Nashik, Maharashtra","Pimpri-Chinchwad, Maharashtra",2026-06-25T17:37:51,pending,matched,False
+KC-20260905-F22D29,COL-017,MOTORS_MAGNETS,5.58,1851.24,,REC-002,"Pune, Maharashtra","Mumbai, Maharashtra",2026-02-10T17:37:51,pending,in_transit,False
+KC-20260905-09340B,COL-003,CABLES,1.03,493.58,459.65,REC-004,"Pune, Maharashtra","Mumbai, Maharashtra",2026-03-04T17:37:51,paid,completed,False
+KC-20260905-6AC51B,COL-020,LCD_LED,5.98,3485.42,,REC-004,"Pune, Maharashtra","Mumbai, Maharashtra",2026-03-09T17:37:51,pending,handed_over,False
+KC-20260905-BADDD2,COL-007,CABLES,15.78,6234.78,6494.44,REC-002,"Pimpri-Chinchwad, Maharashtra","Mumbai, Maharashtra",2026-08-16T17:37:51,paid,completed,False
+KC-20260905-B5BDEE,COL-015,CRT,3.64,1571.71,1595.42,REC-005,"Chhatrapati Sambhajinagar, Maharashtra","Mumbai, Maharashtra",2026-09-04T17:37:51,paid,completed,False
+KC-20260905-5DE6AF,COL-011,PCB,16.09,12984.72,13349.84,REC-012,"Mumbai, Maharashtra","Pune, Maharashtra",2026-07-26T17:37:51,partial,confirmed,False
+KC-20260905-F61755,COL-021,CRT,30.29,4906.67,5135.24,REC-009,"Nagpur, Maharashtra","Chhatrapati Sambhajinagar, Maharashtra",2026-06-25T17:37:51,partial,confirmed,False
+KC-20260905-72308E,COL-001,MIXED_OTHER,30.97,2653.43,2897.17,REC-005,"Nagpur, Maharashtra","Mumbai, Maharashtra",2026-04-08T17:37:51,paid,completed,False
+KC-20260905-1C0527,COL-012,MIXED_OTHER,19.82,1182.07,,REC-009,"Nagpur, Maharashtra","Chhatrapati Sambhajinagar, Maharashtra",2026-02-22T17:37:51,pending,handed_over,False
+KC-20260905-3B2816,COL-011,MIXED_OTHER,36.01,1793.43,617.61,REC-009,"Nashik, Maharashtra","Chhatrapati Sambhajinagar, Maharashtra",2026-01-26T17:37:51,paid,completed,True
+KC-20260905-28B8AB,COL-013,PCB,31.76,21183.94,19844.73,REC-006,"Pune, Maharashtra","Pimpri-Chinchwad, Maharashtra",2026-05-17T17:37:51,paid,paid,False
+KC-20260905-05DE78,COL-001,CABLES,12.49,6358.13,,REC-010,"Nashik, Maharashtra","Pune, Maharashtra",2026-07-27T17:37:51,pending,handed_over,False
+KC-20260905-1FD3CE,COL-016,PCB,38.48,8751.37,8382.63,REC-009,"Pune, Maharashtra","Chhatrapati Sambhajinagar, Maharashtra",2026-06-07T17:37:51,paid,paid,False
+KC-20260905-8B4935,COL-010,CRT,25.4,8958.46,,REC-009,"Mumbai, Maharashtra","Chhatrapati Sambhajinagar, Maharashtra",2026-06-11T17:37:51,pending,in_transit,False
+KC-20260905-FE21C7,COL-011,BATTERIES,27.7,1615.39,1459.57,REC-008,"Nagpur, Maharashtra","Pimpri-Chinchwad, Maharashtra",2026-02-11T17:37:51,paid,paid,False
+KC-20260905-B56A86,COL-011,CABLES,13.96,6522.56,7129.78,REC-010,"Nagpur, Maharashtra","Pune, Maharashtra",2026-04-16T17:37:51,paid,completed,False
+KC-20260905-9914DC,COL-008,CABLES,35.68,11631.48,10813.45,REC-010,"Chhatrapati Sambhajinagar, Maharashtra","Pune, Maharashtra",2026-05-08T17:37:51,partial,confirmed,False
+KC-20260905-B57A69,COL-003,BATTERIES,8.13,1227.01,1295.17,REC-006,"Nashik, Maharashtra","Pimpri-Chinchwad, Maharashtra",2026-02-18T17:37:51,partial,confirmed,False
+KC-20260905-A51F05,COL-018,MIXED_OTHER,19.65,856.76,,REC-006,"Nagpur, Maharashtra","Pimpri-Chinchwad, Maharashtra",2026-06-16T17:37:51,pending,handed_over,False
+KC-20260905-F9C6C5,COL-010,LCD_LED,8.2,4006.19,3944.49,REC-002,"Pimpri-Chinchwad, Maharashtra","Mumbai, Maharashtra",2026-01-22T17:37:51,paid,completed,False
+KC-20260905-B3098B,COL-001,BATTERIES,30.61,1556.23,1446.55,REC-001,"Pimpri-Chinchwad, Maharashtra","Chhatrapati Sambhajinagar, Maharashtra",2026-03-25T17:37:51,paid,completed,False
+KC-20260905-40E176,COL-004,MOTORS_MAGNETS,8.31,2452.64,828.0,REC-008,"Nashik, Maharashtra","Pimpri-Chinchwad, Maharashtra",2026-06-27T17:37:51,paid,paid,True
+KC-20260905-4172DF,COL-013,MOTORS_MAGNETS,26.03,6366.13,5773.49,REC-001,"Pimpri-Chinchwad, Maharashtra","Chhatrapati Sambhajinagar, Maharashtra",2026-05-17T17:37:51,paid,completed,False
+KC-20260905-9F02DD,COL-005,CRT,3.18,623.01,589.99,REC-007,"Pune, Maharashtra","Nashik, Maharashtra",2026-01-11T17:37:51,paid,completed,False
+KC-20260905-9E4A74,COL-016,LCD_LED,21.22,8838.8,,REC-010,"Chhatrapati Sambhajinagar, Maharashtra","Pune, Maharashtra",2026-08-21T17:37:51,pending,in_transit,False
+KC-20260905-6BC953,COL-015,CABLES,36.5,10601.45,10723.76,REC-005,"Pune, Maharashtra","Mumbai, Maharashtra",2026-02-22T17:37:51,paid,completed,False
+KC-20260905-87B7DD,COL-008,CABLES,13.12,4470.96,4480.12,REC-005,"Mumbai, Maharashtra","Mumbai, Maharashtra",2026-04-30T17:37:51,partial,confirmed,False
+KC-20260905-28CBC2,COL-002,LCD_LED,8.75,3255.71,3308.83,REC-006,"Chhatrapati Sambhajinagar, Maharashtra","Pimpri-Chinchwad, Maharashtra",2026-08-27T17:37:51,paid,completed,False
+KC-20260905-FC003E,COL-021,CRT,10.99,2850.41,2995.31,REC-009,"Chhatrapati Sambhajinagar, Maharashtra","Chhatrapati Sambhajinagar, Maharashtra",2026-06-25T17:37:51,paid,completed,False
+KC-20260905-5B76CC,COL-021,LCD_LED,18.1,10749.61,10114.5,REC-008,"Nashik, Maharashtra","Pimpri-Chinchwad, Maharashtra",2026-08-29T17:37:51,paid,completed,False
