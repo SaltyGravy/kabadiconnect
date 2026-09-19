@@ -34,7 +34,7 @@ VAL_DIR = SEED_DIR / "val"
 
 MIN_SIDE = 100
 VAL_FRACTION = 0.15
-TARGET_IMAGES_PER_CLASS = 220
+TARGET_IMAGES_PER_CLASS = 280
 
 HEADERS = {
     "User-Agent": "KabadiConnectML/2.0 (E-Waste Recycling Platform; contact@kabadiconnect.org)"
@@ -103,6 +103,10 @@ CATEGORY_QUERIES = {
         "printer plastic casing scrap",
         "appliance plastic housing scrap",
         "keyboard plastic scrap",
+        "black abs plastic computer case",
+        "grey plastic electronics enclosure",
+        "cracked plastic tv casing",
+        "plastic remote control shell scrap",
     ],
     "MIXED_OTHER": [
         "electronic waste pile scrap",
@@ -125,6 +129,10 @@ CATEGORY_QUERIES = {
         "household trash bag garbage",
         "rubber tire waste",
         "styrofoam packaging waste",
+        "plastic food container trash",
+        "plastic toy garbage",
+        "plastic bag litter",
+        "plastic bucket trash",
     ],
 }
 
@@ -135,7 +143,7 @@ WIKIMEDIA_CATEGORIES = {
     "LCD_LED": ["Liquid crystal displays", "LCD monitors", "LED displays", "Flat panel displays"],
     "PCB": ["Printed circuit boards", "Motherboards", "Computer expansion cards", "Integrated circuits"],
     "MOTORS_MAGNETS": ["Electric motors", "Permanent magnets", "DC motors", "Neodymium magnets"],
-    "MIXED_PLASTICS": ["Household plastics", "Waste plastics", "Plastic recycling", "Plastic waste"],
+    "MIXED_PLASTICS": ["Plastic casings", "Computer cases", "Television sets"],
     "MIXED_OTHER": ["Electronic waste", "Waste of electrical and electronic equipment", "Discarded computers", "Scrapyards"],
     "NON_COLLECTIBLE": ["Plastic bottle waste", "Cardboard waste", "Municipal solid waste", "Food waste"],
 }

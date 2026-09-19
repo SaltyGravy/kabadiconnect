@@ -7,6 +7,35 @@ phone from the last ~8 years; use the `armeabi-v7a` one only for very old
 warn on install; that's expected for a non-Play-Store build, not a sign of
 a problem.
 
+## v1.8.0 (2026-09-20)
+
+Online AI is now live out of the box, and the classifier crossed the 80%
+accuracy bar.
+
+- **Bundled Gemini API key**: the app now ships with a Gemini API key
+  built into the release binary via `--dart-define` (see
+  `scripts/build_release.sh` / `app/secrets.local.env.example`) -- never
+  hardcoded in a committed source file. A collector's own key, pasted via
+  Settings, still always takes priority over this default. The key is
+  restricted to the Generative Language API only and has a hard request
+  quota set on its GCP project, since anything baked into a distributed
+  APK should be treated as effectively public no matter how it's built.
+- Fixed a real bug found while wiring this up: the app was calling
+  `gemini-1.5-flash`, which has since been deprecated and was silently
+  404ing on every online request, always falling back to the on-device
+  model. Switched to `gemini-flash-latest` -- a Google-maintained alias
+  that tracks their current recommended fast model, so this can't
+  silently break the same way again.
+- **Classifier accuracy: 79.8% -> 83.3%** validation accuracy (target was
+  80%+). Pulled a fourth, more targeted round of training photos aimed at
+  the single biggest confusion pair from the last confusion matrix (8 of
+  48 NON_COLLECTIBLE validation images were being misclassified as
+  MIXED_PLASTICS -- plastic bottles vs. plastic e-waste casings look
+  similar to the model) -- sharpened the search queries on both sides of
+  that pair, growing the dataset to ~3,000 images. Recall is now 72-94%
+  across all 9 classes; NON_COLLECTIBLE precision is 97.7%, so it's now
+  quite reliable at not accepting ordinary garbage.
+
 ## v1.7.1 (2026-09-20)
 
 Pushed the on-device model further, in response to a request for much

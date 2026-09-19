@@ -3,6 +3,11 @@
 recycler_credentials.json
 ml/recycler_credentials.json
 
+# Bundled Gemini API key for local release builds -- read by
+# scripts/build_release.sh and passed to `flutter build` via
+# --dart-define, never hardcoded in source. Never commit real keys.
+app/secrets.local.env
+
 # Python venv for the ML pipeline
 ml/.venv/
 

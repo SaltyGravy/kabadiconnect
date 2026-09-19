@@ -46,6 +46,13 @@ class EwasteAiService {
   static const String _prefApiKey = 'gemini_api_key';
   static const String _prefUseOnlineAi = 'use_online_ai';
 
+  // Bundled fallback key, injected only at build time via
+  // `--dart-define=GEMINI_API_KEY=...` -- never hardcoded in source, so it
+  // never lands in git. Empty string when not provided at build time (e.g.
+  // local `flutter run` during development). A collector's own key, pasted
+  // via Settings, always takes priority over this default.
+  static const String _buildTimeApiKey = String.fromEnvironment('GEMINI_API_KEY');
+
   final ClassifierService localClassifier;
   final DetectorService localDetector;
   final EwasteKnowledgeService knowledgeService;
@@ -61,7 +68,10 @@ class EwasteAiService {
 
   Future<void> init() async {
     final prefs = await SharedPreferences.getInstance();
-    _apiKey = prefs.getString(_prefApiKey);
+    final userKey = prefs.getString(_prefApiKey);
+    _apiKey = (userKey != null && userKey.trim().isNotEmpty)
+        ? userKey
+        : (_buildTimeApiKey.trim().isNotEmpty ? _buildTimeApiKey : null);
     _useOnlineAi = prefs.getBool(_prefUseOnlineAi) ?? true;
   }
 
@@ -98,8 +108,12 @@ class EwasteAiService {
 
   Future<AiAnalysisResult?> _analyzeWithGemini(Uint8List imageBytes) async {
     final base64Image = base64Encode(imageBytes);
+    // gemini-flash-latest is a Google-maintained alias that always points
+    // at their current recommended fast multimodal model -- avoids the
+    // request silently 404ing again when a pinned version (like the old
+    // gemini-1.5-flash) gets deprecated out from under us.
     final endpoint =
-        'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=$_apiKey';
+        'https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=$_apiKey';
 
     const promptText = '''
 You are an expert e-waste recycling auditor in India operating under the E-Waste (Management) Rules, 2022.
