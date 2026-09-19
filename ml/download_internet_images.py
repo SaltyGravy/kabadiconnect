@@ -34,7 +34,7 @@ VAL_DIR = SEED_DIR / "val"
 
 MIN_SIDE = 100
 VAL_FRACTION = 0.15
-TARGET_IMAGES_PER_CLASS = 100
+TARGET_IMAGES_PER_CLASS = 220
 
 HEADERS = {
     "User-Agent": "KabadiConnectML/2.0 (E-Waste Recycling Platform; contact@kabadiconnect.org)"
@@ -46,11 +46,19 @@ CATEGORY_QUERIES = {
         "18650 battery cell",
         "lead-acid battery scrap",
         "laptop battery pack",
+        "car battery scrap",
+        "button cell battery",
+        "power bank battery teardown",
+        "battery pack disassembled",
     ],
     "CABLES": [
         "copper wire scrap",
         "electric cables scrap",
         "power cord ewaste",
+        "usb cable scrap",
+        "wire bundle recycling",
+        "network cable scrap",
+        "electrical wiring harness scrap",
     ],
     "CRT": [
         "cathode ray tube tv",
@@ -75,6 +83,9 @@ CATEGORY_QUERIES = {
         "computer motherboard recycling",
         "circuit board pcb green",
         "computer ram memory scrap",
+        "graphics card scrap",
+        "computer processor cpu scrap",
+        "electronic circuit board waste",
     ],
     "MOTORS_MAGNETS": [
         "electric motor scrap",
@@ -110,6 +121,10 @@ CATEGORY_QUERIES = {
         "used clothes fabric waste",
         "discarded wooden furniture",
         "crumpled paper garbage",
+        "glass bottle waste",
+        "household trash bag garbage",
+        "rubber tire waste",
+        "styrofoam packaging waste",
     ],
 }
 
@@ -126,19 +141,22 @@ WIKIMEDIA_CATEGORIES = {
 }
 
 
-def fetch_openverse_urls(query, limit=12):
+def fetch_openverse_urls(query, limit=12, pages=2):
     urls = []
-    try:
-        url = f"https://api.openverse.org/v1/images/?q={urllib.parse.quote(query)}&page_size={limit}"
-        r = requests.get(url, headers=HEADERS, timeout=(3.0, 6.0))
-        if r.status_code == 200:
-            data = r.json()
-            for item in data.get("results", []):
-                u = item.get("url")
-                if u and any(u.lower().endswith(ext) for ext in [".jpg", ".jpeg", ".png", ".webp"]):
-                    urls.append(u)
-    except Exception:
-        pass
+    for page in range(1, pages + 1):
+        try:
+            url = f"https://api.openverse.org/v1/images/?q={urllib.parse.quote(query)}&page_size={limit}&page={page}"
+            r = requests.get(url, headers=HEADERS, timeout=(3.0, 6.0))
+            if r.status_code == 200:
+                data = r.json()
+                for item in data.get("results", []):
+                    u = item.get("url")
+                    if u and any(u.lower().endswith(ext) for ext in [".jpg", ".jpeg", ".png", ".webp"]):
+                        urls.append(u)
+            elif r.status_code == 429:
+                break  # rate-limited, stop paging this query
+        except Exception:
+            pass
     return urls
 
 

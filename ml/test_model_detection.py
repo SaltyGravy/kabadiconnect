@@ -134,8 +134,9 @@ def run_detector(image_pil):
 
 
 def run_classifier(image_pil):
-    """Run on 160x160 image. Returns top category, score, and all probabilities."""
-    img_resized = image_pil.resize((160, 160)).convert("RGB")
+    """Returns top category, score, and all probabilities."""
+    clf_size = clf_input_details["shape"][1]
+    img_resized = image_pil.resize((clf_size, clf_size)).convert("RGB")
     inp = np.array(img_resized, dtype=np.float32) / 127.5 - 1.0
     inp = np.expand_dims(inp, axis=0)
 

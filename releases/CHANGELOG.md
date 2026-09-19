@@ -7,6 +7,37 @@ phone from the last ~8 years; use the `armeabi-v7a` one only for very old
 warn on install; that's expected for a non-Play-Store build, not a sign of
 a problem.
 
+## v1.7.1 (2026-09-20)
+
+Pushed the on-device model further, in response to a request for much
+higher accuracy. Worth being straight about the ceiling here: a small
+MobileNetV2 classifier trained on free web photos cannot realistically hit
+99% on arbitrary real-world items -- that kind of number only comes from
+models trained on millions of labeled images per class, evaluated on
+curated test sets, not an open-world "point at anything" scenario. What
+this update does deliver, honestly measured:
+- Pulled three more rounds of real, appropriately-licensed photos from
+  Wikimedia Commons/Openverse (added query diversity + pagination), taking
+  the training set from ~1,500 to ~2,300 images and narrowing the
+  per-category imbalance from a 15x range (10 to 156 images) down to about
+  2.5x (122 to 316).
+- Bumped the classifier to MobileNetV2's native 224x224 input (was 160x160
+  -- a resolution mismatch that would have silently broken on-device
+  inference had it shipped without the matching Dart-side fix), increased
+  training epochs with early stopping, and fine-tuned a larger slice of
+  the backbone (top 60 layers instead of 35) now that there's more data to
+  support it without overfitting.
+- Validation accuracy: 72.2% -> **79.8%**, with recall now in the
+  71-89% range across every one of the 9 classes (previously as low as
+  ~30-50% on the weakest ones). Detector composite-scene decision accuracy:
+  70.0% -> 83.3%.
+- For genuinely high accuracy on real, messy scrap piles, the app's
+  existing online Gemini analysis path (used on shutter press when
+  internet + an API key are available) will outperform this on-device
+  model by a wide margin -- that's the realistic route to near-human
+  accuracy, with the on-device model serving as the fast, fully-offline
+  fallback for the live scanning HUD.
+
 ## v1.7.0 (2026-09-20)
 
 Continuous AI Lens scanner overhaul, fixing four reported problems at once:

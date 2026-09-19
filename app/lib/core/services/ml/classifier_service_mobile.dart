@@ -14,7 +14,7 @@ import 'classifier_result.dart';
 class ClassifierService {
   Interpreter? _interpreter;
   List<String> _labels = [];
-  static const int _inputSize = 160;
+  static const int _inputSize = 224;
 
   Future<void> load() async {
     if (_interpreter != null) return;

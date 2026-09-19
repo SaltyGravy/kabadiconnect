@@ -31,10 +31,10 @@ ARTIFACTS.mkdir(exist_ok=True)
 APP_ASSETS = ROOT / "app" / "assets" / "ml"
 APP_ASSETS.mkdir(parents=True, exist_ok=True)
 
-IMG_SIZE = 160
-BATCH = 16
-STAGE1_EPOCHS = 10
-STAGE2_EPOCHS = 8
+IMG_SIZE = 224
+BATCH = 24
+STAGE1_EPOCHS = 16
+STAGE2_EPOCHS = 14
 
 print("Loading dataset from", SEED_DIR)
 train_raw = tf.keras.utils.image_dataset_from_directory(
@@ -108,13 +108,23 @@ model.compile(
     loss="sparse_categorical_crossentropy",
     metrics=["accuracy"],
 )
-history_stage1 = model.fit(train_ds, validation_data=val_ds, epochs=STAGE1_EPOCHS, class_weight=class_weight, verbose=2)
+early_stop1 = tf.keras.callbacks.EarlyStopping(monitor="val_loss", patience=4, restore_best_weights=True)
+history_stage1 = model.fit(
+    train_ds,
+    validation_data=val_ds,
+    epochs=STAGE1_EPOCHS,
+    class_weight=class_weight,
+    callbacks=[early_stop1],
+    verbose=2,
+)
 
 # Stage 2: Fine-tuning top layers of MobileNetV2
-print("\n--- STAGE 2: Fine-tuning top 35 layers of MobileNetV2 ---")
+print("\n--- STAGE 2: Fine-tuning top 60 layers of MobileNetV2 ---")
 base_model.trainable = True
-# Freeze all layers before the 35th last layer
-for layer in base_model.layers[:-35]:
+# Freeze all layers before the 60th last layer -- more data now (~2.3k
+# images vs the original ~1.5k) supports fine-tuning a larger slice of the
+# backbone without overfitting as badly as it would have on the smaller set.
+for layer in base_model.layers[:-60]:
     layer.trainable = False
 
 model.compile(
@@ -123,11 +133,12 @@ model.compile(
     metrics=["accuracy"],
 )
 reduce_lr = tf.keras.callbacks.ReduceLROnPlateau(monitor="val_loss", factor=0.5, patience=2, min_lr=1e-6)
+early_stop2 = tf.keras.callbacks.EarlyStopping(monitor="val_loss", patience=4, restore_best_weights=True)
 history_stage2 = model.fit(
     train_ds,
     validation_data=val_ds,
     epochs=STAGE2_EPOCHS,
-    callbacks=[reduce_lr],
+    callbacks=[reduce_lr, early_stop2],
     class_weight=class_weight,
     verbose=2,
 )
