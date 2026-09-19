@@ -26,3 +26,7 @@ releases/**/*.apk
 
 # Android build artifacts outside the standard Flutter build/ dir
 app/android/build/
+
+# Python bytecode cache
+__pycache__/
+*.pyc

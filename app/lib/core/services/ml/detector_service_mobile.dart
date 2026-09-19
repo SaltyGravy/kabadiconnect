@@ -74,8 +74,17 @@ class DetectorService {
             bestIdx = c;
           }
         }
+        // Compute softmax class probability
+        var sumExp = 0.0;
+        for (var c = 0; c < _labels.length; c++) {
+          sumExp += exp(cell[5 + c] - bestVal);
+        }
+        final classProb = 1.0 / sumExp;
+        // Suppress candidates with weak or ambiguous class probability
+        if (classProb < 0.30) continue;
+
         candidates.add(_Candidate(
-          score: objScore,
+          score: objScore * classProb,
           classIdx: bestIdx,
           xMin: (cx - w / 2).clamp(0.0, 1.0),
           yMin: (cy - h / 2).clamp(0.0, 1.0),

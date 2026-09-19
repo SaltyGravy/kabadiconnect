@@ -4,17 +4,19 @@ import 'package:provider/provider.dart';
 import '../../../core/app_state.dart';
 import '../../../core/constants.dart';
 import '../../../core/l10n/app_strings.dart';
+import '../../../widgets/floating_ai_assistant_button.dart';
 import '../../account/account_screen.dart';
 import '../ledger/earnings_ledger_screen.dart';
-import '../lot/create_lot_screen.dart';
 import '../lot/my_lots_screen.dart';
 import '../price_board/price_board_screen.dart';
 import 'collector_home_screen.dart';
 
+import '../scanner/continuous_lens_scanner_screen.dart';
+
 /// Persistent bottom-tab shell for the whole collector experience: Home /
 /// My Lots / Rate List / [camera -> New Lot] / Wallet / Profile, matching
 /// the five-icon bottom bar with a centre-docked camera action. The camera
-/// slot is an action (push CreateLotScreen), not a tab -- it doesn't hold
+/// slot is an action (push ContinuousLensScannerScreen), not a tab -- it doesn't hold
 /// its own persisted state the way the other four destinations do.
 class CollectorShell extends StatefulWidget {
   const CollectorShell({super.key});
@@ -43,11 +45,21 @@ class _CollectorShellState extends State<CollectorShell> {
     ];
 
     return Scaffold(
-      body: IndexedStack(index: _index, children: pages),
+      body: Stack(
+        children: [
+          IndexedStack(index: _index, children: pages),
+          const FloatingAiAssistantButton(
+            bottomOffset: 88,
+            rightOffset: 16,
+          ),
+        ],
+      ),
       floatingActionButton: FloatingActionButton(
-        tooltip: t('newLot'),
-        onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const CreateLotScreen())),
-        child: const Icon(Icons.camera_alt),
+        tooltip: 'Continuous AI Scanner',
+        backgroundColor: kBrandGreen,
+        foregroundColor: Colors.white,
+        onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ContinuousLensScannerScreen())),
+        child: const Icon(Icons.center_focus_strong, size: 28),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(

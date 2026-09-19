@@ -62,7 +62,17 @@ class ClassifierService {
     for (var i = 1; i < scores.length; i++) {
       if (scores[i] > scores[bestIdx]) bestIdx = i;
     }
-    final category = MaterialCategoryX.fromKey(_labels[bestIdx]);
-    return ClassifierResult(category, scores[bestIdx].toDouble(), true);
+    final rawLabel = _labels[bestIdx];
+    final isNonCollectible = rawLabel == 'NON_COLLECTIBLE';
+    final category = isNonCollectible ? MaterialCategory.mixedOther : MaterialCategoryX.fromKey(rawLabel);
+    return ClassifierResult(
+      category,
+      scores[bestIdx].toDouble(),
+      true,
+      isCollectible: !isNonCollectible,
+      rejectionReason: isNonCollectible
+          ? 'This item is recognized as non-collectible trash (bottles, packaging, paper, food waste, or general non-electronic debris).'
+          : null,
+    );
   }
 }

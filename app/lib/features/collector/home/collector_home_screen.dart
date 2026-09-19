@@ -7,6 +7,7 @@ import '../../../core/l10n/app_strings.dart';
 import '../../../core/services/pricing_service.dart';
 import '../../../widgets/offline_banner.dart';
 import '../safety/safety_guidance_screen.dart';
+import '../knowledge/ewaste_guide_screen.dart';
 
 /// A few safety highlights worth surfacing on the dashboard, not just
 /// buried in the Safety tab -- same content SafetyGuidanceScreen shows in
@@ -54,6 +55,11 @@ class CollectorHomeScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text(t('appName')),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.menu_book),
+            tooltip: 'E-Waste Guide',
+            onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const EwasteGuideScreen())),
+          ),
           IconButton(icon: const Icon(Icons.settings), tooltip: t('profile'), onPressed: onOpenProfile),
           IconButton(icon: const Icon(Icons.language), onPressed: () => _showLanguagePicker(context)),
         ],
@@ -89,7 +95,47 @@ class CollectorHomeScreen extends StatelessWidget {
                     },
                   ),
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 16),
+                InkWell(
+                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const EwasteGuideScreen())),
+                  borderRadius: BorderRadius.circular(12),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                    decoration: BoxDecoration(
+                      color: Colors.teal.shade50,
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Colors.teal.shade200),
+                    ),
+                    child: Row(
+                      children: [
+                        CircleAvatar(
+                          radius: 20,
+                          backgroundColor: Colors.teal.shade100,
+                          child: const Icon(Icons.school, color: Colors.teal, size: 22),
+                        ),
+                        const SizedBox(width: 12),
+                        const Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'E-Waste Knowledge & Sorting Guide',
+                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                              ),
+                              SizedBox(height: 2),
+                              Text(
+                                'Check all 8 collection categories, device breakdowns, & prohibited trash',
+                                style: TextStyle(fontSize: 12, color: Colors.black54),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const Icon(Icons.chevron_right, color: Colors.teal),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
                 Row(
                   children: [
                     Expanded(child: Text(t('todaysRates'), style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700))),

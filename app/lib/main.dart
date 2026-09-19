@@ -17,8 +17,11 @@ import 'core/services/pricing_service.dart';
 import 'core/services/recycler_matching_service.dart';
 import 'core/services/seed_data_service.dart';
 import 'core/services/tts_service.dart';
+import 'core/services/voice_ai_service.dart';
 import 'core/services/ml/classifier_service.dart';
 import 'core/services/ml/detector_service.dart';
+import 'core/services/ml/ewaste_knowledge_service.dart';
+import 'core/services/ml/ewaste_ai_service.dart';
 import 'features/onboarding/root_router.dart';
 import 'firebase_options.dart';
 
@@ -55,6 +58,25 @@ Future<void> main() async {
   final detectorService = DetectorService();
   await detectorService.load();
 
+  final knowledgeService = EwasteKnowledgeService();
+  await knowledgeService.load();
+
+  final ewasteAiService = EwasteAiService(
+    localClassifier: classifierService,
+    localDetector: detectorService,
+    knowledgeService: knowledgeService,
+  );
+  await ewasteAiService.init();
+
+  final ttsService = TtsService();
+  final voiceAiService = VoiceAiService(
+    pricingService: pricingService,
+    knowledgeService: knowledgeService,
+    ttsService: ttsService,
+    ewasteAiService: ewasteAiService,
+  );
+  await voiceAiService.initSpeech();
+
   final appState = AppState();
   await appState.loadPersisted();
 
@@ -69,12 +91,15 @@ Future<void> main() async {
         Provider.value(value: AnomalyDetectionService(pricingService)),
         Provider.value(value: RecyclerMatchingService()),
         Provider.value(value: GeoService()),
-        Provider.value(value: TtsService()),
+        Provider.value(value: ttsService),
+        ChangeNotifierProvider.value(value: voiceAiService),
         Provider.value(value: ConnectivityService()),
         Provider.value(value: SeedDataService()),
         Provider.value(value: PlacesService()),
         Provider.value(value: classifierService),
         Provider.value(value: detectorService),
+        Provider.value(value: knowledgeService),
+        Provider.value(value: ewasteAiService),
       ],
       child: const KabadiConnectApp(),
     ),

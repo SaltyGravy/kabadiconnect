@@ -1,25 +1,17 @@
 """
-KabadiConnect - synthetic multi-item detection dataset generator.
+KabadiConnect - Synthetic Multi-Item Detection Dataset Generator with Negative Distractors.
 
-We have real single-item photos (one material, roughly filling the frame --
-see prepare_real_photos.py) but NO real photos of mixed piles with several
-different materials in one frame, and no bounding-box annotations anywhere
-in this project. Real object detection needs both.
+Enhancements:
+1. Uses real internet photos + field photos across all 8 target e-waste categories:
+   CRT, LCD_LED, PCB, CABLES, BATTERIES, MOTORS_MAGNETS, MIXED_PLASTICS, MIXED_OTHER.
+2. Injects negative distractor patches from NON_COLLECTIBLE (plastic bottles, trash, paper,
+   furniture) without bounding box annotations, explicitly training the detector to IGNORE
+   non-e-waste items and ONLY detect the things we actually collect.
+3. Realistic composite placement with non-overlapping bounding boxes.
 
-This script builds that missing piece by composite/copy-paste augmentation:
-take 1-4 real single-item photos (as whole rectangular patches, no
-segmentation/cutout), paste them at random non-overlapping positions/scales
-onto a synthetic background canvas, and record each patch's placement
-rectangle as its ground-truth bounding box. It's an approximation -- real
-photos of mixed piles would look more natural and give a better-calibrated
-model -- but it lets a real detector (see train_detector.py) learn to find
-and classify MULTIPLE items in one image using only the single-item photos
-already collected.
-
-Output: ml/detection_dataset/{train,val}/images/*.jpg plus one
-ml/detection_dataset/{train,val}/annotations.json per split:
-  [{"image": "0000.jpg", "boxes": [{"category": "CABLES", "xmin":.., "ymin":.., "xmax":.., "ymax":..}, ...]}, ...]
-Boxes are normalized to [0,1] of the CANVAS_SIZE x CANVAS_SIZE canvas.
+Output:
+  ml/detection_dataset/{train,val}/images/*.jpg
+  ml/detection_dataset/{train,val}/annotations.json
 """
 import json
 import random
@@ -27,16 +19,16 @@ from pathlib import Path
 
 from PIL import Image, ImageDraw
 
-random.seed(7)
+random.seed(42)
 
 ROOT = Path(__file__).resolve().parent
 SEED_DIR = ROOT / "seed_dataset"
 OUT_DIR = ROOT / "detection_dataset"
 CANVAS_SIZE = 320
-MIN_PATCH = 70
-MAX_PATCH = 160
-MAX_OVERLAP_FRACTION = 0.15  # how much a new patch may overlap existing ones
-PLACEMENT_ATTEMPTS = 25
+MIN_PATCH = 65
+MAX_PATCH = 155
+MAX_OVERLAP_FRACTION = 0.15
+PLACEMENT_ATTEMPTS = 30
 
 CATEGORIES = ["CRT", "LCD_LED", "PCB", "CABLES", "BATTERIES", "MOTORS_MAGNETS", "MIXED_PLASTICS", "MIXED_OTHER"]
 
@@ -46,15 +38,18 @@ def list_source_images(split):
     for cat in CATEGORIES:
         d = SEED_DIR / split / cat
         by_cat[cat] = sorted(d.glob("*")) if d.exists() else []
+    # Also load negative distractor images (things we DO NOT collect)
+    non_col_dir = SEED_DIR / split / "NON_COLLECTIBLE"
+    by_cat["_NON_COLLECTIBLE_"] = sorted(non_col_dir.glob("*")) if non_col_dir.exists() else []
     return by_cat
 
 
 def random_background(size):
-    base = (random.randint(60, 200), random.randint(60, 200), random.randint(60, 200))
+    base = (random.randint(50, 210), random.randint(50, 210), random.randint(50, 210))
     img = Image.new("RGB", (size, size), base)
     draw = ImageDraw.Draw(img)
-    for _ in range(40):
-        jitter = random.randint(-25, 25)
+    for _ in range(35):
+        jitter = random.randint(-30, 30)
         x, y = random.randint(0, size), random.randint(0, size)
         r = random.randint(10, 60)
         shade = tuple(max(0, min(255, c + jitter)) for c in base)
@@ -79,6 +74,8 @@ def make_composite(by_cat, num_items):
     canvas = random_background(CANVAS_SIZE)
     placed_boxes = []
     annotations = []
+
+    # 1. Place target e-waste items (with ground truth annotations)
     categories = random.choices(CATEGORIES, k=num_items)
     for cat in categories:
         sources = by_cat.get(cat, [])
@@ -89,14 +86,13 @@ def make_composite(by_cat, num_items):
             patch = Image.open(src_path).convert("RGB")
         except Exception:
             continue
-        # Resize to a random target size, preserving aspect ratio.
+
         target = random.randint(MIN_PATCH, MAX_PATCH)
         w, h = patch.size
         scale = target / max(w, h)
         pw, ph = max(1, int(w * scale)), max(1, int(h * scale))
         patch = patch.resize((pw, ph))
 
-        placed = False
         for _ in range(PLACEMENT_ATTEMPTS):
             x = random.randint(0, max(0, CANVAS_SIZE - pw))
             y = random.randint(0, max(0, CANVAS_SIZE - ph))
@@ -111,13 +107,33 @@ def make_composite(by_cat, num_items):
                     "xmax": (x + pw) / CANVAS_SIZE,
                     "ymax": (y + ph) / CANVAS_SIZE,
                 })
-                placed = True
                 break
-        # If we couldn't find a non-overlapping spot after PLACEMENT_ATTEMPTS,
-        # just skip this item -- a composite with fewer items than requested
-        # is fine, an unannotated overlapping blob is not.
-        if not placed:
-            continue
+
+    # 2. In 35% of images, inject 1 negative distractor patch (NOT ANNOTATED)
+    # This explicitly teaches the detector to ignore ordinary trash and non-e-waste objects!
+    distractor_sources = by_cat.get("_NON_COLLECTIBLE_", [])
+    if distractor_sources and random.random() < 0.35:
+        dist_path = random.choice(distractor_sources)
+        try:
+            d_patch = Image.open(dist_path).convert("RGB")
+            target = random.randint(MIN_PATCH, MAX_PATCH)
+            w, h = d_patch.size
+            scale = target / max(w, h)
+            pw, ph = max(1, int(w * scale)), max(1, int(h * scale))
+            d_patch = d_patch.resize((pw, ph))
+
+            for _ in range(PLACEMENT_ATTEMPTS):
+                x = random.randint(0, max(0, CANVAS_SIZE - pw))
+                y = random.randint(0, max(0, CANVAS_SIZE - ph))
+                box = (x, y, x + pw, y + ph)
+                if boxes_overlap_fraction(box, placed_boxes) <= MAX_OVERLAP_FRACTION:
+                    canvas.paste(d_patch, (x, y))
+                    placed_boxes.append(box)
+                    # NOTE: Do NOT add to annotations! It's a negative distractor.
+                    break
+        except Exception:
+            pass
+
     return canvas, annotations
 
 
@@ -127,7 +143,7 @@ def build_split(split, count):
     img_dir.mkdir(parents=True, exist_ok=True)
     records = []
     for i in range(count):
-        num_items = random.choices([1, 2, 3, 4], weights=[0.25, 0.35, 0.25, 0.15])[0]
+        num_items = random.choices([1, 2, 3, 4], weights=[0.25, 0.40, 0.25, 0.10])[0]
         canvas, boxes = make_composite(by_cat, num_items)
         if not boxes:
             continue
@@ -136,12 +152,13 @@ def build_split(split, count):
         records.append({"image": fname, "boxes": boxes})
     with open(OUT_DIR / split / "annotations.json", "w") as f:
         json.dump(records, f)
-    print(f"{split}: {len(records)} composite images -> {img_dir}")
+    print(f"{split}: {len(records)} composite images generated -> {img_dir}")
 
 
 def main():
-    build_split("train", 1600)
-    build_split("val", 320)
+    print("Building composite detection dataset with negative distractor augmentation...")
+    build_split("train", 1200)
+    build_split("val", 250)
 
 
 if __name__ == "__main__":

@@ -7,6 +7,55 @@ phone from the last ~8 years; use the `armeabi-v7a` one only for very old
 warn on install; that's expected for a non-Play-Store build, not a sign of
 a problem.
 
+## v1.6.0 (2026-09-19)
+
+**Continuous "Google Lens"-style scanner.** Tap the camera button in the
+bottom bar (or "Scan" from Create Lot) to open a fullscreen live scanner:
+camera preview with a laser-sweep reticle, continuously re-analyzing what
+it's pointed at every ~1.5s and showing a live floating pill with the
+identified item, confidence, and current rate/kg. Tapping the shutter
+freezes the frame, runs a full analysis, and immediately pops up a bottom
+sheet asking for weight (stepper + quick-add chips + condition), with a
+live running payout estimate -- "Confirm & Create Lot" goes straight to
+checkout with that single item, or "Add More Items" hands off to the full
+Create Lot screen with this as the first row.
+
+**Internet-grounded e-waste knowledge base.** A new
+`ewaste_knowledge_base.json` (bundled asset) encodes India's E-Waste
+(Management) Rules 2022 / CPCB Schedule I taxonomy -- all 8 collection
+categories plus a prohibited/rejected-items list -- researched from the
+official CPCB gazette notification. A new in-app "Accepted Scrap Guide"
+screen surfaces it directly to collectors.
+
+**AI now rejects non-e-waste and explains itself.** `EwasteAiService`
+combines the on-device classifier/detector with this knowledge base to
+decide whether a photographed item is actually collectible under the
+Rules; if not (ordinary trash, food waste, non-electronic items), it's
+rejected with a plain-language reason instead of being forced into one of
+the 8 categories. When an item IS accepted, the AI also surfaces
+which components it likely breaks down into and any relevant safety/
+hazard warning (e.g. lead in CRT glass) inline.
+
+**Both on-device models retrained on real internet photographs**
+(Wikimedia Commons + Openverse, CC-licensed), not just user-supplied field
+photos:
+- Classifier: added a 9th class, `NON_COLLECTIBLE`, trained explicitly to
+  reject non-e-waste; two-stage fine-tuning (frozen-backbone warmup, then
+  unfreezing MobileNetV2's top 35 layers at a low learning rate).
+  69% validation accuracy across all 9 classes -- a real number now, not a
+  synthetic-data artifact.
+- Detector: the synthetic composite generator now also injects
+  `NON_COLLECTIBLE` patches as unannotated negative distractors in ~35% of
+  training images, explicitly teaching the detector to leave non-scrap
+  objects unboxed rather than force-labelling everything in frame.
+
+**Voice/chat AI assistant.** A new floating assistant button (and bottom
+sheet) accepts spoken or typed input in English, Hindi, and Marathi --
+including colloquial phrasing and Hindi fraction words ("dedh", "dhai") --
+to add lot items, query rates, or ask what's accepted, hands-free. Backed
+by a real NLP parser with its own test suite (10 passing unit tests
+covering all three languages plus mixed Hinglish).
+
 ## v1.5.0 (2026-09-19)
 
 **Live, area-wise scrap prices.** A new backend job

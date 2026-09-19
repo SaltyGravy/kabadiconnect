@@ -1,0 +1,1569 @@
+{
+  "version": "2.0.0",
+  "updated_at": "2026-09-19",
+  "jurisdiction": "India - E-Waste (Management) Rules, 2022 & CPCB Guidelines",
+  "collection_categories": {
+    "BATTERIES": {
+      "name": "Batteries & Power Cells",
+      "accepted": true,
+      "description": "Lithium-ion, Lead-acid, and Ni-Cd / Ni-MH rechargeable batteries harvested from electronics.",
+      "sub_types": [
+        "Li-ion Mobile & Tablet Pouches",
+        "18650 / 21700 Cylindrical Li-ion Cells",
+        "Laptop Battery Modules",
+        "Lead-Acid Inverter & UPS Batteries",
+        "Nickel-Cadmium Power Tool Packs"
+      ],
+      "valuable_materials": [
+        "Cobalt",
+        "Lithium",
+        "Nickel",
+        "Copper",
+        "Lead"
+      ],
+      "hazards": [
+        "Thermal runaway and spontaneous fire risk if punctured or crushed",
+        "Corrosive sulfuric acid in lead-acid units",
+        "Toxic heavy metals (Cadmium, Lead)"
+      ],
+      "handling_guidance": "Tape battery terminals with non-conductive tape. Store in dry, insulated, fire-resistant drums. Never incinerate or drop from heights.",
+      "co2_saved_kg_per_kg": 5.4,
+      "average_market_price_inr": "₹120 - ₹260 / kg"
+    },
+    "CABLES": {
+      "name": "Cables & Wiring Harnesses",
+      "accepted": true,
+      "description": "Insulated copper wiring, aluminum conductors, power supply cords, and data cables.",
+      "sub_types": [
+        "Heavy Copper Power Cables (3-core, industrial)",
+        "PVC-Insulated House & Appliance Wiring",
+        "USB, HDMI, Ethernet, & Data Patch Cords",
+        "Mixed Appliance Wiring Harnesses",
+        "Telecom & Ribbon Cables"
+      ],
+      "valuable_materials": [
+        "High-purity Electrolytic Copper",
+        "Aluminum",
+        "Recycled PVC / TPE"
+      ],
+      "hazards": [
+        "Dioxin and furan emission if open-burned (Strictly illegal under E-Waste Rules!)",
+        "Lead and phthalate plasticizers in PVC insulation"
+      ],
+      "handling_guidance": "Do NOT burn cables to extract copper. Authorized recyclers use mechanical wire strippers and granulators with pneumatic air-density separators.",
+      "co2_saved_kg_per_kg": 4.1,
+      "average_market_price_inr": "₹280 - ₹520 / kg (based on copper yield %)"
+    },
+    "CRT": {
+      "name": "Cathode Ray Tubes (CRT TVs & Monitors)",
+      "accepted": true,
+      "description": "Bulky legacy glass picture tubes from old cathode-ray televisions, computer monitors, and oscilloscopes.",
+      "sub_types": [
+        "CRT Television Tube Assembly",
+        "CRT Computer Monitor Tube",
+        "Bare Leaded Funnel Glass",
+        "Deflection Yoke Coil Assemblies"
+      ],
+      "valuable_materials": [
+        "Copper yoke coils",
+        "Ferrous shadow mask",
+        "Barium-strontium panel glass"
+      ],
+      "hazards": [
+        "High vacuum implosion hazard during dismantling",
+        "Extremely high lead content (up to 2-3 kg of Lead oxide in funnel glass)",
+        "Toxic luminescent phosphor coating (Cadmium, Zinc sulfide)"
+      ],
+      "handling_guidance": "Keep vacuum tube intact; discharge anode voltage (>25kV capacitor store) before handling. Wear safety goggles. Do NOT smash or discard glass in municipal dumps.",
+      "co2_saved_kg_per_kg": 1.8,
+      "average_market_price_inr": "₹180 - ₹380 / piece (complete unit with yoke)"
+    },
+    "LCD_LED": {
+      "name": "Flat Display Panels (LCD, LED, OLED)",
+      "accepted": true,
+      "description": "Flat screen displays from LED/LCD televisions, computer monitors, laptops, and tablets.",
+      "sub_types": [
+        "LED TV Display Panels",
+        "LCD Desktop Monitor Panels",
+        "Laptop & Notebook Screens",
+        "OLED & AMOLED Displays",
+        "Touchscreen Digitizer Glass"
+      ],
+      "valuable_materials": [
+        "Indium Tin Oxide (ITO)",
+        "Rare Earth Phosphors",
+        "Aluminum frame",
+        "Diffuser PMMA Acrylic"
+      ],
+      "hazards": [
+        "Mercury vapor in older Cold Cathode Fluorescent Lamp (CCFL) backlights",
+        "Liquid crystal compounds (potential persistent organic pollutants)",
+        "Sharp splintered borosilicate glass"
+      ],
+      "handling_guidance": "Stack horizontally on padded pallets. Prevent panel twisting or cracking to prevent mercury gas release from CCFL tubes.",
+      "co2_saved_kg_per_kg": 3.2,
+      "average_market_price_inr": "₹200 - ₹600 / piece"
+    },
+    "PCB": {
+      "name": "Printed Circuit Boards (PCBs)",
+      "accepted": true,
+      "description": "Motherboards, logic boards, circuit cards, and populated PCBs from all electronics.",
+      "sub_types": [
+        "High-Grade: Smartphone, Laptop, & Server Motherboards (High Gold/Palladium)",
+        "Medium-Grade: Telecom, Network Router, Sound/Video Cards, RAM/Memory",
+        "Low-Grade: Brown/Yellow Phenolic TV, Radio, & Power Supply Boards",
+        "Gold-Plated Contact Fingers & Connectors"
+      ],
+      "valuable_materials": [
+        "Gold (Au)",
+        "Silver (Ag)",
+        "Palladium (Pd)",
+        "Copper (Cu)",
+        "Tin (Sn)"
+      ],
+      "hazards": [
+        "Lead solder (Pb-Sn) on legacy boards",
+        "Brominated Flame Retardants (BFRs) in epoxy resins",
+        "Beryllium copper connectors"
+      ],
+      "handling_guidance": "Keep intact without destructive acid baths or open flame desoldering. Store in waterproof crates to prevent copper and metal leaching.",
+      "co2_saved_kg_per_kg": 6.8,
+      "average_market_price_inr": "₹250 - ₹900 / kg (graded by gold/component density)"
+    },
+    "MOTORS_MAGNETS": {
+      "name": "Motors, Transformers, & Neodymium Magnets",
+      "accepted": true,
+      "description": "Electromechanical actuators, compressors, step motors, ferrite/rare-earth magnets, and heavy transformers.",
+      "sub_types": [
+        "AC/DC Induction Motors (Washing machines, fans, blenders)",
+        "Hard Disk Drive Voice-Coil Neodymium Magnets (NdFeB)",
+        "Loudspeaker & Woofer Ferrite Magnets",
+        "Step Motors & Servo Actuators (Printers, scanners)",
+        "Copper/Aluminum Core Power Transformers"
+      ],
+      "valuable_materials": [
+        "High-purity Copper windings",
+        "Neodymium (Nd)",
+        "Dysprosium (Dy)",
+        "Silicon Steel laminations"
+      ],
+      "hazards": [
+        "Extremely powerful pinch hazard from high-grade rare-earth magnets",
+        "Heavy weight causing crush injuries"
+      ],
+      "handling_guidance": "Keep strong neodymium magnets away from mechanical watches, credit cards, and cardiac pacemakers.",
+      "co2_saved_kg_per_kg": 3.9,
+      "average_market_price_inr": "₹160 - ₹420 / kg"
+    },
+    "MIXED_PLASTICS": {
+      "name": "Engineering E-Plastics (ABS, HIPS, PC)",
+      "accepted": true,
+      "description": "Rigid structural plastic shells and casings from electronic appliances and computers.",
+      "sub_types": [
+        "Acrylonitrile Butadiene Styrene (ABS) Casings",
+        "High Impact Polystyrene (HIPS) Appliance Shells",
+        "Polycarbonate (PC) Laptop Covers & Clear Shields",
+        "Mixed Shredded E-Waste Polymers"
+      ],
+      "valuable_materials": [
+        "Recycled Engineering Resin Pellets"
+      ],
+      "hazards": [
+        "Brominated flame retardants (OctaBDE, DecaBDE) requiring spectroscopic separation under RoHS",
+        "Toxic fumes if burned"
+      ],
+      "handling_guidance": "Remove metal inserts, screws, and rubber feet before baling. Keep dry and segregated by polymer code if marked.",
+      "co2_saved_kg_per_kg": 2.1,
+      "average_market_price_inr": "₹15 - ₹38 / kg"
+    },
+    "MIXED_OTHER": {
+      "name": "Mixed & Unsorted E-Waste Scrap",
+      "accepted": true,
+      "description": "Composite electronic waste assemblies, unsorted gadget lots, and combined electronic hardware.",
+      "sub_types": [
+        "Unsorted Small Household Electronics",
+        "Mixed Peripheral Lots (Keyboards, mice, remotes)",
+        "Commercial IT Mixed Scrap Piles"
+      ],
+      "valuable_materials": [
+        "Combined base and precious metal recovery"
+      ],
+      "hazards": [
+        "Variable composite hazards; mixed battery leakage risk"
+      ],
+      "handling_guidance": "Inspect for damaged lithium batteries before compaction. Transport in heavy duty bulk bags.",
+      "co2_saved_kg_per_kg": 2.5,
+      "average_market_price_inr": "₹35 - ₹85 / kg"
+    }
+  },
+  "prohibited_and_rejected_items": [
+    {
+      "category_name": "Bio-Medical & Infectious Electronic Waste",
+      "examples": [
+        "Used blood glucose meters with lancets",
+        "Contaminated dialysis monitors",
+        "Used electronic surgical instruments",
+        "ICU patient monitoring lines with bodily fluids"
+      ],
+      "rejection_reason": "Severe biohazard and pathogen transmission risk. Regulated strictly under Bio-Medical Waste Management Rules, 2016. E-waste recyclers are NOT legally authorized to process medical bio-waste.",
+      "disposal_route": "Color-coded biohazard yellow/red bins to Common Bio-medical Waste Treatment Facility (CBWTF)."
+    },
+    {
+      "category_name": "Radioactive Devices & Ionization Detectors",
+      "examples": [
+        "Legacy ionization smoke detectors (containing Americium-241)",
+        "Industrial density / thickness radiometric gauges",
+        "Medical X-ray / radiotherapy tubes"
+      ],
+      "rejection_reason": "Contains ionizing radionuclide isotopes. Regulated exclusively by the Atomic Energy Regulatory Board (AERB). Severe criminal penalties for unauthorized scrap trading.",
+      "disposal_route": "Report to AERB or return to authorized nuclear material disposal agency."
+    },
+    {
+      "category_name": "Explosive & Pressurized Chemical Units",
+      "examples": [
+        "Unpunctured Freon / refrigerant gas canisters",
+        "Compressed propellant aerosol cans",
+        "Undissipated high-capacity capacitors in industrial switchgear",
+        "Airbag detonator modules"
+      ],
+      "rejection_reason": "Catastrophic explosion and toxic gas inhalation risk during baling or shredding.",
+      "disposal_route": "Degassing and evacuation by certified HVAC recovery technicians prior to scrap acceptance."
+    },
+    {
+      "category_name": "Ordinary Municipal Wet / Organic Waste",
+      "examples": [
+        "Kitchen food scraps",
+        "Fruit & vegetable peels",
+        "Garden waste",
+        "Animal waste"
+      ],
+      "rejection_reason": "Non-electronic biodegradable matter. Contaminates electronic scrap sorting machinery and causes rot.",
+      "disposal_route": "Municipal organic waste composting or wet waste processing facility."
+    },
+    {
+      "category_name": "Single-Use Consumer Plastics & Household Garbage",
+      "examples": [
+        "Thin polythene bags",
+        "PET water and soda bottles",
+        "Milk pouches",
+        "Food packaging wrappers",
+        "Disposable plastic cutlery"
+      ],
+      "rejection_reason": "Non-engineering consumer commodity packaging plastic. Handled by dry waste plastic aggregators, NOT e-waste recyclers under EPR E-Waste Rules.",
+      "disposal_route": "Deposit at local dry waste collection centers (DWCC) or with general plastic kabadiwalas."
+    }
+  ],
+  "electronic_items_catalogue": [
+    {
+      "id": "ITEM-001",
+      "name": "Smartphone / Mobile Phone",
+      "cpcb_code": "ITEW15",
+      "aliases": [
+        "mobile phone",
+        "cellphone",
+        "android phone",
+        "iphone",
+        "cellular phone",
+        "smart phone"
+      ],
+      "is_collectible": true,
+      "description": "Touchscreen cellular phone with integrated battery, display, and high-density logic boards.",
+      "disassembly_breakdown": [
+        {
+          "part": "Li-ion Battery Pack",
+          "category": "BATTERIES",
+          "weight_share_percent": 30,
+          "condition_notes": "Handle with care, check for swelling"
+        },
+        {
+          "part": "OLED / LCD Screen Assembly",
+          "category": "LCD_LED",
+          "weight_share_percent": 25,
+          "condition_notes": "Check if intact or cracked"
+        },
+        {
+          "part": "Main Logic Motherboard & Sub-boards",
+          "category": "PCB",
+          "weight_share_percent": 20,
+          "condition_notes": "Top tier gold and palladium yield"
+        },
+        {
+          "part": "ABS / Polycarbonate Casing or Metal Frame",
+          "category": "MIXED_PLASTICS",
+          "weight_share_percent": 20,
+          "condition_notes": "Strip adhesives and screws"
+        },
+        {
+          "part": "USB Charging Cable",
+          "category": "CABLES",
+          "weight_share_percent": 5,
+          "condition_notes": "Bundle together"
+        }
+      ],
+      "hazardous_elements": [
+        "Lithium",
+        "Cobalt",
+        "Lead in older solder",
+        "Brominated flame retardants"
+      ],
+      "estimated_value_inr": "₹80 - ₹280 per piece"
+    },
+    {
+      "id": "ITEM-002",
+      "name": "Laptop Computer",
+      "cpcb_code": "ITEW3",
+      "aliases": [
+        "notebook",
+        "macbook",
+        "laptop",
+        "thinkpad",
+        "portable computer"
+      ],
+      "is_collectible": true,
+      "description": "Portable personal computer with integrated display, keyboard, motherboard, and battery pack.",
+      "disassembly_breakdown": [
+        {
+          "part": "Laptop Motherboard + RAM + Processor",
+          "category": "PCB",
+          "weight_share_percent": 25,
+          "condition_notes": "High grade gold connector pins"
+        },
+        {
+          "part": "Laptop Display Screen (LED/LCD)",
+          "category": "LCD_LED",
+          "weight_share_percent": 20,
+          "condition_notes": "Keep panel flat, separate aluminum bezel"
+        },
+        {
+          "part": "Laptop Battery Pack (18650 / Pouch cells)",
+          "category": "BATTERIES",
+          "weight_share_percent": 20,
+          "condition_notes": "Inspect for thermal damage"
+        },
+        {
+          "part": "Cooling Fan Motor & Heatpipe",
+          "category": "MOTORS_MAGNETS",
+          "weight_share_percent": 5,
+          "condition_notes": "Copper heatpipe with micro-fan"
+        },
+        {
+          "part": "Outer Body Plastic Shell & Keycaps",
+          "category": "MIXED_PLASTICS",
+          "weight_share_percent": 20,
+          "condition_notes": "Engineering ABS/PC grade"
+        },
+        {
+          "part": "Power Brick & AC Power Cord",
+          "category": "CABLES",
+          "weight_share_percent": 10,
+          "condition_notes": "Heavy copper wiring"
+        }
+      ],
+      "hazardous_elements": [
+        "Lithium",
+        "Mercury (if older CCFL backlight)",
+        "Lead solder"
+      ],
+      "estimated_value_inr": "₹450 - ₹1,400 per piece"
+    },
+    {
+      "id": "ITEM-003",
+      "name": "Desktop PC Tower (CPU Cabinet)",
+      "cpcb_code": "ITEW2",
+      "aliases": [
+        "desktop cpu",
+        "computer cabinet",
+        "pc tower",
+        "computer tower"
+      ],
+      "is_collectible": true,
+      "description": "Full desktop system enclosure housing ATX motherboard, power supply, and drive assemblies.",
+      "disassembly_breakdown": [
+        {
+          "part": "Computer Motherboard + GPU + RAM",
+          "category": "PCB",
+          "weight_share_percent": 30,
+          "condition_notes": "Very high scrap value per kg"
+        },
+        {
+          "part": "ATX Power Supply Unit (PSU) with Cables",
+          "category": "CABLES",
+          "weight_share_percent": 25,
+          "condition_notes": "Contains heavy internal copper harness"
+        },
+        {
+          "part": "Hard Drive Voice Coil Magnet & Spindle Motor",
+          "category": "MOTORS_MAGNETS",
+          "weight_share_percent": 15,
+          "condition_notes": "Premium neodymium magnets"
+        },
+        {
+          "part": "Cooling Fans & Transformers",
+          "category": "MOTORS_MAGNETS",
+          "weight_share_percent": 10,
+          "condition_notes": "Stator copper wire"
+        },
+        {
+          "part": "Front Bezel Plastic Mouldings",
+          "category": "MIXED_PLASTICS",
+          "weight_share_percent": 10,
+          "condition_notes": "ABS polymer"
+        },
+        {
+          "part": "CMOS Battery",
+          "category": "BATTERIES",
+          "weight_share_percent": 1,
+          "condition_notes": "CR2032 button cell"
+        }
+      ],
+      "hazardous_elements": [
+        "Lead in solder",
+        "Electrolytic capacitor paste",
+        "Beryllium"
+      ],
+      "estimated_value_inr": "₹600 - ₹1,800 per unit"
+    },
+    {
+      "id": "ITEM-004",
+      "name": "Microwave Oven",
+      "cpcb_code": "CEEW5",
+      "aliases": [
+        "microwave",
+        "micro wave",
+        "oven",
+        "convection microwave"
+      ],
+      "is_collectible": true,
+      "description": "Kitchen appliance with high-voltage transformer, magnetron, turntable motor, and digital timer board.",
+      "disassembly_breakdown": [
+        {
+          "part": "High Voltage Transformer & Turntable Motor",
+          "category": "MOTORS_MAGNETS",
+          "weight_share_percent": 45,
+          "condition_notes": "Heavy copper coil transformer and turntable motor"
+        },
+        {
+          "part": "Magnetron Ring Magnets",
+          "category": "MOTORS_MAGNETS",
+          "weight_share_percent": 15,
+          "condition_notes": "Large ferrite ring magnets (Caution: Beryllium ceramic insulator!)"
+        },
+        {
+          "part": "Digital Control PCB & Display",
+          "category": "PCB",
+          "weight_share_percent": 10,
+          "condition_notes": "Populated appliance PCB"
+        },
+        {
+          "part": "Heavy Power Cord & Internal Wiring",
+          "category": "CABLES",
+          "weight_share_percent": 10,
+          "condition_notes": "Heat-resistant silicone/PVC copper wiring"
+        },
+        {
+          "part": "Door Trim, Handle, & Control Knobs",
+          "category": "MIXED_PLASTICS",
+          "weight_share_percent": 20,
+          "condition_notes": "Flame-retardant ABS"
+        }
+      ],
+      "hazardous_elements": [
+        "Beryllium oxide pink ceramic in magnetron (DO NOT CRUSH OR SAND)",
+        "High-voltage capacitor charge"
+      ],
+      "estimated_value_inr": "₹250 - ₹550 per piece"
+    },
+    {
+      "id": "ITEM-005",
+      "name": "CRT Television / Old TV",
+      "cpcb_code": "CEEW1",
+      "aliases": [
+        "dabba tv",
+        "box tv",
+        "crt tv",
+        "picture tube tv",
+        "cathode ray tv"
+      ],
+      "is_collectible": true,
+      "description": "Legacy television set with heavy glass vacuum tube, magnetic deflection yoke, and chassis.",
+      "disassembly_breakdown": [
+        {
+          "part": "Cathode Ray Picture Tube",
+          "category": "CRT",
+          "weight_share_percent": 55,
+          "condition_notes": "Hazardous leaded glass funnel"
+        },
+        {
+          "part": "Copper Deflection Yoke",
+          "category": "MOTORS_MAGNETS",
+          "weight_share_percent": 12,
+          "condition_notes": "Pure copper coil winding around neck"
+        },
+        {
+          "part": "Main Chassis PCB & Neck Board",
+          "category": "PCB",
+          "weight_share_percent": 15,
+          "condition_notes": "Low-grade single-sided phenolic board"
+        },
+        {
+          "part": "Cabinet Housing",
+          "category": "MIXED_PLASTICS",
+          "weight_share_percent": 13,
+          "condition_notes": "Flame retardant HIPS plastic"
+        },
+        {
+          "part": "Power Cord & Speaker Wires",
+          "category": "CABLES",
+          "weight_share_percent": 5,
+          "condition_notes": "Insulated copper cable"
+        }
+      ],
+      "hazardous_elements": [
+        "Lead oxide in funnel glass (toxic)",
+        "Cadmium and phosphors inside front face",
+        "Vacuum implosion"
+      ],
+      "estimated_value_inr": "₹250 - ₹450 per unit"
+    },
+    {
+      "id": "ITEM-006",
+      "name": "Flat Screen LED / LCD TV",
+      "cpcb_code": "CEEW1",
+      "aliases": [
+        "led tv",
+        "smart tv",
+        "lcd tv",
+        "flat tv",
+        "oled tv"
+      ],
+      "is_collectible": true,
+      "description": "Modern flat television with backlight diffuser, power board, and T-Con board.",
+      "disassembly_breakdown": [
+        {
+          "part": "LCD / LED Display Panel Assembly",
+          "category": "LCD_LED",
+          "weight_share_percent": 40,
+          "condition_notes": "Glass matrix with optical sheets"
+        },
+        {
+          "part": "Main Motherboard, Power Supply PCB, & T-Con",
+          "category": "PCB",
+          "weight_share_percent": 25,
+          "condition_notes": "Medium-to-high grade circuit boards"
+        },
+        {
+          "part": "Speakers & Subwoofer",
+          "category": "MOTORS_MAGNETS",
+          "weight_share_percent": 10,
+          "condition_notes": "Ferrite magnets and voice coils"
+        },
+        {
+          "part": "Back Cover Plastic Shell",
+          "category": "MIXED_PLASTICS",
+          "weight_share_percent": 20,
+          "condition_notes": "Engineering ABS resin"
+        },
+        {
+          "part": "Internal Ribbon & Power Cables",
+          "category": "CABLES",
+          "weight_share_percent": 5,
+          "condition_notes": "Copper ribbon wire"
+        }
+      ],
+      "hazardous_elements": [
+        "Liquid crystals",
+        "Flame retardants in casing",
+        "Lead in older models"
+      ],
+      "estimated_value_inr": "₹350 - ₹900 per unit"
+    },
+    {
+      "id": "ITEM-007",
+      "name": "Inverter / UPS with Battery",
+      "cpcb_code": "ITEW25",
+      "aliases": [
+        "home inverter",
+        "ups",
+        "uninterruptible power supply",
+        "inverter unit",
+        "inverter battery"
+      ],
+      "is_collectible": true,
+      "description": "Power backup equipment containing heavy copper transformer, control PCB, and lead-acid or lithium battery.",
+      "disassembly_breakdown": [
+        {
+          "part": "Lead-Acid or Li-ion Storage Battery",
+          "category": "BATTERIES",
+          "weight_share_percent": 55,
+          "condition_notes": "Extremely heavy lead content, keep upright"
+        },
+        {
+          "part": "Heavy Core Transformer",
+          "category": "MOTORS_MAGNETS",
+          "weight_share_percent": 25,
+          "condition_notes": "Massive copper or aluminum coil winding"
+        },
+        {
+          "part": "Inverter Inversion Logic PCB",
+          "category": "PCB",
+          "weight_share_percent": 10,
+          "condition_notes": "Populated board with high-power MOSFETs"
+        },
+        {
+          "part": "Heavy Gauge Battery Connection Cables",
+          "category": "CABLES",
+          "weight_share_percent": 8,
+          "condition_notes": "Thick electrolytic copper wires"
+        },
+        {
+          "part": "Terminal Covers & Battery Box Plastic",
+          "category": "MIXED_PLASTICS",
+          "weight_share_percent": 2,
+          "condition_notes": "Polypropylene (PP) battery case"
+        }
+      ],
+      "hazardous_elements": [
+        "Sulfuric acid electrolyte",
+        "Lead poisoning risk",
+        "Short circuit spark/fire hazard"
+      ],
+      "estimated_value_inr": "₹800 - ₹3,200 per unit (depends heavily on battery weight)"
+    },
+    {
+      "id": "ITEM-008",
+      "name": "Ceiling Fan / Table Fan",
+      "cpcb_code": "CEEW12",
+      "aliases": [
+        "ceiling fan",
+        "table fan",
+        "pedestal fan",
+        "exhaust fan",
+        "fan motor"
+      ],
+      "is_collectible": true,
+      "description": "Electric cooling fan powered by AC induction motor with stator copper coils.",
+      "disassembly_breakdown": [
+        {
+          "part": "AC Motor Stator with Copper Windings",
+          "category": "MOTORS_MAGNETS",
+          "weight_share_percent": 65,
+          "condition_notes": "High yield pure copper winding"
+        },
+        {
+          "part": "Capacitor & Speed Regulator Module",
+          "category": "PCB",
+          "weight_share_percent": 10,
+          "condition_notes": "Polypropylene capacitor and switch PCB"
+        },
+        {
+          "part": "Connecting Lead Wire & Power Cord",
+          "category": "CABLES",
+          "weight_share_percent": 15,
+          "condition_notes": "Insulated copper conductor"
+        },
+        {
+          "part": "Canopy & Switch Plastic Covers",
+          "category": "MIXED_PLASTICS",
+          "weight_share_percent": 10,
+          "condition_notes": "ABS / Polycarbonate plastic"
+        }
+      ],
+      "hazardous_elements": [
+        "Oil-filled capacitors in vintage models"
+      ],
+      "estimated_value_inr": "₹150 - ₹350 per piece"
+    },
+    {
+      "id": "ITEM-009",
+      "name": "Refrigerator / Fridge",
+      "cpcb_code": "CEEW2",
+      "aliases": [
+        "fridge",
+        "refrigerator",
+        "deep freezer",
+        "mini fridge"
+      ],
+      "is_collectible": true,
+      "description": "Cooling appliance with sealed motor compressor, thermostat PCB, copper capillary tubes, and plastic liners.",
+      "disassembly_breakdown": [
+        {
+          "part": "Hermetic Motor Compressor Unit",
+          "category": "MOTORS_MAGNETS",
+          "weight_share_percent": 40,
+          "condition_notes": "Heavy cast iron casing with internal copper motor stator"
+        },
+        {
+          "part": "Copper Condenser Tubes & Power Cable",
+          "category": "CABLES",
+          "weight_share_percent": 15,
+          "condition_notes": "High-value refrigeration copper piping and wire"
+        },
+        {
+          "part": "Thermostat & Inverter Control Board",
+          "category": "PCB",
+          "weight_share_percent": 5,
+          "condition_notes": "Electronic defrost / temperature PCB"
+        },
+        {
+          "part": "Inner HIPS Door Liners & Trays",
+          "category": "MIXED_PLASTICS",
+          "weight_share_percent": 30,
+          "condition_notes": "High Impact Polystyrene plastic"
+        },
+        {
+          "part": "Fan Motor & Damper",
+          "category": "MOTORS_MAGNETS",
+          "weight_share_percent": 10,
+          "condition_notes": "Small evaporator fan motor"
+        }
+      ],
+      "hazardous_elements": [
+        "CFC / HFC / Isobutane refrigerant gas (must be evacuated by technician)",
+        "Polyurethane insulation blowing agents"
+      ],
+      "estimated_value_inr": "₹800 - ₹2,000 per unit"
+    },
+    {
+      "id": "ITEM-010",
+      "name": "Washing Machine",
+      "cpcb_code": "CEEW3",
+      "aliases": [
+        "washing machine",
+        "washer",
+        "dryer",
+        "laundry machine"
+      ],
+      "is_collectible": true,
+      "description": "Automated laundry appliance containing heavy induction drive motor, drain pump, wiring harness, and control microcomputer.",
+      "disassembly_breakdown": [
+        {
+          "part": "Main Drive Motor & Drain Pump Motor",
+          "category": "MOTORS_MAGNETS",
+          "weight_share_percent": 45,
+          "condition_notes": "Heavy copper coil stators"
+        },
+        {
+          "part": "Microcomputer Control PCB & Inverter Drive",
+          "category": "PCB",
+          "weight_share_percent": 15,
+          "condition_notes": "Protected electronic PCB"
+        },
+        {
+          "part": "Full Machine Wiring Harness & Power Cord",
+          "category": "CABLES",
+          "weight_share_percent": 15,
+          "condition_notes": "Multi-strand copper wiring"
+        },
+        {
+          "part": "Pulsator & Outer Tub Polymer Parts",
+          "category": "MIXED_PLASTICS",
+          "weight_share_percent": 25,
+          "condition_notes": "Rigid Polypropylene (PP) and ABS"
+        }
+      ],
+      "hazardous_elements": [
+        "Capacitor discharge risk",
+        "Grease and oil in gearbox"
+      ],
+      "estimated_value_inr": "₹600 - ₹1,600 per unit"
+    },
+    {
+      "id": "ITEM-011",
+      "name": "Air Conditioner (Split / Window)",
+      "cpcb_code": "CEEW4",
+      "aliases": [
+        "ac",
+        "air conditioner",
+        "split ac",
+        "window ac",
+        "cooling unit"
+      ],
+      "is_collectible": true,
+      "description": "Refrigeration cooling system with heavy rotary compressor, indoor blower motor, outdoor fan, and copper evaporator coils.",
+      "disassembly_breakdown": [
+        {
+          "part": "Rotary / Scroll Compressor Motor",
+          "category": "MOTORS_MAGNETS",
+          "weight_share_percent": 40,
+          "condition_notes": "Dense copper-wound electric motor"
+        },
+        {
+          "part": "Copper Coils & Interconnecting Cables",
+          "category": "CABLES",
+          "weight_share_percent": 25,
+          "condition_notes": "Heavy gauge copper piping and power cable"
+        },
+        {
+          "part": "Inverter Motherboard & Display PCB",
+          "category": "PCB",
+          "weight_share_percent": 10,
+          "condition_notes": "High capacity inverter board"
+        },
+        {
+          "part": "Blower & Condenser Fan Motors",
+          "category": "MOTORS_MAGNETS",
+          "weight_share_percent": 10,
+          "condition_notes": "Copper winding electric motors"
+        },
+        {
+          "part": "Indoor Unit Grille & Housing",
+          "category": "MIXED_PLASTICS",
+          "weight_share_percent": 15,
+          "condition_notes": "Flame-retardant ABS casing"
+        }
+      ],
+      "hazardous_elements": [
+        "Refrigerant gas (R22, R32, R410A) ozone depletion / global warming risk",
+        "Capacitors"
+      ],
+      "estimated_value_inr": "₹1,200 - ₹3,500 per complete unit"
+    },
+    {
+      "id": "ITEM-012",
+      "name": "Printer / Scanner / Photocopier",
+      "cpcb_code": "ITEW6",
+      "aliases": [
+        "printer",
+        "inkjet printer",
+        "laser printer",
+        "scanner",
+        "xerox machine",
+        "photocopier"
+      ],
+      "is_collectible": true,
+      "description": "Document reproduction hardware with stepper motors, optical sensors, power boards, and plastic structural frames.",
+      "disassembly_breakdown": [
+        {
+          "part": "Stepper Motors & Paper Feed Motors",
+          "category": "MOTORS_MAGNETS",
+          "weight_share_percent": 30,
+          "condition_notes": "High precision step motors and ferrite magnets"
+        },
+        {
+          "part": "Main Formatter Board & Power Supply PCB",
+          "category": "PCB",
+          "weight_share_percent": 25,
+          "condition_notes": "Medium grade populated boards"
+        },
+        {
+          "part": "Flatbed Scanner Glass & Sensor Array",
+          "category": "LCD_LED",
+          "weight_share_percent": 10,
+          "condition_notes": "CIS / CCD optical sensor elements"
+        },
+        {
+          "part": "Plastic Housing, Trays, & Toner Chassis",
+          "category": "MIXED_PLASTICS",
+          "weight_share_percent": 25,
+          "condition_notes": "ABS / PC polymer blend"
+        },
+        {
+          "part": "Internal Ribbon Cables & AC Power Cord",
+          "category": "CABLES",
+          "weight_share_percent": 10,
+          "condition_notes": "Copper cables"
+        }
+      ],
+      "hazardous_elements": [
+        "Respirable toner particulate dust (carcinogenic carbon black)",
+        "Ozone filters"
+      ],
+      "estimated_value_inr": "₹200 - ₹650 per unit"
+    },
+    {
+      "id": "ITEM-013",
+      "name": "Power Bank & Portable Charger",
+      "cpcb_code": "ITEW15",
+      "aliases": [
+        "power bank",
+        "powerbank",
+        "external battery",
+        "portable charger"
+      ],
+      "is_collectible": true,
+      "description": "High-density battery pack with booster charging PCB and metal/plastic housing.",
+      "disassembly_breakdown": [
+        {
+          "part": "Lithium-Polymer Pouches / 18650 Cells",
+          "category": "BATTERIES",
+          "weight_share_percent": 75,
+          "condition_notes": "High cobalt yield, treat with extreme fire caution"
+        },
+        {
+          "part": "USB Fast-Charging Step-Up Circuit Board",
+          "category": "PCB",
+          "weight_share_percent": 15,
+          "condition_notes": "Compact high-grade PCB"
+        },
+        {
+          "part": "ABS Outer Casing",
+          "category": "MIXED_PLASTICS",
+          "weight_share_percent": 10,
+          "condition_notes": "Tough ABS shell"
+        }
+      ],
+      "hazardous_elements": [
+        "Severe puncture fire hazard",
+        "Lithium cobalt oxide toxicity"
+      ],
+      "estimated_value_inr": "₹40 - ₹120 per piece"
+    },
+    {
+      "id": "ITEM-014",
+      "name": "Smartwatch / Fitness Tracker",
+      "cpcb_code": "ITEW15",
+      "aliases": [
+        "smartwatch",
+        "apple watch",
+        "fitness band",
+        "smart band",
+        "smart watch"
+      ],
+      "is_collectible": true,
+      "description": "Miniature wearable electronic device with micro OLED screen, biometric sensors, and miniature Li-ion cell.",
+      "disassembly_breakdown": [
+        {
+          "part": "Micro AMOLED / OLED Display",
+          "category": "LCD_LED",
+          "weight_share_percent": 30,
+          "condition_notes": "Miniature high-res display"
+        },
+        {
+          "part": "Micro Motherboard with Gold Contacts",
+          "category": "PCB",
+          "weight_share_percent": 30,
+          "condition_notes": "Extremely high gold plating density"
+        },
+        {
+          "part": "Miniature Lithium Pouch Cell",
+          "category": "BATTERIES",
+          "weight_share_percent": 25,
+          "condition_notes": "Delicate battery"
+        },
+        {
+          "part": "Magnetic Charger Cable",
+          "category": "CABLES",
+          "weight_share_percent": 15,
+          "condition_notes": "Copper wire with neodymium tip"
+        }
+      ],
+      "hazardous_elements": [
+        "Lithium micro-cell"
+      ],
+      "estimated_value_inr": "₹30 - ₹100 per piece"
+    },
+    {
+      "id": "ITEM-015",
+      "name": "Solar Photovoltaic Panel (PV Module)",
+      "cpcb_code": "SOLAR1",
+      "aliases": [
+        "solar panel",
+        "solar module",
+        "pv panel",
+        "solar plate"
+      ],
+      "is_collectible": true,
+      "description": "Renewable energy panel comprising silicon solar cells, junction box PCB, bypass diodes, and tempered glass.",
+      "disassembly_breakdown": [
+        {
+          "part": "Junction Box, Inverter Leads, & Copper Ribbons",
+          "category": "CABLES",
+          "weight_share_percent": 25,
+          "condition_notes": "Tinned copper bussing ribbons and heavy DC solar cable"
+        },
+        {
+          "part": "Bypass Diode Circuit Board",
+          "category": "PCB",
+          "weight_share_percent": 10,
+          "condition_notes": "Power diode PCB"
+        },
+        {
+          "part": "EVA / Tedlar Backsheet Polymer",
+          "category": "MIXED_PLASTICS",
+          "weight_share_percent": 15,
+          "condition_notes": "Fluoropolymer composite"
+        },
+        {
+          "part": "Tempered Panel Glass & Silicon Cell Matrix",
+          "category": "MIXED_OTHER",
+          "weight_share_percent": 50,
+          "condition_notes": "Silver contact grid on silicon wafer"
+        }
+      ],
+      "hazardous_elements": [
+        "Lead solder ribbons",
+        "Cadmium telluride (in thin film variants)"
+      ],
+      "estimated_value_inr": "₹400 - ₹1,200 per panel (based on wattage and intact frame)"
+    },
+    {
+      "id": "ITEM-016",
+      "name": "Set-Top Box / DTH Receiver",
+      "cpcb_code": "CEEW6",
+      "aliases": [
+        "set top box",
+        "dth box",
+        "cable box",
+        "tv tuner",
+        "tata play box",
+        "airtel dth"
+      ],
+      "is_collectible": true,
+      "description": "Satellite / digital television receiver with tuner PCB, power adapter, and plastic housing.",
+      "disassembly_breakdown": [
+        {
+          "part": "Main Decoder PCB & Tuner",
+          "category": "PCB",
+          "weight_share_percent": 45,
+          "condition_notes": "Medium grade PCB with gold tuner shields"
+        },
+        {
+          "part": "Power Adapter & Connecting Cables",
+          "category": "CABLES",
+          "weight_share_percent": 25,
+          "condition_notes": "DC power cable and HDMI/AV lead"
+        },
+        {
+          "part": "ABS Outer Enclosure",
+          "category": "MIXED_PLASTICS",
+          "weight_share_percent": 30,
+          "condition_notes": "High quality black ABS casing"
+        }
+      ],
+      "hazardous_elements": [
+        "Lead in solder",
+        "Brominated flame retardants"
+      ],
+      "estimated_value_inr": "₹40 - ₹110 per piece"
+    },
+    {
+      "id": "ITEM-017",
+      "name": "WiFi Router / Network Switch",
+      "cpcb_code": "ITEW20",
+      "aliases": [
+        "wifi router",
+        "modem",
+        "adsl modem",
+        "network switch",
+        "broadband router"
+      ],
+      "is_collectible": true,
+      "description": "Networking hardware with RF transceiver PCB, dipole antennas, and power adapter.",
+      "disassembly_breakdown": [
+        {
+          "part": "Networking Motherboard with RF Shielding",
+          "category": "PCB",
+          "weight_share_percent": 45,
+          "condition_notes": "Medium-to-high grade gold flashed PCB"
+        },
+        {
+          "part": "Plastic Housing & Antennas",
+          "category": "MIXED_PLASTICS",
+          "weight_share_percent": 35,
+          "condition_notes": "ABS / PC casing"
+        },
+        {
+          "part": "Power Adapter & Ethernet Cables",
+          "category": "CABLES",
+          "weight_share_percent": 20,
+          "condition_notes": "Copper wire"
+        }
+      ],
+      "hazardous_elements": [
+        "Lead solder"
+      ],
+      "estimated_value_inr": "₹50 - ₹130 per piece"
+    },
+    {
+      "id": "ITEM-018",
+      "name": "Mixer Grinder / Kitchen Blender",
+      "cpcb_code": "CEEW14",
+      "aliases": [
+        "mixer grinder",
+        "mixie",
+        "blender",
+        "food processor",
+        "juicer"
+      ],
+      "is_collectible": true,
+      "description": "High-RPM kitchen appliance driven by a universal AC motor with heavy copper field coils.",
+      "disassembly_breakdown": [
+        {
+          "part": "Universal AC Motor with Copper Field & Armature Coils",
+          "category": "MOTORS_MAGNETS",
+          "weight_share_percent": 60,
+          "condition_notes": "Very rich copper content in armature and field"
+        },
+        {
+          "part": "Rotary Switch & Overload Relay",
+          "category": "PCB",
+          "weight_share_percent": 5,
+          "condition_notes": "Switch contacts and small board"
+        },
+        {
+          "part": "Heavy Duty 3-Pin Power Cord",
+          "category": "CABLES",
+          "weight_share_percent": 15,
+          "condition_notes": "Heavy gauge copper cable"
+        },
+        {
+          "part": "Shockproof Body Shell",
+          "category": "MIXED_PLASTICS",
+          "weight_share_percent": 20,
+          "condition_notes": "Rigid ABS shell"
+        }
+      ],
+      "hazardous_elements": [
+        "Grease and carbon brush dust"
+      ],
+      "estimated_value_inr": "₹120 - ₹280 per piece"
+    },
+    {
+      "id": "ITEM-019",
+      "name": "Electric Iron (Dry / Steam)",
+      "cpcb_code": "CEEW13",
+      "aliases": [
+        "electric iron",
+        "clothes iron",
+        "steam iron",
+        "press"
+      ],
+      "is_collectible": true,
+      "description": "Domestic heating appliance with thermostat switch, heating element, and heat-resistant cord.",
+      "disassembly_breakdown": [
+        {
+          "part": "Heat-Resistant Cotton-Braided Power Cable",
+          "category": "CABLES",
+          "weight_share_percent": 35,
+          "condition_notes": "High copper content cable"
+        },
+        {
+          "part": "Bimetallic Thermostat & Indicator PCB",
+          "category": "PCB",
+          "weight_share_percent": 10,
+          "condition_notes": "Silver contact bimetal strip"
+        },
+        {
+          "part": "Plastic Handle & Water Reservoir",
+          "category": "MIXED_PLASTICS",
+          "weight_share_percent": 25,
+          "condition_notes": "Heat-resistant PBT/Polycarbonate"
+        },
+        {
+          "part": "Soleplate & Internal Heating Assembly",
+          "category": "MIXED_OTHER",
+          "weight_share_percent": 30,
+          "condition_notes": "Aluminum soleplate with nichrome element"
+        }
+      ],
+      "hazardous_elements": [
+        "Mica insulation sheets"
+      ],
+      "estimated_value_inr": "₹60 - ₹140 per piece"
+    },
+    {
+      "id": "ITEM-020",
+      "name": "Induction Cooktop",
+      "cpcb_code": "CEEW15",
+      "aliases": [
+        "induction stove",
+        "induction cooktop",
+        "induction chulha",
+        "induction heater"
+      ],
+      "is_collectible": true,
+      "description": "Electromagnetic cooking appliance with planar copper coil, IGBT power inverter PCB, and cooling fan.",
+      "disassembly_breakdown": [
+        {
+          "part": "Planar Copper Induction Coil & Ferrite Bars",
+          "category": "MOTORS_MAGNETS",
+          "weight_share_percent": 35,
+          "condition_notes": "Litz copper wire coil and magnetic flux concentrators"
+        },
+        {
+          "part": "High Power IGBT Inverter Motherboard",
+          "category": "PCB",
+          "weight_share_percent": 25,
+          "condition_notes": "Dense board with heavy heat sink"
+        },
+        {
+          "part": "Brushless DC Cooling Fan",
+          "category": "MOTORS_MAGNETS",
+          "weight_share_percent": 10,
+          "condition_notes": "Small motor and magnet"
+        },
+        {
+          "part": "Main Power Cable",
+          "category": "CABLES",
+          "weight_share_percent": 10,
+          "condition_notes": "Heavy gauge copper cable"
+        },
+        {
+          "part": "Base Housing & Ceramic Glass Frame",
+          "category": "MIXED_PLASTICS",
+          "weight_share_percent": 20,
+          "condition_notes": "Flame retardant PP/ABS casing"
+        }
+      ],
+      "hazardous_elements": [
+        "Capacitor residue",
+        "Lead in older solders"
+      ],
+      "estimated_value_inr": "₹180 - ₹380 per unit"
+    },
+    {
+      "id": "ITEM-021",
+      "name": "Electric Geyser / Water Heater",
+      "cpcb_code": "CEEW16",
+      "aliases": [
+        "geyser",
+        "water heater",
+        "electric boiler",
+        "instant geyser"
+      ],
+      "is_collectible": true,
+      "description": "High-wattage domestic water heater with immersion heating element, thermostat, and PUF insulation.",
+      "disassembly_breakdown": [
+        {
+          "part": "Copper Heating Element Sheath & Wiring",
+          "category": "CABLES",
+          "weight_share_percent": 30,
+          "condition_notes": "Electrolytic copper piping and heavy wiring"
+        },
+        {
+          "part": "Thermostat Sensor Board & Digital Display",
+          "category": "PCB",
+          "weight_share_percent": 10,
+          "condition_notes": "Capillary thermostat and PCB"
+        },
+        {
+          "part": "Outer Body Plastic Cowl & Dial",
+          "category": "MIXED_PLASTICS",
+          "weight_share_percent": 20,
+          "condition_notes": "Rust-proof ABS/PP body"
+        },
+        {
+          "part": "Inner Tank & Sacrificial Anode Assembly",
+          "category": "MIXED_OTHER",
+          "weight_share_percent": 40,
+          "condition_notes": "Glass lined steel / copper inner tank"
+        }
+      ],
+      "hazardous_elements": [
+        "Magnesium anode breakdown residue"
+      ],
+      "estimated_value_inr": "₹400 - ₹1,100 per unit"
+    },
+    {
+      "id": "ITEM-022",
+      "name": "Power Drill / Angle Grinder / Power Tools",
+      "cpcb_code": "EETW1",
+      "aliases": [
+        "drill machine",
+        "angle grinder",
+        "power tool",
+        "rotary hammer",
+        "circular saw"
+      ],
+      "is_collectible": true,
+      "description": "Industrial and DIY handheld power tool driven by high-torque armature motor or brushless DC motor.",
+      "disassembly_breakdown": [
+        {
+          "part": "High-Torque Armature & Field Copper Stator",
+          "category": "MOTORS_MAGNETS",
+          "weight_share_percent": 55,
+          "condition_notes": "Dense pure copper winding with steel laminations"
+        },
+        {
+          "part": "Variable Speed Trigger Switch PCB",
+          "category": "PCB",
+          "weight_share_percent": 10,
+          "condition_notes": "Thyristor/MOSFET speed control board"
+        },
+        {
+          "part": "Rubberized Heavy Industrial Power Cord",
+          "category": "CABLES",
+          "weight_share_percent": 15,
+          "condition_notes": "High flex copper wire"
+        },
+        {
+          "part": "Polyamide Glass-Filled (PA-GF) Tool Body",
+          "category": "MIXED_PLASTICS",
+          "weight_share_percent": 20,
+          "condition_notes": "Durable engineering nylon casing"
+        }
+      ],
+      "hazardous_elements": [
+        "Carbon brush dust",
+        "Lubrication grease"
+      ],
+      "estimated_value_inr": "₹150 - ₹450 per tool"
+    },
+    {
+      "id": "ITEM-023",
+      "name": "Computer Keyboard & Mouse",
+      "cpcb_code": "ITEW2",
+      "aliases": [
+        "keyboard",
+        "computer mouse",
+        "usb mouse",
+        "mechanical keyboard"
+      ],
+      "is_collectible": true,
+      "description": "Peripherals containing plastic keycaps, membrane PCB, USB cable, and optical sensor board.",
+      "disassembly_breakdown": [
+        {
+          "part": "USB Connecting Wire",
+          "category": "CABLES",
+          "weight_share_percent": 30,
+          "condition_notes": "Copper wire cord"
+        },
+        {
+          "part": "Keyboard Enclosure & Keycaps",
+          "category": "MIXED_PLASTICS",
+          "weight_share_percent": 50,
+          "condition_notes": "High yield ABS and PBT polymer"
+        },
+        {
+          "part": "Encoder PCB & Optical Sensor Board",
+          "category": "PCB",
+          "weight_share_percent": 20,
+          "condition_notes": "Small controller circuit board"
+        }
+      ],
+      "hazardous_elements": [
+        "Flame retardants in ABS"
+      ],
+      "estimated_value_inr": "₹20 - ₹60 per set"
+    },
+    {
+      "id": "ITEM-024",
+      "name": "Hard Disk Drive (HDD)",
+      "cpcb_code": "ITEW2",
+      "aliases": [
+        "hard disk",
+        "hard drive",
+        "hdd",
+        "internal hdd",
+        "external hard drive"
+      ],
+      "is_collectible": true,
+      "description": "Magnetic data storage device with aluminum chassis, rare-earth neodymium voice-coil magnet, and logic board.",
+      "disassembly_breakdown": [
+        {
+          "part": "Voice Coil Neodymium Magnet Pair (NdFeB)",
+          "category": "MOTORS_MAGNETS",
+          "weight_share_percent": 25,
+          "condition_notes": "Extremely strong rare-earth magnets (high demand)"
+        },
+        {
+          "part": "Spindle Brushless DC Motor",
+          "category": "MOTORS_MAGNETS",
+          "weight_share_percent": 20,
+          "condition_notes": "Precision bearing and copper stator"
+        },
+        {
+          "part": "Controller PCB with Gold Pins",
+          "category": "PCB",
+          "weight_share_percent": 20,
+          "condition_notes": "High grade gold flashed contacts"
+        },
+        {
+          "part": "Cast Aluminum Enclosure & Platters",
+          "category": "MIXED_OTHER",
+          "weight_share_percent": 35,
+          "condition_notes": "High purity cast aluminum alloy"
+        }
+      ],
+      "hazardous_elements": [
+        "Neodymium pinch hazard"
+      ],
+      "estimated_value_inr": "₹60 - ₹180 per drive"
+    },
+    {
+      "id": "ITEM-025",
+      "name": "Gaming Console (PlayStation / Xbox)",
+      "cpcb_code": "CEEW7",
+      "aliases": [
+        "playstation",
+        "xbox",
+        "ps4",
+        "ps5",
+        "game console",
+        "nintendo"
+      ],
+      "is_collectible": true,
+      "description": "High-performance entertainment hardware with multi-core APU motherboard, optical drive, and cooling fan.",
+      "disassembly_breakdown": [
+        {
+          "part": "High-Performance APU Motherboard + GDDR RAM",
+          "category": "PCB",
+          "weight_share_percent": 35,
+          "condition_notes": "Premium gold-grade circuit board"
+        },
+        {
+          "part": "Internal PSU with Cables & AC Cord",
+          "category": "CABLES",
+          "weight_share_percent": 20,
+          "condition_notes": "Heavy gauge wiring"
+        },
+        {
+          "part": "Blower Fan & Spindle Disc Motor",
+          "category": "MOTORS_MAGNETS",
+          "weight_share_percent": 15,
+          "condition_notes": "Electric motor and copper windings"
+        },
+        {
+          "part": "Console Enclosure & Controller Shells",
+          "category": "MIXED_PLASTICS",
+          "weight_share_percent": 30,
+          "condition_notes": "Textured ABS casing"
+        }
+      ],
+      "hazardous_elements": [
+        "Thermal paste (silver/silicone)",
+        "Lead solder"
+      ],
+      "estimated_value_inr": "₹350 - ₹1,200 per console"
+    },
+    {
+      "id": "ITEM-026",
+      "name": "CCTV Security Camera & DVR",
+      "cpcb_code": "ITEW18",
+      "aliases": [
+        "cctv",
+        "security camera",
+        "surveillance camera",
+        "bullet camera",
+        "dome camera",
+        "dvr"
+      ],
+      "is_collectible": true,
+      "description": "Surveillance system comprising image sensor PCB, IR LED ring, coax/Cat6 wiring, and DVR recorder.",
+      "disassembly_breakdown": [
+        {
+          "part": "Sensor PCB, IR Illuminator, & DVR Motherboard",
+          "category": "PCB",
+          "weight_share_percent": 40,
+          "condition_notes": "Medium grade populated PCB"
+        },
+        {
+          "part": "BNC Coaxial & Power Cables",
+          "category": "CABLES",
+          "weight_share_percent": 25,
+          "condition_notes": "Copper core cabling"
+        },
+        {
+          "part": "Dome Plastic Cover & Weatherproof Shell",
+          "category": "MIXED_PLASTICS",
+          "weight_share_percent": 20,
+          "condition_notes": "Polycarbonate / ABS housing"
+        },
+        {
+          "part": "IR Cut Filter & Lens Assembly",
+          "category": "MIXED_OTHER",
+          "weight_share_percent": 15,
+          "condition_notes": "Optical glass and stepper solenoid"
+        }
+      ],
+      "hazardous_elements": [
+        "Lead solder"
+      ],
+      "estimated_value_inr": "₹80 - ₹250 per piece"
+    },
+    {
+      "id": "ITEM-027",
+      "name": "Disposable Vape / E-Cigarette (HAZARD WARNING)",
+      "cpcb_code": "CEEW18",
+      "aliases": [
+        "vape",
+        "e-cigarette",
+        "elf bar",
+        "disposable vape",
+        "electronic cigarette",
+        "puff bar"
+      ],
+      "is_collectible": true,
+      "description": "Single-use electronic nicotine delivery device containing an unmanaged lithium-cobalt pouch battery.",
+      "disassembly_breakdown": [
+        {
+          "part": "Lithium-Cobalt Pouch Battery (3.7V)",
+          "category": "BATTERIES",
+          "weight_share_percent": 50,
+          "condition_notes": "EXTREME FIRE HAZARD: Never pierce or crush! Store in sand bucket."
+        },
+        {
+          "part": "Pressure Sensor Micro-PCB & Nichrome Coil",
+          "category": "PCB",
+          "weight_share_percent": 15,
+          "condition_notes": "Miniature ASIC board"
+        },
+        {
+          "part": "Anodized Aluminum / Plastic Tube",
+          "category": "MIXED_PLASTICS",
+          "weight_share_percent": 35,
+          "condition_notes": "Shell body"
+        }
+      ],
+      "hazardous_elements": [
+        "Liquid nicotine poison residue (wear nitrile gloves!)",
+        "Lithium battery thermal runaway"
+      ],
+      "estimated_value_inr": "₹5 - ₹15 per piece (must be de-energized immediately)"
+    },
+    {
+      "id": "ITEM-028",
+      "name": "Plastic Water Bottle / Packaging (NOT COLLECTED)",
+      "cpcb_code": "NON_EWASTE",
+      "aliases": [
+        "plastic bottle",
+        "water bottle",
+        "bisleri bottle",
+        "coca cola bottle",
+        "pet bottle"
+      ],
+      "is_collectible": false,
+      "rejection_reason": "This is single-use packaging plastic (PET / Polyethylene), NOT an electronic appliance or e-waste under India's E-Waste Rules. Sell to general plastic/raddi scrap dealers instead.",
+      "disassembly_breakdown": [],
+      "hazardous_elements": [],
+      "estimated_value_inr": "₹0 (Not accepted by e-waste recyclers)"
+    },
+    {
+      "id": "ITEM-029",
+      "name": "Wooden Furniture / Table / Chair (NOT COLLECTED)",
+      "cpcb_code": "NON_EWASTE",
+      "aliases": [
+        "wooden chair",
+        "table",
+        "wooden desk",
+        "sofa",
+        "bed",
+        "timber"
+      ],
+      "is_collectible": false,
+      "rejection_reason": "Municipal bulky wooden scrap, not an electrical or electronic product. Cannot be processed by authorized e-waste facilities.",
+      "disassembly_breakdown": [],
+      "hazardous_elements": [],
+      "estimated_value_inr": "₹0 (Not accepted by e-waste recyclers)"
+    },
+    {
+      "id": "ITEM-030",
+      "name": "Food Waste / Kitchen Garbage (NOT COLLECTED)",
+      "cpcb_code": "NON_EWASTE",
+      "aliases": [
+        "food waste",
+        "vegetable peel",
+        "fruit peel",
+        "organic waste",
+        "garbage"
+      ],
+      "is_collectible": false,
+      "rejection_reason": "Biodegradable organic municipal waste. Strictly prohibited in electronic collection lots. Route to municipal wet waste composting.",
+      "disassembly_breakdown": [],
+      "hazardous_elements": [
+        "Pathogenic bacterial contamination"
+      ],
+      "estimated_value_inr": "₹0 (Not accepted by e-waste recyclers)"
+    }
+  ]
+}

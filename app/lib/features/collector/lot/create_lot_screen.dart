@@ -10,9 +10,13 @@ import '../../../core/app_state.dart';
 import '../../../core/constants.dart';
 import '../../../core/l10n/app_strings.dart';
 import '../../../core/models/lot.dart';
-import '../../../core/services/ml/classifier_service.dart';
-import '../../../core/services/ml/detector_service.dart';
+import '../../../core/services/ml/ewaste_ai_service.dart';
 import '../../../core/services/pricing_service.dart';
+import '../../../core/services/voice_ai_service.dart';
+import '../../../widgets/floating_ai_assistant_button.dart';
+import '../knowledge/ewaste_guide_screen.dart';
+import '../scanner/continuous_lens_scanner_screen.dart';
+import 'ai_voice_assistant_sheet.dart';
 import 'checkout_screen.dart';
 
 const _conditions = ['intact', 'partially_damaged', 'burnt/tampered', 'mixed_lot'];
@@ -47,7 +51,8 @@ class _ItemDraft {
 /// including AI-detected ones -- starts at 0 kg so the collector has to
 /// enter a real weight to proceed.
 class CreateLotScreen extends StatefulWidget {
-  const CreateLotScreen({super.key});
+  final List<LotItem>? initialItems;
+  const CreateLotScreen({super.key, this.initialItems});
   @override
   State<CreateLotScreen> createState() => _CreateLotScreenState();
 }
@@ -58,8 +63,51 @@ class _CreateLotScreenState extends State<CreateLotScreen> {
   final List<_ItemDraft> _rows = [];
   int? _editingIndex; // row currently showing the category picker, if any
   bool _classifying = false;
+  bool _isRejected = false;
+  String? _rejectionReason;
+  String? _identifiedDevice;
+  String? _safetyWarning;
+  bool _isOnlineAiUsed = false;
 
   final String _sourceType = 'household';
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.initialItems != null && widget.initialItems!.isNotEmpty) {
+      for (final item in widget.initialItems!) {
+        final draft = _ItemDraft()
+          ..category = item.category
+          ..condition = item.condition
+          ..aiIsReal = true;
+        if (item.weightKg > 0) {
+          draft.weightCtrl.text = item.weightKg.toStringAsFixed(1);
+        }
+        _rows.add(draft);
+      }
+    }
+  }
+
+  void _addVoiceItems(List<VoiceLotDraftItem> items) {
+    setState(() {
+      for (final it in items) {
+        final draft = _ItemDraft()
+          ..category = it.category
+          ..condition = it.condition
+          ..aiIsReal = true;
+        if (it.weightKg > 0) {
+          draft.weightCtrl.text = it.weightKg.toStringAsFixed(1);
+        }
+        _rows.add(draft);
+      }
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Added ${items.length} scrap item(s) from AI Assistant'),
+        backgroundColor: kBrandGreen,
+      ),
+    );
+  }
 
   @override
   void dispose() {
@@ -76,6 +124,10 @@ class _CreateLotScreenState extends State<CreateLotScreen> {
     setState(() {
       _photoBytes = bytes;
       _photoSize = null;
+      _isRejected = false;
+      _rejectionReason = null;
+      _identifiedDevice = null;
+      _safetyWarning = null;
     });
     ui.decodeImageFromList(bytes, (image) {
       if (mounted) setState(() => _photoSize = Size(image.width.toDouble(), image.height.toDouble()));
@@ -86,34 +138,126 @@ class _CreateLotScreenState extends State<CreateLotScreen> {
     if (_rows.isNotEmpty) return;
     setState(() => _classifying = true);
 
-    final detector = context.read<DetectorService>();
-    final detections = await detector.detect(bytes);
+    final ewasteAi = context.read<EwasteAiService>();
+    final analysis = await ewasteAi.analyzeImage(bytes);
     if (!mounted) return;
-    if (detections.isNotEmpty) {
+
+    if (!analysis.isCollectible) {
       setState(() {
-        _rows.addAll(detections.map((d) => _ItemDraft()
-          ..category = d.category
-          ..aiConfidence = d.confidence
-          ..aiIsReal = d.isRealModel
-          ..rect = Rect.fromLTRB(d.xMin, d.yMin, d.xMax, d.yMax)));
+        _isRejected = true;
+        _rejectionReason = analysis.rejectionReason ??
+            'This item is not recognized as an authorized recyclable e-waste category under India E-Waste Rules.';
+        _identifiedDevice = analysis.itemName;
+        _safetyWarning = null;
+        _rows.clear();
         _classifying = false;
       });
       return;
     }
 
-    // Nothing confidently detected (empty background, or the model just
-    // couldn't localize anything) -- fall back to one whole-photo
-    // classification so there's still a starting suggestion.
-    final classifier = context.read<ClassifierService>();
-    final result = await classifier.classify(bytes);
-    if (!mounted) return;
     setState(() {
-      _rows.add(_ItemDraft()
-        ..category = result.category
-        ..aiConfidence = result.confidence
-        ..aiIsReal = result.isRealModel);
+      _isRejected = false;
+      _rejectionReason = null;
+      _identifiedDevice = analysis.itemName;
+      _safetyWarning = analysis.safetyHazardWarning;
+      _isOnlineAiUsed = analysis.isOnlineModel;
+
+      if (analysis.components.isNotEmpty) {
+        for (final comp in analysis.components) {
+          final draft = _ItemDraft()
+            ..category = comp.category
+            ..aiConfidence = comp.confidence
+            ..aiIsReal = true
+            ..condition = comp.condition;
+          if (comp.estimatedWeightKg > 0) {
+            draft.weightCtrl.text = comp.estimatedWeightKg.toStringAsFixed(1);
+          }
+          _rows.add(draft);
+        }
+      } else {
+        _rows.add(_ItemDraft()
+          ..category = MaterialCategory.mixedOther
+          ..aiConfidence = 0.5
+          ..aiIsReal = false);
+      }
       _classifying = false;
     });
+  }
+
+  void _showAiSettingsDialog(BuildContext context) {
+    final ewasteAi = context.read<EwasteAiService>();
+    final keyController = TextEditingController();
+    bool useOnline = ewasteAi.useOnlineAi;
+
+    showDialog(
+      context: context,
+      builder: (ctx) => StatefulBuilder(
+        builder: (context, setDlgState) => AlertDialog(
+          title: const Row(
+            children: [
+              Icon(Icons.psychology, color: kBrandGreen),
+              SizedBox(width: 8),
+              Text('AI Detection Settings'),
+            ],
+          ),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Hybrid AI Architecture: Combines on-device TFLite neural models with online Multimodal AI (Gemini) for deep device recognition & decomposition.',
+                  style: TextStyle(fontSize: 13, color: Colors.black87),
+                ),
+                const SizedBox(height: 14),
+                SwitchListTile(
+                  contentPadding: EdgeInsets.zero,
+                  title: const Text('Enable Online AI (Gemini)', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                  subtitle: const Text('Decomposes complex devices into recyclable parts and rejects non-ewaste with live internet knowledge', style: TextStyle(fontSize: 12)),
+                  value: useOnline,
+                  onChanged: (v) {
+                    setDlgState(() => useOnline = v);
+                    ewasteAi.setUseOnlineAi(v);
+                  },
+                ),
+                const SizedBox(height: 10),
+                const Text('Gemini API Key (Optional):', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                const SizedBox(height: 4),
+                TextField(
+                  controller: keyController,
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    hintText: ewasteAi.hasApiKey ? 'Key is set (enter to update)' : 'Paste API Key here',
+                    border: const OutlineInputBorder(),
+                    isDense: true,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                const Text(
+                  'When offline or without an API key, the app automatically runs the on-device TFLite MobileNetV2 classifier & YOLO detector.',
+                  style: TextStyle(fontSize: 11, color: Colors.grey),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Close')),
+            ElevatedButton(
+              onPressed: () {
+                if (keyController.text.trim().isNotEmpty) {
+                  ewasteAi.setApiKey(keyController.text.trim());
+                }
+                Navigator.pop(ctx);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('AI settings saved successfully')),
+                );
+              },
+              child: const Text('Save'),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   /// The collector's registered address (from Places search) rarely matches
@@ -163,12 +307,37 @@ class _CreateLotScreenState extends State<CreateLotScreen> {
     final totalEstimate = _rows.fold<double>(0, (a, r) => a + _estimateFor(appState, r));
 
     return Scaffold(
-      appBar: AppBar(title: Text(t('newLot'))),
-      body: ListView(
-        padding: const EdgeInsets.all(20),
+      appBar: AppBar(
+        title: Text(t('newLot')),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.auto_awesome),
+            tooltip: 'AI Voice & Chat Copilot',
+            onPressed: () => AiVoiceAssistantSheet.show(
+              context,
+              onApplyItems: _addVoiceItems,
+              onTriggerCamera: () => _pickPhoto(ImageSource.camera),
+            ),
+          ),
+          IconButton(
+            icon: const Icon(Icons.psychology),
+            tooltip: 'AI Settings',
+            onPressed: () => _showAiSettingsDialog(context),
+          ),
+          IconButton(
+            icon: const Icon(Icons.school),
+            tooltip: 'E-Waste Guide',
+            onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const EwasteGuideScreen())),
+          ),
+        ],
+      ),
+      body: Stack(
         children: [
+          ListView(
+            padding: const EdgeInsets.fromLTRB(20, 20, 20, 90),
+            children: [
           _BoxedPhoto(bytes: _photoBytes, imageSize: _photoSize, rows: _rows, onPick: _pickPhoto, label: t('takePhoto'), retakeLabel: t('retake')),
-          const SizedBox(height: 16),
+          const SizedBox(height: 12),
           if (_classifying)
             Container(
               padding: const EdgeInsets.all(16),
@@ -179,6 +348,106 @@ class _CreateLotScreenState extends State<CreateLotScreen> {
                 Text(t('detectingMaterials'), style: TextStyle(color: Colors.grey.shade700)),
               ]),
             ),
+          if (_isRejected) ...[
+            const SizedBox(height: 10),
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.red.shade50,
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(color: Colors.red.shade400, width: 1.8),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Icon(Icons.block, color: Colors.red.shade700, size: 26),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Text(
+                          '⚠️ Item Not Accepted (${_identifiedDevice ?? "Non-E-Waste"})',
+                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.red.shade900),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    _rejectionReason ??
+                        'Only authorized e-waste categories (electronics, displays, circuit boards, batteries, cables, motors, and e-plastics) are accepted by authorized recyclers.',
+                    style: TextStyle(fontSize: 13, color: Colors.red.shade900),
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      OutlinedButton.icon(
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: Colors.red.shade900,
+                          side: BorderSide(color: Colors.red.shade300),
+                        ),
+                        onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const EwasteGuideScreen())),
+                        icon: const Icon(Icons.school, size: 16),
+                        label: const Text('View Accepted Guide'),
+                      ),
+                      const SizedBox(width: 8),
+                      TextButton.icon(
+                        onPressed: () => _pickPhoto(ImageSource.camera),
+                        icon: const Icon(Icons.refresh, size: 16),
+                        label: const Text('Retake'),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+          if (_identifiedDevice != null && !_isRejected) ...[
+            const SizedBox(height: 8),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+              decoration: BoxDecoration(
+                color: Colors.green.shade50,
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: Colors.green.shade300),
+              ),
+              child: Row(
+                children: [
+                  Icon(_isOnlineAiUsed ? Icons.auto_awesome : Icons.memory, color: Colors.green.shade800, size: 20),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      'AI Identified: $_identifiedDevice (${_isOnlineAiUsed ? "Gemini Multimodal AI" : "On-Device Neural Model"})',
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Colors.green.shade900),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+          if (_safetyWarning != null && !_isRejected) ...[
+            const SizedBox(height: 8),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+              decoration: BoxDecoration(
+                color: Colors.amber.shade50,
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: Colors.amber.shade400),
+              ),
+              child: Row(
+                children: [
+                  Icon(Icons.warning_amber_rounded, color: Colors.amber.shade900, size: 20),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      'Hazard Precaution: $_safetyWarning',
+                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.amber.shade900),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
           const SizedBox(height: 8),
           if (_rows.isNotEmpty) Text('${t('itemsInLot')} (${_rows.length})', style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700)),
           const SizedBox(height: 8),
@@ -223,13 +492,21 @@ class _CreateLotScreenState extends State<CreateLotScreen> {
           ),
           const SizedBox(height: 24),
           ElevatedButton(
-            onPressed: (_photoBytes != null && _allRowsValid) ? () => _proceedToCheckout(context) : null,
+            onPressed: (!_isRejected && _photoBytes != null && _allRowsValid) ? () => _proceedToCheckout(context) : null,
             child: Text(t('createLotBtn')),
           ),
           const SizedBox(height: 24),
         ],
       ),
-    );
+      FloatingAiAssistantButton(
+        bottomOffset: 20,
+        rightOffset: 16,
+        onApplyItems: _addVoiceItems,
+        onTriggerCamera: () => _pickPhoto(ImageSource.camera),
+      ),
+    ],
+  ),
+);
   }
 
   void _proceedToCheckout(BuildContext context) {
@@ -420,14 +697,32 @@ class _BoxedPhoto extends StatelessWidget {
         Row(
           children: [
             Expanded(
-              child: OutlinedButton.icon(
-                onPressed: () => onPick(ImageSource.camera),
-                icon: const Icon(Icons.camera_alt),
-                label: Text(bytes == null ? label : retakeLabel),
+              child: ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: kBrandGreen,
+                  foregroundColor: Colors.white,
+                  elevation: 2,
+                ),
+                onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const ContinuousLensScannerScreen()),
+                ),
+                icon: const Icon(Icons.center_focus_strong, size: 20),
+                label: const Text('Live AI Scanner', style: TextStyle(fontWeight: FontWeight.bold)),
               ),
             ),
-            const SizedBox(width: 10),
-            IconButton.filledTonal(onPressed: () => onPick(ImageSource.gallery), icon: const Icon(Icons.photo_library)),
+            const SizedBox(width: 8),
+            IconButton.outlined(
+              onPressed: () => onPick(ImageSource.camera),
+              icon: const Icon(Icons.camera_alt),
+              tooltip: 'Camera',
+            ),
+            const SizedBox(width: 8),
+            IconButton.filledTonal(
+              onPressed: () => onPick(ImageSource.gallery),
+              icon: const Icon(Icons.photo_library),
+              tooltip: 'Gallery',
+            ),
           ],
         ),
       ],
