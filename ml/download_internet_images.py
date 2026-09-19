@@ -34,7 +34,7 @@ VAL_DIR = SEED_DIR / "val"
 
 MIN_SIDE = 100
 VAL_FRACTION = 0.15
-TARGET_IMAGES_PER_CLASS = 25
+TARGET_IMAGES_PER_CLASS = 100
 
 HEADERS = {
     "User-Agent": "KabadiConnectML/2.0 (E-Waste Recycling Platform; contact@kabadiconnect.org)"
@@ -56,11 +56,19 @@ CATEGORY_QUERIES = {
         "cathode ray tube tv",
         "crt monitor scrap",
         "old television crt",
+        "crt tv dismantled",
+        "vintage crt television",
+        "crt tube glass scrap",
+        "broken crt monitor",
     ],
     "LCD_LED": [
         "broken lcd screen",
         "flat screen tv panel",
         "laptop screen display scrap",
+        "lcd panel backlight scrap",
+        "led tv screen recycling",
+        "computer monitor lcd scrap",
+        "smartphone screen scrap",
     ],
     "PCB": [
         "printed circuit board scrap",
@@ -73,16 +81,27 @@ CATEGORY_QUERIES = {
         "neodymium magnet hard drive",
         "speaker magnet scrap",
         "copper winding electric motor stator",
+        "dc motor scrap electronics",
+        "fan motor scrap",
+        "hard drive magnet teardown",
     ],
     "MIXED_PLASTICS": [
         "electronic plastic casing scrap",
         "computer monitor plastic shell",
         "shredded ewaste plastic",
+        "printer plastic casing scrap",
+        "appliance plastic housing scrap",
+        "keyboard plastic scrap",
     ],
     "MIXED_OTHER": [
         "electronic waste pile scrap",
         "ewaste scrap recycling heap",
         "weee waste heap electronics",
+        "mixed electronic scrap junk",
+        "old electronics junk pile",
+        "assorted electronic waste",
+        "obsolete electronics scrap yard",
+        "e-waste recycling bin mixed",
     ],
     "NON_COLLECTIBLE": [
         "plastic water bottle garbage",
@@ -95,15 +114,15 @@ CATEGORY_QUERIES = {
 }
 
 WIKIMEDIA_CATEGORIES = {
-    "BATTERIES": ["Lithium-ion batteries"],
-    "CABLES": ["Electric cables"],
-    "CRT": ["Cathode ray tubes"],
-    "LCD_LED": ["Liquid crystal displays"],
-    "PCB": ["Printed circuit boards", "Motherboards"],
-    "MOTORS_MAGNETS": ["Electric motors", "Permanent magnets"],
-    "MIXED_PLASTICS": ["Household plastics", "Waste plastics"],
-    "MIXED_OTHER": ["Electronic waste"],
-    "NON_COLLECTIBLE": ["Plastic bottle waste", "Cardboard waste"],
+    "BATTERIES": ["Lithium-ion batteries", "Batteries", "Lead-acid batteries", "AA batteries"],
+    "CABLES": ["Electric cables", "Cables", "Electrical wires", "Ethernet cables"],
+    "CRT": ["Cathode ray tubes", "Cathode ray tube television sets", "CRT monitors"],
+    "LCD_LED": ["Liquid crystal displays", "LCD monitors", "LED displays", "Flat panel displays"],
+    "PCB": ["Printed circuit boards", "Motherboards", "Computer expansion cards", "Integrated circuits"],
+    "MOTORS_MAGNETS": ["Electric motors", "Permanent magnets", "DC motors", "Neodymium magnets"],
+    "MIXED_PLASTICS": ["Household plastics", "Waste plastics", "Plastic recycling", "Plastic waste"],
+    "MIXED_OTHER": ["Electronic waste", "Waste of electrical and electronic equipment", "Discarded computers", "Scrapyards"],
+    "NON_COLLECTIBLE": ["Plastic bottle waste", "Cardboard waste", "Municipal solid waste", "Food waste"],
 }
 
 
@@ -190,10 +209,10 @@ def download_category_images(label, seen_hashes):
     print(f"\n[{label}] Fetching candidate URLs from Openverse and Wikimedia...")
     candidate_urls = []
     for q in CATEGORY_QUERIES.get(label, []):
-        candidate_urls.extend(fetch_openverse_urls(q, limit=10))
+        candidate_urls.extend(fetch_openverse_urls(q, limit=30))
 
     for cat in WIKIMEDIA_CATEGORIES.get(label, []):
-        candidate_urls.extend(fetch_wikimedia_category_urls(cat, limit=12))
+        candidate_urls.extend(fetch_wikimedia_category_urls(cat, limit=40))
 
     unique_urls = list(dict.fromkeys(candidate_urls))
     random.shuffle(unique_urls)
@@ -254,6 +273,7 @@ def main():
 
     for label in CATEGORY_QUERIES.keys():
         download_category_images(label, seen_hashes)
+        time.sleep(8)  # back off between classes to avoid Openverse rate-limiting (429)
 
     print("\nAll downloads finished!")
 

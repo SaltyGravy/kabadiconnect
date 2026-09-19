@@ -8,15 +8,23 @@ import 'package:provider/provider.dart';
 import '../../../core/app_state.dart';
 import '../../../core/constants.dart';
 import '../../../core/models/lot.dart';
+import '../../../core/services/ml/classifier_service.dart';
 import '../../../core/services/ml/ewaste_ai_service.dart';
 import '../../../core/services/pricing_service.dart';
 import '../knowledge/ewaste_guide_screen.dart';
 import '../lot/checkout_screen.dart';
-import '../lot/create_lot_screen.dart';
 
 /// Fullscreen Continuous AI Scanner like Google Lens.
-/// Points at scrap, continuously identifies material and live rates, and when the
-/// shutter button is tapped, pops up an instant weight dialog and creates the lot directly!
+///
+/// Points at scrap, continuously identifies material and live rates using a
+/// fast ON-DEVICE-ONLY classifier (no network calls in this loop -- that was
+/// the cause of severe lag when the live HUD used the full analyzeImage
+/// pipeline, which can call a remote model). Tapping the shutter runs the
+/// full (possibly online) analysis once, pops up a weight dialog, and ADDS
+/// the item to this scan session's lot -- the camera stays live so the
+/// collector can keep scanning more items into the SAME lot. "Proceed to
+/// Checkout" is a separate, explicit action once at least one item has
+/// been added.
 class ContinuousLensScannerScreen extends StatefulWidget {
   const ContinuousLensScannerScreen({super.key});
 
@@ -33,14 +41,20 @@ class _ContinuousLensScannerScreenState extends State<ContinuousLensScannerScree
   bool _isFlashOn = false;
   bool _isCapturing = false;
 
-  // Continuous Detection state
+  // Continuous Detection state -- local classifier only, see class doc.
   Timer? _continuousScanTimer;
   bool _isScanningFrame = false;
+  bool _scanningPaused = false;
   MaterialCategory? _liveCategory;
   double _liveConfidence = 0.0;
-  String _liveItemName = '';
   bool _liveIsCollectible = true;
   String? _liveRejectionReason;
+
+  // This scan session's accumulating lot -- items added via the weight
+  // popup pile up here across multiple shutter presses; nothing is sent to
+  // checkout until the collector explicitly asks to proceed.
+  final List<LotItem> _lotItems = [];
+  Uint8List? _lotPhotoBytes;
 
   // Laser sweep animation
   late AnimationController _laserController;
@@ -73,7 +87,11 @@ class _ContinuousLensScannerScreenState extends State<ContinuousLensScannerScree
       final camera = _cameras[_selectedCameraIndex];
       _cameraController = CameraController(
         camera,
-        ResolutionPreset.high,
+        // Medium is plenty for on-device AI + a receipt-style photo, and
+        // capturing at "high" on every ~2s continuous tick was a big part
+        // of the lag -- lower resolution stills are much faster to take,
+        // encode, and read back.
+        ResolutionPreset.medium,
         enableAudio: false,
         imageFormatGroup: ImageFormatGroup.jpeg,
       );
@@ -82,8 +100,6 @@ class _ContinuousLensScannerScreenState extends State<ContinuousLensScannerScree
       if (!mounted) return;
 
       setState(() => _isCameraInitialized = true);
-
-      // Start periodic lightweight continuous scanning
       _startContinuousScanning();
     } catch (_) {
       if (mounted) setState(() => _isCameraInitialized = false);
@@ -91,9 +107,11 @@ class _ContinuousLensScannerScreenState extends State<ContinuousLensScannerScree
   }
 
   void _startContinuousScanning() {
-    // Scan camera frames every 1.5 seconds for live Google Lens HUD updates
-    _continuousScanTimer = Timer.periodic(const Duration(milliseconds: 1500), (timer) async {
-      if (!mounted || _cameraController == null || !_cameraController!.value.isInitialized) return;
+    // Scan every 2s for the live HUD. Only the fast on-device classifier
+    // runs here -- never the online/network path -- so a slow or missing
+    // internet connection can't stall the live preview.
+    _continuousScanTimer = Timer.periodic(const Duration(milliseconds: 2000), (timer) async {
+      if (!mounted || _scanningPaused || _cameraController == null || !_cameraController!.value.isInitialized) return;
       if (_isScanningFrame || _isCapturing) return;
 
       try {
@@ -102,18 +120,15 @@ class _ContinuousLensScannerScreenState extends State<ContinuousLensScannerScree
         final bytes = await xfile.readAsBytes();
         if (!mounted) return;
 
-        final ewasteAi = context.read<EwasteAiService>();
-        final analysis = await ewasteAi.analyzeImage(bytes);
+        final classifier = context.read<ClassifierService>();
+        final result = await classifier.classify(bytes);
 
         if (mounted) {
           setState(() {
-            _liveIsCollectible = analysis.isCollectible;
-            _liveItemName = analysis.itemName;
-            _liveRejectionReason = analysis.rejectionReason;
-            if (analysis.components.isNotEmpty) {
-              _liveCategory = analysis.components.first.category;
-              _liveConfidence = analysis.components.first.confidence;
-            }
+            _liveIsCollectible = result.isCollectible;
+            _liveRejectionReason = result.rejectionReason;
+            _liveCategory = result.isCollectible ? result.category : null;
+            _liveConfidence = result.confidence;
           });
         }
       } catch (_) {
@@ -149,10 +164,16 @@ class _ContinuousLensScannerScreenState extends State<ContinuousLensScannerScree
     _initCamera();
   }
 
-  /// Shutter Click: Freeze frame, analyze, and immediately show the Weight Popup!
+  /// Shutter Click: Freeze frame, run the full (possibly online) analysis,
+  /// and show the weight popup. The continuous loop pauses for this --
+  /// no point burning a background capture while the shutter's own capture
+  /// and the popup are in flight.
   Future<void> _onCapture() async {
     if (_isCapturing) return;
-    setState(() => _isCapturing = true);
+    setState(() {
+      _isCapturing = true;
+      _scanningPaused = true;
+    });
 
     try {
       Uint8List imageBytes;
@@ -160,10 +181,12 @@ class _ContinuousLensScannerScreenState extends State<ContinuousLensScannerScree
         final xfile = await _cameraController!.takePicture();
         imageBytes = await xfile.readAsBytes();
       } else {
-        // Fallback to image picker if camera hardware preview failed
         final file = await ImagePicker().pickImage(source: ImageSource.camera, maxWidth: 1000);
         if (file == null) {
-          setState(() => _isCapturing = false);
+          setState(() {
+            _isCapturing = false;
+            _scanningPaused = false;
+          });
           return;
         }
         imageBytes = await file.readAsBytes();
@@ -171,13 +194,13 @@ class _ContinuousLensScannerScreenState extends State<ContinuousLensScannerScree
 
       if (!mounted) return;
 
-      // Full deep analysis of captured image
       final ewasteAi = context.read<EwasteAiService>();
       final analysis = await ewasteAi.analyzeImage(imageBytes);
 
       if (!mounted) return;
 
       if (!analysis.isCollectible) {
+        setState(() => _scanningPaused = false);
         _showRejectedDialog(analysis.itemName, analysis.rejectionReason);
         return;
       }
@@ -190,7 +213,6 @@ class _ContinuousLensScannerScreenState extends State<ContinuousLensScannerScree
           ? analysis.components.first.condition
           : 'intact';
 
-      // Open the Instant Weight Popup Dialog!
       _showQuickWeightDialog(
         imageBytes: imageBytes,
         category: initialCategory,
@@ -199,6 +221,7 @@ class _ContinuousLensScannerScreenState extends State<ContinuousLensScannerScree
         safetyWarning: analysis.safetyHazardWarning,
       );
     } catch (e) {
+      setState(() => _scanningPaused = false);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Capture error: $e')),
       );
@@ -257,7 +280,10 @@ class _ContinuousLensScannerScreenState extends State<ContinuousLensScannerScree
     return serviceLocations.first;
   }
 
-  /// Instant Weight Popup Modal Dialog
+  /// Instant Weight Popup Modal Dialog. Confirming ADDS the item to this
+  /// session's accumulating lot and returns to the live scanner -- it does
+  /// NOT jump to checkout. Proceeding to checkout is a separate, explicit
+  /// action from the main scanner screen once >=1 item has been added.
   void _showQuickWeightDialog({
     required Uint8List imageBytes,
     required MaterialCategory category,
@@ -297,7 +323,6 @@ class _ContinuousLensScannerScreenState extends State<ContinuousLensScannerScree
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Top drag bar
                 Center(
                   child: Container(
                     width: 44,
@@ -306,18 +331,19 @@ class _ContinuousLensScannerScreenState extends State<ContinuousLensScannerScree
                     decoration: BoxDecoration(color: Colors.grey.shade300, borderRadius: BorderRadius.circular(2)),
                   ),
                 ),
-
-                // Item info header with captured photo thumbnail
+                if (_lotItems.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 10),
+                    child: Text(
+                      '${_lotItems.length} item(s) already in this lot',
+                      style: TextStyle(fontSize: 12, color: Colors.grey.shade600, fontWeight: FontWeight.w600),
+                    ),
+                  ),
                 Row(
                   children: [
                     ClipRRect(
                       borderRadius: BorderRadius.circular(12),
-                      child: Image.memory(
-                        imageBytes,
-                        width: 60,
-                        height: 60,
-                        fit: BoxFit.cover,
-                      ),
+                      child: Image.memory(imageBytes, width: 60, height: 60, fit: BoxFit.cover),
                     ),
                     const SizedBox(width: 14),
                     Expanded(
@@ -331,6 +357,7 @@ class _ContinuousLensScannerScreenState extends State<ContinuousLensScannerScree
                               Expanded(
                                 child: Text(
                                   itemName.isNotEmpty ? itemName : selectedCategory.key,
+                                  maxLines: 1,
                                   style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                                   overflow: TextOverflow.ellipsis,
                                 ),
@@ -340,6 +367,8 @@ class _ContinuousLensScannerScreenState extends State<ContinuousLensScannerScree
                           const SizedBox(height: 2),
                           Text(
                             'Live Rate: ₹${rate.toStringAsFixed(0)}/kg ($location)',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                             style: TextStyle(color: Colors.grey.shade700, fontSize: 13, fontWeight: FontWeight.w600),
                           ),
                         ],
@@ -349,7 +378,6 @@ class _ContinuousLensScannerScreenState extends State<ContinuousLensScannerScree
                       icon: const Icon(Icons.edit_note, color: kBrandGreen),
                       tooltip: 'Change Material',
                       onPressed: () {
-                        // Category picker
                         _showCategorySelector(ctx, (newCat) {
                           setDlgState(() => selectedCategory = newCat);
                         });
@@ -376,12 +404,9 @@ class _ContinuousLensScannerScreenState extends State<ContinuousLensScannerScree
                 ],
 
                 const SizedBox(height: 16),
-
-                // Weight Entry Section
                 const Text('Enter Scrap Weight:', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
                 const SizedBox(height: 8),
 
-                // Big Weight Stepper display
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   decoration: BoxDecoration(
@@ -395,9 +420,7 @@ class _ContinuousLensScannerScreenState extends State<ContinuousLensScannerScree
                       IconButton(
                         icon: const Icon(Icons.remove_circle, color: kBrandGreen, size: 30),
                         onPressed: () {
-                          if (weightKg > 0.5) {
-                            setDlgState(() => weightKg = (weightKg - 0.5));
-                          }
+                          if (weightKg > 0.5) setDlgState(() => weightKg = (weightKg - 0.5));
                         },
                       ),
                       Text(
@@ -406,17 +429,13 @@ class _ContinuousLensScannerScreenState extends State<ContinuousLensScannerScree
                       ),
                       IconButton(
                         icon: const Icon(Icons.add_circle, color: kBrandGreen, size: 30),
-                        onPressed: () {
-                          setDlgState(() => weightKg = (weightKg + 0.5));
-                        },
+                        onPressed: () => setDlgState(() => weightKg = (weightKg + 0.5)),
                       ),
                     ],
                   ),
                 ),
 
                 const SizedBox(height: 10),
-
-                // Quick Add Chips
                 SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: Row(
@@ -432,8 +451,6 @@ class _ContinuousLensScannerScreenState extends State<ContinuousLensScannerScree
                 ),
 
                 const SizedBox(height: 14),
-
-                // Condition selection
                 Row(
                   children: [
                     const Text('Condition: ', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
@@ -459,8 +476,6 @@ class _ContinuousLensScannerScreenState extends State<ContinuousLensScannerScree
                 ),
 
                 const SizedBox(height: 14),
-
-                // Instant Estimated Payout Card
                 Container(
                   padding: const EdgeInsets.all(14),
                   decoration: BoxDecoration(
@@ -474,43 +489,18 @@ class _ContinuousLensScannerScreenState extends State<ContinuousLensScannerScree
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text('Estimated Instant Payout', style: TextStyle(fontSize: 12, color: Colors.black54)),
+                          const Text('Estimated Value', style: TextStyle(fontSize: 12, color: Colors.black54)),
                           Text(
                             '₹${estimatedVal.toStringAsFixed(0)}',
                             style: const TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: kBrandGreenDark),
                           ),
                         ],
                       ),
-                      TextButton.icon(
-                        onPressed: () {
-                          // Open in full CreateLotScreen if collector wants to add more items
-                          Navigator.pop(ctx);
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => CreateLotScreen(
-                                initialItems: [
-                                  LotItem(
-                                    category: selectedCategory,
-                                    condition: selectedCondition,
-                                    weightKg: weightKg,
-                                    estimatedValue: estimatedVal,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        },
-                        icon: const Icon(Icons.add, size: 16),
-                        label: const Text('Add More Items', style: TextStyle(fontSize: 12)),
-                      ),
                     ],
                   ),
                 ),
 
                 const SizedBox(height: 16),
-
-                // Primary One-Click Action: Create Lot & Proceed to Checkout!
                 SizedBox(
                   width: double.infinity,
                   height: 50,
@@ -522,32 +512,27 @@ class _ContinuousLensScannerScreenState extends State<ContinuousLensScannerScree
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                     ),
                     onPressed: () {
-                      Navigator.pop(ctx); // Close weight dialog
-                      // Create the lot item and go straight to Checkout!
-                      final items = [
-                        LotItem(
+                      Navigator.pop(ctx);
+                      setState(() {
+                        _lotItems.add(LotItem(
                           category: selectedCategory,
                           condition: selectedCondition,
                           weightKg: weightKg,
                           estimatedValue: estimatedVal,
-                        ),
-                      ];
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => CheckoutScreen(
-                            items: items,
-                            photoBytes: imageBytes,
-                            sourceType: 'household',
-                          ),
+                        ));
+                        _lotPhotoBytes ??= imageBytes;
+                        _scanningPaused = false;
+                      });
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          duration: const Duration(seconds: 2),
+                          backgroundColor: kBrandGreen,
+                          content: Text('Added to lot -- ${_lotItems.length} item(s) so far. Keep scanning or checkout below.'),
                         ),
                       );
                     },
-                    icon: const Icon(Icons.bolt, size: 22),
-                    label: const Text(
-                      'Confirm & Create Lot 🚀',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
+                    icon: const Icon(Icons.add_task, size: 22),
+                    label: const Text('Add to Lot', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                   ),
                 ),
               ],
@@ -555,7 +540,11 @@ class _ContinuousLensScannerScreenState extends State<ContinuousLensScannerScree
           );
         },
       ),
-    );
+    ).whenComplete(() {
+      // If the sheet was dismissed without confirming (swipe-down / tap
+      // outside), still resume the live loop.
+      if (mounted) setState(() => _scanningPaused = false);
+    });
   }
 
   void _showCategorySelector(BuildContext context, Function(MaterialCategory) onSelect) {
@@ -579,246 +568,342 @@ class _ContinuousLensScannerScreenState extends State<ContinuousLensScannerScree
     );
   }
 
+  Future<void> _proceedToCheckout() async {
+    if (_lotItems.isEmpty || _lotPhotoBytes == null) return;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Proceed to checkout?'),
+        content: Text('This lot has ${_lotItems.length} item(s). Review and confirm on the next screen.'),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Keep Scanning')),
+          ElevatedButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('Proceed')),
+        ],
+      ),
+    );
+    if (confirmed != true || !mounted) return;
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (_) => CheckoutScreen(items: List.of(_lotItems), photoBytes: _lotPhotoBytes!, sourceType: 'household'),
+      ),
+    );
+  }
+
+  Future<bool> _confirmExit() async {
+    if (_lotItems.isEmpty) return true;
+    final leave = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Discard scanned items?'),
+        content: Text('You have ${_lotItems.length} item(s) not yet checked out. Leaving now discards them.'),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Stay')),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            child: const Text('Discard & Leave'),
+          ),
+        ],
+      ),
+    );
+    return leave ?? false;
+  }
+
+  /// Fits the camera preview to fill the screen while preserving its native
+  /// aspect ratio (crop-to-fill, "BoxFit.cover"-style) -- StackFit.expand
+  /// alone stretches/distorts the image since the sensor's aspect ratio
+  /// almost never matches the phone screen's.
+  Widget _buildCameraPreview(Size screenSize) {
+    final controller = _cameraController!;
+    var scale = screenSize.aspectRatio * controller.value.aspectRatio;
+    if (scale < 1) scale = 1 / scale;
+    return Transform.scale(
+      scale: scale,
+      child: Center(
+        child: AspectRatio(
+          aspectRatio: controller.value.aspectRatio,
+          child: CameraPreview(controller),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final appState = context.watch<AppState>();
     final pricing = context.watch<PricingService>();
     final location = _getLocation(appState);
+    final screenSize = MediaQuery.of(context).size;
 
-    final displayRate = _liveCategory != null
-        ? (pricing.currentRate(_liveCategory!, location) ?? 50.0)
-        : null;
+    final displayRate = _liveCategory != null ? (pricing.currentRate(_liveCategory!, location) ?? 50.0) : null;
+    final lotTotal = _lotItems.fold<double>(0, (a, i) => a + i.estimatedValue);
 
-    return Scaffold(
-      backgroundColor: Colors.black,
-      body: Stack(
-        fit: StackFit.expand,
-        children: [
-          // 1. Live Camera Preview (or Fallback if camera unavailable)
-          if (_isCameraInitialized && _cameraController != null)
-            CameraPreview(_cameraController!)
-          else
-            Container(
-              color: Colors.black87,
-              child: const Center(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    CircularProgressIndicator(color: kBrandGreen),
-                    SizedBox(height: 16),
-                    Text('Starting Continuous AI Camera...', style: TextStyle(color: Colors.white70)),
-                  ],
+    return PopScope(
+      canPop: _lotItems.isEmpty,
+      onPopInvokedWithResult: (didPop, _) async {
+        if (didPop) return;
+        final shouldLeave = await _confirmExit();
+        if (!shouldLeave || !mounted) return;
+        Navigator.pop(context);
+      },
+      child: Scaffold(
+        backgroundColor: Colors.black,
+        body: Stack(
+          fit: StackFit.expand,
+          children: [
+            if (_isCameraInitialized && _cameraController != null)
+              _buildCameraPreview(screenSize)
+            else
+              Container(
+                color: Colors.black87,
+                child: const Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      CircularProgressIndicator(color: kBrandGreen),
+                      SizedBox(height: 16),
+                      Text('Starting Continuous AI Camera...', style: TextStyle(color: Colors.white70)),
+                    ],
+                  ),
                 ),
+              ),
+
+            // Reticle overlay
+            SafeArea(
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  final boxWidth = constraints.maxWidth * 0.76;
+                  final boxHeight = constraints.maxHeight * 0.40;
+
+                  return Center(
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Container(
+                          width: boxWidth,
+                          height: boxHeight,
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.white24, width: 1.5),
+                            borderRadius: BorderRadius.circular(24),
+                          ),
+                          child: CustomPaint(painter: _ReticleCornerPainter(color: kBrandGreen)),
+                        ),
+                        AnimatedBuilder(
+                          animation: _laserAnimation,
+                          builder: (context, child) {
+                            return Positioned(
+                              top: (boxHeight * _laserAnimation.value),
+                              child: Container(
+                                width: boxWidth - 20,
+                                height: 2.5,
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      kBrandGreen.withValues(alpha: 0.1),
+                                      kBrandGreen,
+                                      kBrandGreen.withValues(alpha: 0.1),
+                                    ],
+                                  ),
+                                  boxShadow: [
+                                    BoxShadow(color: kBrandGreen.withValues(alpha: 0.8), blurRadius: 8, spreadRadius: 1),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                  );
+                },
               ),
             ),
 
-          // 2. Google Lens Reticle Overlay (with corner brackets & laser scan line)
-          SafeArea(
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                final boxWidth = constraints.maxWidth * 0.76;
-                final boxHeight = constraints.maxHeight * 0.44;
-
-                return Center(
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      // Scanner Viewfinder Box
-                      Container(
-                        width: boxWidth,
-                        height: boxHeight,
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.white24, width: 1.5),
-                          borderRadius: BorderRadius.circular(24),
-                        ),
-                        child: CustomPaint(
-                          painter: _ReticleCornerPainter(color: kBrandGreen),
-                        ),
-                      ),
-
-                      // Animated Sweeping Laser Line
-                      AnimatedBuilder(
-                        animation: _laserAnimation,
-                        builder: (context, child) {
-                          return Positioned(
-                            top: (boxHeight * _laserAnimation.value),
-                            child: Container(
-                              width: boxWidth - 20,
-                              height: 2.5,
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: [
-                                    kBrandGreen.withValues(alpha: 0.1),
-                                    kBrandGreen,
-                                    kBrandGreen.withValues(alpha: 0.1),
-                                  ],
-                                ),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: kBrandGreen.withValues(alpha: 0.8),
-                                    blurRadius: 8,
-                                    spreadRadius: 1,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ),
-          ),
-
-          // 3. Top Action Bar (Back, AI mode pill, Flash, Camera Flip)
-          SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: Row(
-                children: [
-                  CircleAvatar(
-                    backgroundColor: Colors.black45,
-                    child: IconButton(
-                      icon: const Icon(Icons.arrow_back, color: Colors.white),
-                      onPressed: () => Navigator.pop(context),
-                    ),
-                  ),
-                  const Spacer(),
-                  // AI HUD badge
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                    decoration: BoxDecoration(
-                      color: Colors.black54,
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: kBrandGreen.withValues(alpha: 0.4)),
-                    ),
-                    child: const Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.auto_awesome, color: kBrandGreen, size: 14),
-                        SizedBox(width: 6),
-                        Text('AI Continuous Lens', style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold)),
-                      ],
-                    ),
-                  ),
-                  const Spacer(),
-                  CircleAvatar(
-                    backgroundColor: Colors.black45,
-                    child: IconButton(
-                      icon: Icon(_isFlashOn ? Icons.flash_on : Icons.flash_off, color: _isFlashOn ? Colors.amber : Colors.white),
-                      onPressed: _toggleFlash,
-                    ),
-                  ),
-                  if (_cameras.length > 1) ...[
-                    const SizedBox(width: 8),
+            // Top action bar
+            SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                child: Row(
+                  children: [
                     CircleAvatar(
                       backgroundColor: Colors.black45,
                       child: IconButton(
-                        icon: const Icon(Icons.flip_camera_android, color: Colors.white),
-                        onPressed: _switchCamera,
+                        icon: const Icon(Icons.arrow_back, color: Colors.white),
+                        onPressed: () async {
+                          if (await _confirmExit() && context.mounted) Navigator.pop(context);
+                        },
                       ),
                     ),
-                  ],
-                ],
-              ),
-            ),
-          ),
-
-          // 4. Live Real-Time Detection Pill (Floating above shutter button)
-          Positioned(
-            bottom: 120,
-            left: 20,
-            right: 20,
-            child: _buildLiveDetectionPill(displayRate, location),
-          ),
-
-          // 5. Bottom Control Bar (Google Lens Shutter + Gallery picker)
-          Positioned(
-            bottom: 30,
-            left: 0,
-            right: 0,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                // Gallery import
-                CircleAvatar(
-                  radius: 24,
-                  backgroundColor: Colors.white24,
-                  child: IconButton(
-                    icon: const Icon(Icons.photo_library, color: Colors.white),
-                    tooltip: 'Gallery',
-                    onPressed: () async {
-                      final ewasteAi = context.read<EwasteAiService>();
-                      final file = await ImagePicker().pickImage(source: ImageSource.gallery, maxWidth: 1000);
-                      if (file == null) return;
-                      final bytes = await file.readAsBytes();
-                      final analysis = await ewasteAi.analyzeImage(bytes);
-                      if (!mounted) return;
-                      if (!analysis.isCollectible) {
-                        _showRejectedDialog(analysis.itemName, analysis.rejectionReason);
-                        return;
-                      }
-                      _showQuickWeightDialog(
-                        imageBytes: bytes,
-                        category: analysis.components.isNotEmpty ? analysis.components.first.category : MaterialCategory.pcb,
-                        condition: 'intact',
-                        itemName: analysis.itemName,
-                      );
-                    },
-                  ),
-                ),
-
-                // Central Google Lens Shutter Button
-                GestureDetector(
-                  onTap: _isCapturing ? null : _onCapture,
-                  child: Container(
-                    width: 78,
-                    height: 78,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(color: Colors.white, width: 4),
-                      color: Colors.white.withValues(alpha: 0.15),
-                    ),
-                    padding: const EdgeInsets.all(5),
-                    child: Container(
+                    const Spacer(),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                       decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        gradient: LinearGradient(
-                          colors: [kBrandGreen, kBrandGreenDark],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: kBrandGreen.withValues(alpha: 0.5),
-                            blurRadius: 16,
-                            spreadRadius: 2,
-                          ),
+                        color: Colors.black54,
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: kBrandGreen.withValues(alpha: 0.4)),
+                      ),
+                      child: const Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.auto_awesome, color: kBrandGreen, size: 14),
+                          SizedBox(width: 6),
+                          Text('AI Continuous Lens', style: TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold)),
                         ],
                       ),
-                      child: _isCapturing
-                          ? const Center(child: SizedBox(width: 24, height: 24, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2.5)))
-                          : const Icon(Icons.camera, color: Colors.white, size: 36),
                     ),
-                  ),
+                    const Spacer(),
+                    CircleAvatar(
+                      backgroundColor: Colors.black45,
+                      child: IconButton(
+                        icon: Icon(_isFlashOn ? Icons.flash_on : Icons.flash_off, color: _isFlashOn ? Colors.amber : Colors.white),
+                        onPressed: _toggleFlash,
+                      ),
+                    ),
+                    if (_cameras.length > 1) ...[
+                      const SizedBox(width: 8),
+                      CircleAvatar(
+                        backgroundColor: Colors.black45,
+                        child: IconButton(
+                          icon: const Icon(Icons.flip_camera_android, color: Colors.white),
+                          onPressed: _switchCamera,
+                        ),
+                      ),
+                    ],
+                  ],
                 ),
-
-                // Guide button
-                CircleAvatar(
-                  radius: 24,
-                  backgroundColor: Colors.white24,
-                  child: IconButton(
-                    icon: const Icon(Icons.school, color: Colors.white),
-                    tooltip: 'Accepted Scrap Guide',
-                    onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const EwasteGuideScreen())),
-                  ),
-                ),
-              ],
+              ),
             ),
+
+            // Bottom cluster: lot summary + live pill + shutter row, all
+            // anchored inside a bottom SafeArea so gesture-nav insets don't
+            // push the shutter under the system bar.
+            SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    if (_lotItems.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: _buildLotSummaryBar(lotTotal),
+                      ),
+                    const SizedBox(height: 10),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: _buildLiveDetectionPill(displayRate, location),
+                    ),
+                    const SizedBox(height: 22),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        CircleAvatar(
+                          radius: 24,
+                          backgroundColor: Colors.white24,
+                          child: IconButton(
+                            icon: const Icon(Icons.photo_library, color: Colors.white),
+                            tooltip: 'Gallery',
+                            onPressed: () async {
+                              final ewasteAi = context.read<EwasteAiService>();
+                              final file = await ImagePicker().pickImage(source: ImageSource.gallery, maxWidth: 1000);
+                              if (file == null) return;
+                              final bytes = await file.readAsBytes();
+                              setState(() => _scanningPaused = true);
+                              final analysis = await ewasteAi.analyzeImage(bytes);
+                              if (!mounted) return;
+                              if (!analysis.isCollectible) {
+                                setState(() => _scanningPaused = false);
+                                _showRejectedDialog(analysis.itemName, analysis.rejectionReason);
+                                return;
+                              }
+                              _showQuickWeightDialog(
+                                imageBytes: bytes,
+                                category: analysis.components.isNotEmpty ? analysis.components.first.category : MaterialCategory.pcb,
+                                condition: 'intact',
+                                itemName: analysis.itemName,
+                              );
+                            },
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: _isCapturing ? null : _onCapture,
+                          child: Container(
+                            width: 78,
+                            height: 78,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(color: Colors.white, width: 4),
+                              color: Colors.white.withValues(alpha: 0.15),
+                            ),
+                            padding: const EdgeInsets.all(5),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                gradient: const LinearGradient(
+                                  colors: [kBrandGreen, kBrandGreenDark],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                ),
+                                boxShadow: [BoxShadow(color: kBrandGreen.withValues(alpha: 0.5), blurRadius: 16, spreadRadius: 2)],
+                              ),
+                              child: _isCapturing
+                                  ? const Center(child: SizedBox(width: 24, height: 24, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2.5)))
+                                  : const Icon(Icons.camera, color: Colors.white, size: 36),
+                            ),
+                          ),
+                        ),
+                        CircleAvatar(
+                          radius: 24,
+                          backgroundColor: Colors.white24,
+                          child: IconButton(
+                            icon: const Icon(Icons.school, color: Colors.white),
+                            tooltip: 'Accepted Scrap Guide',
+                            onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const EwasteGuideScreen())),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLotSummaryBar(double lotTotal) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(16),
+        onTap: _proceedToCheckout,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          decoration: BoxDecoration(
+            color: kBrandGreen,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: const [BoxShadow(color: Colors.black45, blurRadius: 10)],
           ),
-        ],
+          child: Row(
+            children: [
+              const Icon(Icons.inventory_2, color: Colors.white, size: 20),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  '${_lotItems.length} item(s) in this lot · ₹${lotTotal.toStringAsFixed(0)}',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13),
+                ),
+              ),
+              const Text('Checkout', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13)),
+              const Icon(Icons.arrow_forward, color: Colors.white, size: 16),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -833,14 +918,16 @@ class _ContinuousLensScannerScreenState extends State<ContinuousLensScannerScree
           border: Border.all(color: Colors.red.shade400, width: 1.5),
           boxShadow: const [BoxShadow(color: Colors.black45, blurRadius: 10)],
         ),
-        child: Row(
+        child: const Row(
           children: [
-            const Icon(Icons.block, color: Colors.white, size: 20),
-            const SizedBox(width: 10),
+            Icon(Icons.block, color: Colors.white, size: 20),
+            SizedBox(width: 10),
             Expanded(
               child: Text(
-                '⚠️ Not Accepted (${_liveItemName.isNotEmpty ? _liveItemName : "Non-E-Waste"})',
-                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13),
+                'Not accepted -- point at e-waste',
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13),
               ),
             ),
           ],
@@ -873,9 +960,7 @@ class _ContinuousLensScannerScreenState extends State<ContinuousLensScannerScree
         color: Colors.black87,
         borderRadius: BorderRadius.circular(24),
         border: Border.all(color: kBrandGreen, width: 1.5),
-        boxShadow: [
-          BoxShadow(color: kBrandGreen.withValues(alpha: 0.35), blurRadius: 12),
-        ],
+        boxShadow: [BoxShadow(color: kBrandGreen.withValues(alpha: 0.35), blurRadius: 12)],
       ),
       child: Row(
         children: [
@@ -887,12 +972,15 @@ class _ContinuousLensScannerScreenState extends State<ContinuousLensScannerScree
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  _liveItemName.isNotEmpty ? _liveItemName : _liveCategory!.key,
-                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
+                  _liveCategory!.key,
+                  maxLines: 1,
                   overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
                 ),
                 Text(
-                  '${(_liveConfidence * 100).toStringAsFixed(0)}% Match • Tap shutter to create lot',
+                  'Tap shutter to add to lot · ${(_liveConfidence * 100).toStringAsFixed(0)}% match',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: const TextStyle(color: Colors.white70, fontSize: 11),
                 ),
               ],
@@ -901,10 +989,7 @@ class _ContinuousLensScannerScreenState extends State<ContinuousLensScannerScree
           if (rate != null)
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-              decoration: BoxDecoration(
-                color: kBrandGreen,
-                borderRadius: BorderRadius.circular(12),
-              ),
+              decoration: BoxDecoration(color: kBrandGreen, borderRadius: BorderRadius.circular(12)),
               child: Text(
                 '₹${rate.toStringAsFixed(0)}/kg',
                 style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12),
@@ -953,19 +1038,15 @@ class _ReticleCornerPainter extends CustomPainter {
 
     const cornerLength = 28.0;
 
-    // Top Left
     canvas.drawLine(const Offset(0, cornerLength), Offset.zero, paint);
     canvas.drawLine(Offset.zero, const Offset(cornerLength, 0), paint);
 
-    // Top Right
     canvas.drawLine(Offset(size.width - cornerLength, 0), Offset(size.width, 0), paint);
     canvas.drawLine(Offset(size.width, 0), Offset(size.width, cornerLength), paint);
 
-    // Bottom Left
     canvas.drawLine(Offset(0, size.height - cornerLength), Offset(0, size.height), paint);
     canvas.drawLine(Offset(0, size.height), Offset(cornerLength, size.height), paint);
 
-    // Bottom Right
     canvas.drawLine(Offset(size.width - cornerLength, size.height), Offset(size.width, size.height), paint);
     canvas.drawLine(Offset(size.width, size.height - cornerLength), Offset(size.width, size.height), paint);
   }

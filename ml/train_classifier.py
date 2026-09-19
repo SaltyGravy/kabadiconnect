@@ -55,6 +55,23 @@ class_names = train_raw.class_names
 num_classes = len(class_names)
 print(f"Loaded {num_classes} classes: {class_names}")
 
+# Seed images are still imbalanced across classes (e.g. CABLES/PCB have
+# 2-4x as many examples as MIXED_OTHER/MOTORS_MAGNETS) -- weight the loss
+# inversely to class frequency so the model doesn't just learn to predict
+# the majority classes.
+train_counts = [0] * num_classes
+for class_dir in sorted((SEED_DIR / "train").iterdir()):
+    if class_dir.is_dir():
+        idx = class_names.index(class_dir.name)
+        train_counts[idx] = sum(1 for _ in class_dir.glob("*.*"))
+total_train = sum(train_counts)
+class_weight = {
+    i: total_train / (num_classes * count) if count > 0 else 1.0
+    for i, count in enumerate(train_counts)
+}
+print("Class counts:", dict(zip(class_names, train_counts)))
+print("Class weights:", {class_names[i]: round(w, 3) for i, w in class_weight.items()})
+
 normalize = tf.keras.layers.Rescaling(1.0 / 127.5, offset=-1)
 train_ds = train_raw.map(lambda x, y: (normalize(x), y)).prefetch(tf.data.AUTOTUNE)
 val_ds = val_raw.map(lambda x, y: (normalize(x), y)).prefetch(tf.data.AUTOTUNE)
@@ -91,7 +108,7 @@ model.compile(
     loss="sparse_categorical_crossentropy",
     metrics=["accuracy"],
 )
-history_stage1 = model.fit(train_ds, validation_data=val_ds, epochs=STAGE1_EPOCHS, verbose=2)
+history_stage1 = model.fit(train_ds, validation_data=val_ds, epochs=STAGE1_EPOCHS, class_weight=class_weight, verbose=2)
 
 # Stage 2: Fine-tuning top layers of MobileNetV2
 print("\n--- STAGE 2: Fine-tuning top 35 layers of MobileNetV2 ---")
@@ -111,6 +128,7 @@ history_stage2 = model.fit(
     validation_data=val_ds,
     epochs=STAGE2_EPOCHS,
     callbacks=[reduce_lr],
+    class_weight=class_weight,
     verbose=2,
 )
 

@@ -7,6 +7,45 @@ phone from the last ~8 years; use the `armeabi-v7a` one only for very old
 warn on install; that's expected for a non-Play-Store build, not a sign of
 a problem.
 
+## v1.7.0 (2026-09-20)
+
+Continuous AI Lens scanner overhaul, fixing four reported problems at once:
+
+- **Lag**: the live preview loop was calling `takePicture()` (full-res
+  still capture) plus the same possibly-online `EwasteAiService.analyzeImage()`
+  used for shutter presses, every 1.5s -- if a Gemini API key was ever set,
+  every tick could trigger a full network round-trip. The live HUD now
+  calls the on-device `ClassifierService` directly (no network, ever), at
+  medium camera resolution instead of high, on a slightly longer 2s tick.
+  The full (possibly online) analysis still runs, but only once, on shutter
+  press -- where the extra latency is expected and acceptable.
+- **Stretched/distorted preview**: `CameraPreview` was wrapped in
+  `Stack(fit: StackFit.expand)` with no aspect-ratio correction, so the
+  live image was squashed/stretched to fill the screen. Replaced with the
+  standard Flutter camera-preview idiom (`Transform.scale` + `AspectRatio`)
+  that crops-to-fill instead of distorting.
+  Also wrapped the bottom shutter/HUD controls in a bottom `SafeArea` --
+  they weren't previously, so on phones with a gesture-nav bar the shutter
+  button could sit under the system bar.
+- **Multi-item lot flow was broken**: confirming an item's weight used to
+  jump straight to checkout with just that one item; "Add More Items" left
+  the scanner for a different screen. Now: confirming an item's weight adds
+  it to this scan session's accumulating lot and returns to the live
+  scanner so you can keep pointing at more items -- a persistent "N items
+  in this lot · ₹total · Checkout" bar appears once you've added at least
+  one, and tapping it is the only thing that proceeds to checkout (with a
+  confirm step). Leaving the scanner with unsaved items now asks first.
+- **Model accuracy**: the classifier's training set was badly imbalanced
+  (some categories had 150+ images, MIXED_OTHER had 10). Pulled several
+  hundred more real, appropriately-licensed photos from Wikimedia
+  Commons/Openverse focused on the weakest categories (MIXED_OTHER
+  10→52, CRT 61→121, LCD_LED 46→95, MOTORS_MAGNETS 41→91, MIXED_PLASTICS
+  32→74 training images), added inverse-frequency class weighting to the
+  training loop, and retrained both the classifier and the detector.
+  Validation accuracy: 68.6% → 72.2%, with the biggest gains on the
+  previously-starved categories (e.g. MOTORS_MAGNETS recall 0.88,
+  MIXED_OTHER recall 0.82, CRT recall 0.85).
+
 ## v1.6.1 (2026-09-19)
 
 Fixed a real layout bug: titles in the E-Waste Guide's Categories tab and
