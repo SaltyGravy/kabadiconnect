@@ -321,6 +321,8 @@ class _AiVoiceAssistantSheetState extends State<AiVoiceAssistantSheet> with Sing
                             : appState.locale == AppLocale.mr
                                 ? 'कबाडी AI सहाय्यक'
                                 : 'KabadiConnect AI Copilot',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                         style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
                       ),
                       Text(
@@ -329,6 +331,8 @@ class _AiVoiceAssistantSheetState extends State<AiVoiceAssistantSheet> with Sing
                             : appState.locale == AppLocale.mr
                                 ? 'व्हॉइस व चॅटने लॉट बनवा'
                                 : 'Voice & Chat Scrap Assistant',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                         style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
                       ),
                     ],
@@ -360,16 +364,20 @@ class _AiVoiceAssistantSheetState extends State<AiVoiceAssistantSheet> with Sing
                   ),
                 ),
 
-                const SizedBox(width: 6),
+                const SizedBox(width: 2),
                 // Sound Mute/Unmute
                 IconButton(
-                  icon: Icon(_ttsMuted ? Icons.volume_off : Icons.volume_up, size: 22),
+                  icon: Icon(_ttsMuted ? Icons.volume_off : Icons.volume_up, size: 20),
                   tooltip: _ttsMuted ? 'Unmute Audio' : 'Mute Audio',
                   color: _ttsMuted ? Colors.grey : kBrandGreen,
+                  visualDensity: VisualDensity.compact,
+                  padding: EdgeInsets.zero,
                   onPressed: () => setState(() => _ttsMuted = !_ttsMuted),
                 ),
                 IconButton(
-                  icon: const Icon(Icons.close, size: 22),
+                  icon: const Icon(Icons.close, size: 20),
+                  visualDensity: VisualDensity.compact,
+                  padding: EdgeInsets.zero,
                   onPressed: () => Navigator.pop(context),
                 ),
               ],
@@ -802,18 +810,20 @@ class _ModeTab extends StatelessWidget {
           borderRadius: BorderRadius.circular(16),
           boxShadow: isSelected ? [const BoxShadow(color: Colors.black12, blurRadius: 4)] : null,
         ),
+        // Label only shows for the selected tab -- keeps the toggle
+        // compact (icon-only when inactive) so it doesn't crowd out the
+        // header title on narrower screens.
         child: Row(
+          mainAxisSize: MainAxisSize.min,
           children: [
             Icon(icon, size: 16, color: isSelected ? kBrandGreen : Colors.grey.shade700),
-            const SizedBox(width: 4),
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                color: isSelected ? kBrandGreen : Colors.grey.shade700,
+            if (isSelected) ...[
+              const SizedBox(width: 4),
+              Text(
+                label,
+                style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: kBrandGreen),
               ),
-            ),
+            ],
           ],
         ),
       ),

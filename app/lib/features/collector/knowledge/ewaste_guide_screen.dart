@@ -132,9 +132,12 @@ class _EwasteGuideScreenState extends State<EwasteGuideScreen> with SingleTicker
             Expanded(
               child: Text(
                 item.name,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
                 style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
               ),
             ),
+            const SizedBox(width: 8),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               decoration: BoxDecoration(
@@ -299,31 +302,43 @@ class _EwasteGuideScreenState extends State<EwasteGuideScreen> with SingleTicker
                         children: [
                           Text(
                             guide?.name ?? cat.key,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                             style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                           ),
                           Text(
                             cat.key,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                             style: TextStyle(color: cat.color, fontWeight: FontWeight.w600, fontSize: 12),
                           ),
                         ],
                       ),
                     ),
-                    if (guide != null)
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: Colors.green.shade50,
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: Colors.green.shade200),
-                        ),
-                        child: Text(
-                          guide.averageMarketPriceInr,
-                          style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.green.shade800),
-                        ),
-                      ),
                   ],
                 ),
                 if (guide != null) ...[
+                  const SizedBox(height: 10),
+                  // Own line, not squeezed beside the title -- this price
+                  // description can be long ("graded by gold/component
+                  // density"), and cramming it into the header Row forced
+                  // the title into a near-zero-width column that wrapped
+                  // one character per line.
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: Colors.green.shade50,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.green.shade200),
+                      ),
+                      child: Text(
+                        guide.averageMarketPriceInr,
+                        style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.green.shade800),
+                      ),
+                    ),
+                  ),
                   const SizedBox(height: 12),
                   Text(guide.description, style: const TextStyle(fontSize: 14)),
                   const SizedBox(height: 10),
@@ -419,6 +434,8 @@ class _EwasteGuideScreenState extends State<EwasteGuideScreen> with SingleTicker
                     Expanded(
                       child: Text(
                         p.categoryName,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
                         style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                       ),
                     ),

@@ -7,6 +7,28 @@ phone from the last ~8 years; use the `armeabi-v7a` one only for very old
 warn on install; that's expected for a non-Play-Store build, not a sign of
 a problem.
 
+## v1.6.1 (2026-09-19)
+
+Fixed a real layout bug: titles in the E-Waste Guide's Categories tab and
+the AI Copilot sheet's header were rendering one character per line in a
+tall narrow column (e.g. "Printed Circuit Boards (PCBs)" as a vertical
+strip). Root cause: a `Row` had one non-flexible sibling with a long,
+unbounded-width string (the "₹250 - ₹900/kg (graded by gold/component
+density)" price pill; the Voice/Chat mode toggle + 2 icon buttons in the
+Copilot header) next to the `Expanded` title -- Flutter measures
+non-flexible children at their natural width first, so a long enough
+sibling squeezes `Expanded` down to near-zero width, and text wraps after
+every 1-2 characters instead of overflowing normally.
+- Guide screen: moved the price-range badge onto its own line below the
+  title instead of squeezing it into the header row.
+- Copilot header: the Voice/Chat toggle now shows its label only for the
+  currently-selected mode (icon-only when inactive), freeing up room for
+  the title; trimmed the two trailing icon buttons' padding too.
+- Added `maxLines`/`overflow: ellipsis` as a defensive backstop on every
+  title Text in both screens, so even an unexpectedly long string (some
+  CPCB Schedule I item names are genuinely very long) truncates cleanly
+  instead of collapsing into the vertical-wrap bug again.
+
 ## v1.6.0 (2026-09-19)
 
 **Continuous "Google Lens"-style scanner.** Tap the camera button in the
