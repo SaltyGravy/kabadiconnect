@@ -7,6 +7,26 @@ phone from the last ~8 years; use the `armeabi-v7a` one only for very old
 warn on install; that's expected for a non-Play-Store build, not a sign of
 a problem.
 
+## v1.8.3 (2026-09-20)
+
+No device or emulator was available to test v1.8.2 on directly, so
+instead of just asserting it was fine, did a full line-by-line audit of
+the scanner's camera lifecycle code against the actual installed
+`camera`/`image` package sources. Found and fixed two real bugs:
+- After switching cameras (front/back toggle), the live HUD would
+  silently stop updating: `_switchCamera()` disposed the old
+  `CameraController` and built a new one, but never reset the
+  `_isStreaming` flag, so `_startContinuousScanning()`'s re-entrancy
+  guard saw a stale "already streaming" state and skipped starting the
+  new controller's stream. Fixed by resetting the flag in `_initCamera()`
+  and explicitly stopping the stream before disposing in `_switchCamera()`.
+- The controller was requesting `ImageFormatGroup.jpeg` for
+  `startImageStream()`, a less universally-supported streaming format
+  across Android devices/plugin versions than the default YUV420.
+  `takePicture()`'s still-capture output is unaffected by this setting
+  (always JPEG on Android regardless), so there was no reason to take
+  that risk -- switched to `ImageFormatGroup.yuv420`.
+
 ## v1.8.2 (2026-09-20)
 
 Went back at the continuous scanner's lag after another report that it was

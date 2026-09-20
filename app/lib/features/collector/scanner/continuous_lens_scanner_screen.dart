@@ -92,6 +92,13 @@ class _ContinuousLensScannerScreenState extends State<ContinuousLensScannerScree
         return;
       }
 
+      // A previous controller's stream (if any) is gone once we build a
+      // new CameraController below -- reset the Dart-side flag so
+      // _startContinuousScanning() doesn't think a stream is still
+      // running and skip starting the new one (this was a real bug: after
+      // switching cameras, the live HUD would silently stop updating).
+      _isStreaming = false;
+
       final camera = _cameras[_selectedCameraIndex];
       _cameraController = CameraController(
         camera,
@@ -101,7 +108,11 @@ class _ContinuousLensScannerScreenState extends State<ContinuousLensScannerScree
         // encode, and read back.
         ResolutionPreset.medium,
         enableAudio: false,
-        imageFormatGroup: ImageFormatGroup.jpeg,
+        // yuv420, not jpeg: this is the universally-supported format for
+        // startImageStream() across Android devices/plugin versions --
+        // takePicture()'s still-capture output is unaffected by this
+        // setting and remains JPEG regardless, so there's no downside.
+        imageFormatGroup: ImageFormatGroup.yuv420,
       );
 
       await _cameraController!.initialize();
@@ -269,6 +280,7 @@ class _ContinuousLensScannerScreenState extends State<ContinuousLensScannerScree
   Future<void> _switchCamera() async {
     if (_cameras.length < 2) return;
     _selectedCameraIndex = (_selectedCameraIndex + 1) % _cameras.length;
+    await _stopContinuousScanning();
     await _cameraController?.dispose();
     setState(() => _isCameraInitialized = false);
     _initCamera();
