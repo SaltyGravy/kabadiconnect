@@ -7,6 +7,18 @@ phone from the last ~8 years; use the `armeabi-v7a` one only for very old
 warn on install; that's expected for a non-Play-Store build, not a sign of
 a problem.
 
+## v1.8.1 (2026-09-20)
+
+Safety Guidance screen: each tip's audio narration now has real play/pause
+and replay controls instead of a single one-shot "Listen" button.
+- Since on-device TTS engines don't support true mid-utterance
+  pause-and-resume, narration is spoken one sentence at a time -- Pause
+  stops after the current sentence and remembers which one it was, so
+  Play resumes there instead of restarting from the top. A small counter
+  ("2/4") shows progress while playing or paused.
+- Added a separate Replay button that jumps back to the first sentence
+  and starts over, distinct from Pause/Play.
+
 ## v1.8.0 (2026-09-20)
 
 Online AI is now live out of the box, and the classifier crossed the 80%

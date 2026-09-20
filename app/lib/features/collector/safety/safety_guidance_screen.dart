@@ -32,14 +32,94 @@ List<String> _splitIntoPoints(String text) {
       .toList();
 }
 
-class SafetyGuidanceScreen extends StatelessWidget {
+class SafetyGuidanceScreen extends StatefulWidget {
   const SafetyGuidanceScreen({super.key});
+
+  @override
+  State<SafetyGuidanceScreen> createState() => _SafetyGuidanceScreenState();
+}
+
+class _SafetyGuidanceScreenState extends State<SafetyGuidanceScreen> {
+  // Which card is actively speaking right now (null = nothing playing).
+  int? _playingIndex;
+  // Next point index to speak for each card -- lets Play resume from where
+  // Pause left off instead of always restarting from the top. On-device TTS
+  // engines don't support true mid-utterance pause/resume, so this speaks
+  // one sentence at a time and treats "pause" as "stop after this sentence".
+  final Map<int, int> _nextPoint = {};
+
+  late TtsService _tts;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _tts = context.read<TtsService>();
+    _tts.setCompletionHandler(_onUtteranceComplete);
+  }
+
+  @override
+  void dispose() {
+    _tts.setCompletionHandler(() {});
+    super.dispose();
+  }
+
+  List<String> _pointsFor(int i, AppState appState) {
+    final tip = _tips[i];
+    final title = AppStrings.t(tip.titleKey, appState.locale);
+    final desc = AppStrings.t(tip.descKey, appState.locale);
+    final points = _splitIntoPoints(desc);
+    // First point is prefixed with the title so the card is identified by
+    // ear too, not just by sight.
+    if (points.isNotEmpty) points[0] = '$title. ${points[0]}';
+    return points;
+  }
+
+  void _onUtteranceComplete() {
+    if (!mounted) return;
+    final i = _playingIndex;
+    if (i == null) return;
+    final appState = context.read<AppState>();
+    final points = _pointsFor(i, appState);
+    final next = (_nextPoint[i] ?? 0) + 1;
+    if (next < points.length) {
+      setState(() => _nextPoint[i] = next);
+      _tts.speak(points[next], appState.locale);
+    } else {
+      setState(() {
+        _nextPoint[i] = 0; // fully finished -- next Play starts over
+        _playingIndex = null;
+      });
+    }
+  }
+
+  void _togglePlayPause(int i, AppState appState) {
+    if (_playingIndex == i) {
+      _tts.stop();
+      setState(() => _playingIndex = null);
+      return;
+    }
+    final points = _pointsFor(i, appState);
+    final startAt = (_nextPoint[i] ?? 0).clamp(0, points.length - 1);
+    setState(() {
+      _playingIndex = i;
+      _nextPoint[i] = startAt;
+    });
+    _tts.speak(points[startAt], appState.locale);
+  }
+
+  void _replay(int i, AppState appState) {
+    if (_playingIndex == i) _tts.stop();
+    setState(() {
+      _nextPoint[i] = 0;
+      _playingIndex = i;
+    });
+    _tts.speak(_pointsFor(i, appState)[0], appState.locale);
+  }
 
   @override
   Widget build(BuildContext context) {
     final appState = context.watch<AppState>();
     String t(String k) => AppStrings.t(k, appState.locale);
-    final tts = context.read<TtsService>();
 
     return Scaffold(
       appBar: AppBar(title: Text(t('safetyTitle'))),
@@ -51,6 +131,10 @@ class SafetyGuidanceScreen extends StatelessWidget {
           final title = t(tip.titleKey);
           final desc = t(tip.descKey);
           final points = _splitIntoPoints(desc);
+          final isPlaying = _playingIndex == i;
+          final progress = _nextPoint[i] ?? 0;
+          final hasProgress = progress > 0 && !isPlaying;
+
           return Card(
             margin: const EdgeInsets.only(bottom: 14),
             child: Padding(
@@ -81,13 +165,42 @@ class SafetyGuidanceScreen extends StatelessWidget {
                         ),
                       )),
                   const SizedBox(height: 6),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: OutlinedButton.icon(
-                      onPressed: () => tts.speak('$title. $desc', appState.locale),
-                      icon: const Icon(Icons.volume_up, size: 18),
-                      label: Text(t('listenBtn')),
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      if (isPlaying)
+                        Padding(
+                          padding: const EdgeInsets.only(right: 10),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              SizedBox(
+                                width: 12,
+                                height: 12,
+                                child: CircularProgressIndicator(strokeWidth: 2, color: tip.color),
+                              ),
+                              const SizedBox(width: 6),
+                              Text('${progress + 1}/${points.length}', style: TextStyle(fontSize: 12, color: Colors.grey.shade600)),
+                            ],
+                          ),
+                        )
+                      else if (hasProgress)
+                        Padding(
+                          padding: const EdgeInsets.only(right: 10),
+                          child: Text('${t('pauseBtn')} · ${progress + 1}/${points.length}', style: TextStyle(fontSize: 12, color: Colors.grey.shade600)),
+                        ),
+                      OutlinedButton.icon(
+                        onPressed: () => _replay(i, appState),
+                        icon: const Icon(Icons.replay, size: 18),
+                        label: Text(t('replayBtn')),
+                      ),
+                      const SizedBox(width: 8),
+                      OutlinedButton.icon(
+                        onPressed: () => _togglePlayPause(i, appState),
+                        icon: Icon(isPlaying ? Icons.pause : Icons.play_arrow, size: 18),
+                        label: Text(isPlaying ? t('pauseBtn') : t('listenBtn')),
+                      ),
+                    ],
                   ),
                 ],
               ),

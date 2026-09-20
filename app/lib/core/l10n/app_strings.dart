@@ -88,6 +88,8 @@ class AppStrings {
     'pendingDues': {AppLocale.en: 'Pending dues', AppLocale.hi: 'बाकी राशि', AppLocale.mr: 'थकीत रक्कम'},
     'safetyTitle': {AppLocale.en: 'Safety Guidance', AppLocale.hi: 'सुरक्षा मार्गदर्शन', AppLocale.mr: 'सुरक्षा मार्गदर्शन'},
     'listenBtn': {AppLocale.en: 'Listen', AppLocale.hi: 'सुनें', AppLocale.mr: 'ऐका'},
+    'pauseBtn': {AppLocale.en: 'Pause', AppLocale.hi: 'रोकें', AppLocale.mr: 'थांबवा'},
+    'replayBtn': {AppLocale.en: 'Replay', AppLocale.hi: 'फिर से सुनें', AppLocale.mr: 'पुन्हा ऐका'},
     'offlineBanner': {AppLocale.en: 'Offline - will sync later', AppLocale.hi: 'ऑफ़लाइन - बाद में सिंक होगा', AppLocale.mr: 'ऑफलाइन - नंतर सिंक होईल'},
     'syncedBanner': {AppLocale.en: 'All data synced', AppLocale.hi: 'सभी डेटा सिंक हो गया', AppLocale.mr: 'सर्व डेटा सिंक झाला'},
     'incomingLots': {AppLocale.en: 'Incoming Lots', AppLocale.hi: 'आने वाले लॉट', AppLocale.mr: 'येणारे लॉट'},

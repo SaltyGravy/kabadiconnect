@@ -31,4 +31,10 @@ class TtsService {
   }
 
   Future<void> stop() => _tts.stop();
+
+  /// Fires when an utterance finishes speaking naturally (not via [stop]).
+  /// Used to chain sentence-by-sentence playback so pause/resume can pick
+  /// back up at the sentence it stopped on, since on-device TTS engines
+  /// don't support true mid-utterance pause-and-resume.
+  void setCompletionHandler(void Function() handler) => _tts.setCompletionHandler(handler);
 }
