@@ -7,6 +7,38 @@ phone from the last ~8 years; use the `armeabi-v7a` one only for very old
 warn on install; that's expected for a non-Play-Store build, not a sign of
 a problem.
 
+## v1.8.2 (2026-09-20)
+
+Went back at the continuous scanner's lag after another report that it was
+still happening. The v1.7.0 fix (switching the live HUD to the on-device
+classifier) removed the network round-trip from the loop, but every tick
+was still calling `takePicture()` every 2 seconds -- and `takePicture()`
+is a full still-capture pipeline (AE/AF lock, sensor readout, JPEG encode,
+disk write, disk read back) regardless of resolution, which is far too
+heavy to call repeatedly and was the real remaining cause of the visible
+lag/stutter.
+- Replaced it with `startImageStream()`, which hands the app raw preview
+  frames already in memory -- no capture pipeline, no disk I/O, no shutter
+  hardware involved. Frames are throttled in Dart (processing at most one
+  every ~2s, dropping the rest immediately) so this doesn't burn CPU on
+  every frame, just the ones the HUD actually needs.
+- Handles both frame formats the camera plugin may deliver (an
+  already-encoded single plane, or raw YUV420 3-plane) with a manual
+  YUV->RGB conversion for the latter, downsampled during conversion since
+  the classifier only needs ~224px.
+- Still capture (the shutter button) now explicitly stops the image
+  stream first and restarts it after -- concurrent image-stream +
+  takePicture() isn't reliably supported on all devices.
+
+On the "still stretched/misaligned" report: the aspect-ratio-correcting
+preview fix has been in place since v1.7.0, and this is the *only* screen
+in the codebase that uses `CameraPreview`/`CameraController` -- there's no
+second/stale camera screen it could be hitting instead. Sideloaded APKs
+don't auto-update on Android, so if this is still showing stretched after
+installing this build, the most likely explanation is a stale APK still
+on the device from before v1.7.0 -- worth fully uninstalling the old one
+and reinstalling this one to rule that out.
+
 ## v1.8.1 (2026-09-20)
 
 Safety Guidance screen: each tip's audio narration now has real play/pause

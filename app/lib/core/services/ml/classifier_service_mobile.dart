@@ -28,12 +28,19 @@ class ClassifierService {
   }
 
   Future<ClassifierResult> classify(Uint8List imageBytes) async {
-    final interpreter = _interpreter;
-    if (interpreter == null || _labels.isEmpty) {
-      return ClassifierResult(MaterialCategory.mixedOther, 0.0, false);
-    }
     final decoded = img.decodeImage(imageBytes);
     if (decoded == null) {
+      return ClassifierResult(MaterialCategory.mixedOther, 0.0, false);
+    }
+    return classifyDecoded(decoded);
+  }
+
+  /// Same as [classify], but takes an already-decoded image -- used by the
+  /// continuous scanner's live camera-stream path so a raw frame doesn't
+  /// need a wasteful encode-to-JPEG-then-decode-again round trip.
+  Future<ClassifierResult> classifyDecoded(img.Image decoded) async {
+    final interpreter = _interpreter;
+    if (interpreter == null || _labels.isEmpty) {
       return ClassifierResult(MaterialCategory.mixedOther, 0.0, false);
     }
     final resized = img.copyResize(decoded, width: _inputSize, height: _inputSize);

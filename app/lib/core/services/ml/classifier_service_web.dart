@@ -1,6 +1,8 @@
 import 'dart:math';
 import 'dart:typed_data';
 
+import 'package:image/image.dart' as img;
+
 import '../../constants.dart';
 import 'classifier_result.dart';
 
@@ -16,6 +18,18 @@ class ClassifierService {
 
   Future<ClassifierResult> classify(Uint8List imageBytes) async {
     final rnd = Random(imageBytes.isEmpty ? 0 : imageBytes.fold<int>(0, (a, b) => (a + b) % 100003));
+    return _pick(rnd);
+  }
+
+  /// Same heuristic as [classify], applied to an already-decoded image --
+  /// only reachable on Web if the continuous scanner's live camera-stream
+  /// path ever runs there (it's an Android-focused feature in practice).
+  Future<ClassifierResult> classifyDecoded(img.Image decoded) async {
+    final rnd = Random(decoded.width * 92821 + decoded.height);
+    return _pick(rnd);
+  }
+
+  ClassifierResult _pick(Random rnd) {
     final categories = MaterialCategory.values;
     final pick = categories[rnd.nextInt(categories.length)];
     return ClassifierResult(pick, 0.55 + rnd.nextDouble() * 0.2, false);

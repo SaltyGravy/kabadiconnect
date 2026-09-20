@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:typed_data';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
@@ -42,9 +43,16 @@ class _ContinuousLensScannerScreenState extends State<ContinuousLensScannerScree
   bool _isCapturing = false;
 
   // Continuous Detection state -- local classifier only, see class doc.
-  Timer? _continuousScanTimer;
+  // Fed by startImageStream() (raw preview frames), NOT takePicture() --
+  // takePicture() triggers a full still-capture pipeline (AE/AF lock,
+  // sensor readout, JPEG encode, disk write+read) that's far too slow to
+  // call every couple of seconds and was the actual cause of visible lag;
+  // startImageStream() hands us frames already in memory with none of that
+  // overhead.
+  bool _isStreaming = false;
   bool _isScanningFrame = false;
   bool _scanningPaused = false;
+  DateTime? _lastFrameAt;
   MaterialCategory? _liveCategory;
   double _liveConfidence = 0.0;
   bool _liveIsCollectible = true;
@@ -106,42 +114,144 @@ class _ContinuousLensScannerScreenState extends State<ContinuousLensScannerScree
     }
   }
 
-  void _startContinuousScanning() {
-    // Scan every 2s for the live HUD. Only the fast on-device classifier
-    // runs here -- never the online/network path -- so a slow or missing
-    // internet connection can't stall the live preview.
-    _continuousScanTimer = Timer.periodic(const Duration(milliseconds: 2000), (timer) async {
-      if (!mounted || _scanningPaused || _cameraController == null || !_cameraController!.value.isInitialized) return;
-      if (_isScanningFrame || _isCapturing) return;
+  Future<void> _startContinuousScanning() async {
+    if (_isStreaming || _cameraController == null || !_cameraController!.value.isInitialized) return;
+    try {
+      _isStreaming = true;
+      await _cameraController!.startImageStream(_onCameraFrame);
+    } catch (_) {
+      _isStreaming = false;
+    }
+  }
 
-      try {
-        _isScanningFrame = true;
-        final xfile = await _cameraController!.takePicture();
-        final bytes = await xfile.readAsBytes();
-        if (!mounted) return;
+  Future<void> _stopContinuousScanning() async {
+    if (!_isStreaming || _cameraController == null) return;
+    _isStreaming = false;
+    try {
+      await _cameraController!.stopImageStream();
+    } catch (_) {}
+  }
 
-        final classifier = context.read<ClassifierService>();
-        final result = await classifier.classify(bytes);
+  /// Sets the paused flag immediately (for UI gating) and stops the image
+  /// stream in the background -- use [pauseAndAwaitStreamStop] instead
+  /// wherever a still capture is about to follow, since that needs the
+  /// stream to have actually stopped first (concurrent image-stream +
+  /// takePicture() isn't reliably supported on all devices).
+  void _pause() {
+    _scanningPaused = true;
+    _stopContinuousScanning();
+  }
 
-        if (mounted) {
-          setState(() {
-            _liveIsCollectible = result.isCollectible;
-            _liveRejectionReason = result.rejectionReason;
-            _liveCategory = result.isCollectible ? result.category : null;
-            _liveConfidence = result.confidence;
-          });
-        }
-      } catch (_) {
-        // Silent catch for background preview scans
-      } finally {
-        _isScanningFrame = false;
+  Future<void> _pauseAndAwaitStreamStop() async {
+    _scanningPaused = true;
+    await _stopContinuousScanning();
+  }
+
+  void _resume() {
+    _scanningPaused = false;
+    _startContinuousScanning();
+  }
+
+  // Only the fast on-device classifier runs here -- never the online/
+  // network path -- so a slow or missing internet connection can't stall
+  // the live preview. Frames arrive continuously (~15-30fps); throttle to
+  // roughly one every 2s and drop the rest immediately, so the actual
+  // (comparatively expensive) decode+classify work only happens as often
+  // as the HUD needs it to.
+  void _onCameraFrame(CameraImage frame) {
+    if (!mounted || _scanningPaused || _isCapturing || _isScanningFrame) return;
+    final now = DateTime.now();
+    if (_lastFrameAt != null && now.difference(_lastFrameAt!) < const Duration(milliseconds: 2000)) return;
+    _lastFrameAt = now;
+    _isScanningFrame = true;
+    _processFrame(frame);
+  }
+
+  Future<void> _processFrame(CameraImage frame) async {
+    try {
+      final decoded = _decodeCameraImage(frame);
+      if (decoded == null || !mounted) return;
+
+      final classifier = context.read<ClassifierService>();
+      final result = await classifier.classifyDecoded(decoded);
+
+      if (mounted) {
+        setState(() {
+          _liveIsCollectible = result.isCollectible;
+          _liveRejectionReason = result.rejectionReason;
+          _liveCategory = result.isCollectible ? result.category : null;
+          _liveConfidence = result.confidence;
+        });
       }
-    });
+    } catch (_) {
+      // Silent catch for background preview scans
+    } finally {
+      _isScanningFrame = false;
+    }
+  }
+
+  /// Converts a raw camera-stream frame into a decodable image. Handles
+  /// both formats the `camera` plugin may deliver depending on platform/
+  /// settings: a single already-encoded plane (e.g. JPEG), or 3 raw
+  /// YUV420 planes that need manual conversion.
+  img.Image? _decodeCameraImage(CameraImage frame) {
+    try {
+      if (frame.planes.length == 1) {
+        return img.decodeImage(frame.planes[0].bytes);
+      }
+      if (frame.planes.length >= 3) {
+        return _yuv420ToImage(frame);
+      }
+      return null;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Converts YUV420 planes to RGB, downsampling while doing so -- the
+  /// classifier only needs ~224px, so there's no point walking every pixel
+  /// of a full preview frame on every tick.
+  img.Image _yuv420ToImage(CameraImage frame) {
+    final width = frame.width;
+    final height = frame.height;
+    const targetLongSide = 320;
+    final longSide = width > height ? width : height;
+    final scale = longSide > targetLongSide ? longSide / targetLongSide : 1.0;
+    final outW = (width / scale).round().clamp(1, width);
+    final outH = (height / scale).round().clamp(1, height);
+
+    final yPlane = frame.planes[0];
+    final uPlane = frame.planes[1];
+    final vPlane = frame.planes[2];
+    final yRowStride = yPlane.bytesPerRow;
+    final uvRowStride = uPlane.bytesPerRow;
+    final uvPixelStride = uPlane.bytesPerPixel ?? 1;
+
+    final out = img.Image(width: outW, height: outH);
+    for (var oy = 0; oy < outH; oy++) {
+      final y = (oy * scale).floor().clamp(0, height - 1);
+      final yRowBase = y * yRowStride;
+      final uvRowBase = uvRowStride * (y ~/ 2);
+      for (var ox = 0; ox < outW; ox++) {
+        final x = (ox * scale).floor().clamp(0, width - 1);
+        final yIndex = (yRowBase + x).clamp(0, yPlane.bytes.length - 1);
+        final uvIndex = (uvPixelStride * (x ~/ 2) + uvRowBase).clamp(0, uPlane.bytes.length - 1);
+
+        final yValue = yPlane.bytes[yIndex];
+        final uValue = uPlane.bytes[uvIndex.clamp(0, uPlane.bytes.length - 1)];
+        final vValue = vPlane.bytes[uvIndex.clamp(0, vPlane.bytes.length - 1)];
+
+        final r = (yValue + 1.402 * (vValue - 128)).round().clamp(0, 255);
+        final g = (yValue - 0.344136 * (uValue - 128) - 0.714136 * (vValue - 128)).round().clamp(0, 255);
+        final b = (yValue + 1.772 * (uValue - 128)).round().clamp(0, 255);
+        out.setPixelRgb(ox, oy, r, g, b);
+      }
+    }
+    return out;
   }
 
   @override
   void dispose() {
-    _continuousScanTimer?.cancel();
     _laserController.dispose();
     _cameraController?.dispose();
     super.dispose();
@@ -170,10 +280,10 @@ class _ContinuousLensScannerScreenState extends State<ContinuousLensScannerScree
   /// and the popup are in flight.
   Future<void> _onCapture() async {
     if (_isCapturing) return;
-    setState(() {
-      _isCapturing = true;
-      _scanningPaused = true;
-    });
+    setState(() => _isCapturing = true);
+    // Must actually finish before takePicture() -- concurrent image-stream
+    // + still-capture isn't reliably supported on all devices.
+    await _pauseAndAwaitStreamStop();
 
     try {
       Uint8List imageBytes;
@@ -185,7 +295,7 @@ class _ContinuousLensScannerScreenState extends State<ContinuousLensScannerScree
         if (file == null) {
           setState(() {
             _isCapturing = false;
-            _scanningPaused = false;
+            _resume();
           });
           return;
         }
@@ -200,7 +310,7 @@ class _ContinuousLensScannerScreenState extends State<ContinuousLensScannerScree
       if (!mounted) return;
 
       if (!analysis.isCollectible) {
-        setState(() => _scanningPaused = false);
+        setState(() => _resume());
         _showRejectedDialog(analysis.itemName, analysis.rejectionReason);
         return;
       }
@@ -221,7 +331,7 @@ class _ContinuousLensScannerScreenState extends State<ContinuousLensScannerScree
         safetyWarning: analysis.safetyHazardWarning,
       );
     } catch (e) {
-      setState(() => _scanningPaused = false);
+      setState(() => _resume());
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Capture error: $e')),
       );
@@ -521,7 +631,7 @@ class _ContinuousLensScannerScreenState extends State<ContinuousLensScannerScree
                           estimatedValue: estimatedVal,
                         ));
                         _lotPhotoBytes ??= imageBytes;
-                        _scanningPaused = false;
+                        _resume();
                       });
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
@@ -542,8 +652,10 @@ class _ContinuousLensScannerScreenState extends State<ContinuousLensScannerScree
       ),
     ).whenComplete(() {
       // If the sheet was dismissed without confirming (swipe-down / tap
-      // outside), still resume the live loop.
-      if (mounted) setState(() => _scanningPaused = false);
+      // outside), still resume the live loop. Safe to call even if the
+      // confirm button already resumed it -- _startContinuousScanning()
+      // no-ops when a stream is already running.
+      if (mounted) setState(() => _resume());
     });
   }
 
@@ -809,11 +921,11 @@ class _ContinuousLensScannerScreenState extends State<ContinuousLensScannerScree
                               final file = await ImagePicker().pickImage(source: ImageSource.gallery, maxWidth: 1000);
                               if (file == null) return;
                               final bytes = await file.readAsBytes();
-                              setState(() => _scanningPaused = true);
+                              setState(_pause);
                               final analysis = await ewasteAi.analyzeImage(bytes);
                               if (!mounted) return;
                               if (!analysis.isCollectible) {
-                                setState(() => _scanningPaused = false);
+                                setState(() => _resume());
                                 _showRejectedDialog(analysis.itemName, analysis.rejectionReason);
                                 return;
                               }
