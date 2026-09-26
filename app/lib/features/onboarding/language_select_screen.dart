@@ -19,9 +19,10 @@ class LanguageSelectScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.recycling, color: Colors.white, size: 64),
-              const SizedBox(height: 12),
-              const Text('KabadiConnect', style: TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold)),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(28),
+                child: Image.asset('assets/branding/logo_full.png', width: 160, height: 160),
+              ),
               const SizedBox(height: 40),
               const Text('भाषा / Language', style: TextStyle(color: Colors.white, fontSize: 20)),
               const SizedBox(height: 20),

@@ -7,6 +7,20 @@ phone from the last ~8 years; use the `armeabi-v7a` one only for very old
 warn on install; that's expected for a non-Play-Store build, not a sign of
 a problem.
 
+## v1.9.0 (2026-09-27)
+
+Real app icon and logo, replacing Flutter's default icon and the
+`Icons.recycling` placeholder.
+- Android launcher icon (all mipmap densities + adaptive icon, generated
+  via `flutter_launcher_icons`) now uses the KabadiConnect mark (leaf +
+  heart pin + handshake) cropped from the provided logo -- deliberately
+  without the "KabadiConnect" wordmark baked in, since embedded text
+  becomes illegible at launcher-icon sizes and gets inconsistently
+  cropped by different launchers' adaptive-icon masks.
+- The language-select screen (the app's actual first screen) now shows
+  the full logo badge (mark + wordmark + tagline) instead of a generic
+  Material recycling icon and separate text label.
+
 ## v1.8.4 (2026-09-27)
 
 Found the actual root causes behind the persistent "stretched" and
