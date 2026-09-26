@@ -7,6 +7,33 @@ phone from the last ~8 years; use the `armeabi-v7a` one only for very old
 warn on install; that's expected for a non-Play-Store build, not a sign of
 a problem.
 
+## v1.8.4 (2026-09-27)
+
+Found the actual root causes behind the persistent "stretched" and
+"controls in the middle of the screen" reports on the continuous scanner,
+confirmed via live device testing:
+
+- **Stretched preview**: `CameraPreview` already wraps itself in its own
+  orientation-aware `AspectRatio` internally (using the raw aspect ratio
+  in landscape, `1/aspectRatio` in portrait -- see the `camera` package's
+  `CameraPreview.build()`). Every previous fix attempt wrapped it in a
+  SECOND, independently-computed `AspectRatio` using the raw, un-inverted
+  ratio -- in portrait (the normal case here) that constrained it to a
+  landscape-shaped box before `CameraPreview`'s own correct internal
+  sizing logic ever got a chance to run, which is what actually stretched
+  the texture. Removed the outer `AspectRatio` entirely; the crop-to-fill
+  `Transform.scale` now uses the same orientation-corrected ratio
+  `CameraPreview` uses internally, computed from `deviceOrientation`.
+- **Top bar landing in the screen's vertical middle**: the top action bar
+  (back / "AI Continuous Lens" pill / flash / camera-switch) is a
+  non-positioned child of a `Stack(fit: StackFit.expand)`, which forces
+  it to fill the FULL screen height -- and a bare `Row`'s default
+  `CrossAxisAlignment.center` then centers its buttons in the middle of
+  that full-height box instead of pinning them to the top. (The bottom
+  control cluster didn't have this problem because it already used
+  `Column(mainAxisAlignment: MainAxisAlignment.end)`, which compensates.)
+  Wrapped the top bar in `Align(alignment: Alignment.topCenter)`.
+
 ## v1.8.3 (2026-09-20)
 
 No device or emulator was available to test v1.8.2 on directly, so

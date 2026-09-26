@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:typed_data';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show DeviceOrientation;
 import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -735,20 +736,34 @@ class _ContinuousLensScannerScreenState extends State<ContinuousLensScannerScree
   }
 
   /// Fits the camera preview to fill the screen while preserving its native
-  /// aspect ratio (crop-to-fill, "BoxFit.cover"-style) -- StackFit.expand
-  /// alone stretches/distorts the image since the sensor's aspect ratio
-  /// almost never matches the phone screen's.
+  /// aspect ratio (crop-to-fill, "BoxFit.cover"-style).
+  ///
+  /// IMPORTANT: `CameraPreview` already wraps itself in its own
+  /// orientation-aware `AspectRatio` internally (using `aspectRatio` in
+  /// landscape, `1/aspectRatio` in portrait -- see the `camera` package's
+  /// `CameraPreview.build()`). Wrapping it in a SECOND `AspectRatio` here
+  /// using the raw, un-inverted `controller.value.aspectRatio` was the
+  /// actual stretching bug: in portrait (the normal case for this screen)
+  /// that constrained it to a landscape-shaped box before its own correct
+  /// internal sizing logic ever ran, so the texture inside got stretched
+  /// to fit the wrong shape. Don't add an outer AspectRatio here -- just
+  /// center it and let CameraPreview size itself, then crop-to-fill via
+  /// Transform.scale using the SAME orientation-corrected ratio it uses
+  /// internally.
   Widget _buildCameraPreview(Size screenSize) {
     final controller = _cameraController!;
-    var scale = screenSize.aspectRatio * controller.value.aspectRatio;
+    final isLandscape = <DeviceOrientation>[
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ].contains(controller.value.deviceOrientation);
+    final effectiveAspectRatio = isLandscape ? controller.value.aspectRatio : (1 / controller.value.aspectRatio);
+
+    var scale = screenSize.aspectRatio * effectiveAspectRatio;
     if (scale < 1) scale = 1 / scale;
     return Transform.scale(
       scale: scale,
       child: Center(
-        child: AspectRatio(
-          aspectRatio: controller.value.aspectRatio,
-          child: CameraPreview(controller),
-        ),
+        child: CameraPreview(controller),
       ),
     );
   }
@@ -844,12 +859,22 @@ class _ContinuousLensScannerScreenState extends State<ContinuousLensScannerScree
               ),
             ),
 
-            // Top action bar
-            SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                child: Row(
-                  children: [
+            // Top action bar. Wrapped in Align(topCenter) -- this SafeArea
+            // is a non-positioned child of a StackFit.expand Stack, so
+            // without it, it gets stretched to the FULL screen height and
+            // the Row's default CrossAxisAlignment.center then centers the
+            // back/flash/switch buttons in the middle of the screen
+            // instead of pinning them to the top (the actual cause of the
+            // "buttons in the middle" report -- the bottom cluster below
+            // doesn't have this problem because it already compensates
+            // with Column(mainAxisAlignment: MainAxisAlignment.end)).
+            Align(
+              alignment: Alignment.topCenter,
+              child: SafeArea(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  child: Row(
+                    children: [
                     CircleAvatar(
                       backgroundColor: Colors.black45,
                       child: IconButton(
@@ -894,7 +919,8 @@ class _ContinuousLensScannerScreenState extends State<ContinuousLensScannerScree
                         ),
                       ),
                     ],
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
