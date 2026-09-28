@@ -7,6 +7,18 @@ phone from the last ~8 years; use the `armeabi-v7a` one only for very old
 warn on install; that's expected for a non-Play-Store build, not a sign of
 a problem.
 
+## v1.9.1 (2026-09-28)
+
+Fixed the AI Copilot chat input being hidden behind the keyboard. The
+sheet's root container had a fixed height of 85% of the FULL screen
+height, computed without ever subtracting the keyboard's height -- so
+when the keyboard opened, the sheet kept demanding that same height
+instead of shrinking to fit the space actually left above the keyboard,
+pushing the bottom of the sheet (where the text field lives) down
+behind it. The sheet now sizes itself to `screen height - keyboard
+height` whenever the keyboard is open, so the input field always ends
+up sitting right above it.
+
 ## v1.9.0 (2026-09-27)
 
 Real app icon and logo, replacing Flutter's default icon and the

@@ -273,8 +273,19 @@ class _AiVoiceAssistantSheetState extends State<AiVoiceAssistantSheet> with Sing
     final voiceAi = context.watch<VoiceAiService>();
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
+    // Fixed at 85% of the FULL screen height regardless of the keyboard
+    // was the actual bug: when the keyboard opens, the available space
+    // above it shrinks, but this container kept demanding the same
+    // height computed from the undiminished screen -- so the bottom of
+    // the sheet (the chat text field) ended up pushed behind the
+    // keyboard instead of sitting right above it. Shrinking to fit the
+    // space actually left above the keyboard fixes that.
+    final keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
+    final screenHeight = MediaQuery.of(context).size.height;
+    final sheetHeight = keyboardHeight > 0 ? (screenHeight - keyboardHeight).clamp(0.0, screenHeight) : screenHeight * 0.85;
+
     return Container(
-      height: MediaQuery.of(context).size.height * 0.85,
+      height: sheetHeight,
       decoration: BoxDecoration(
         color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
