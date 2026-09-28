@@ -273,27 +273,34 @@ class _AiVoiceAssistantSheetState extends State<AiVoiceAssistantSheet> with Sing
     final voiceAi = context.watch<VoiceAiService>();
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    // Fixed at 85% of the FULL screen height regardless of the keyboard
-    // was the actual bug: when the keyboard opens, the available space
-    // above it shrinks, but this container kept demanding the same
-    // height computed from the undiminished screen -- so the bottom of
-    // the sheet (the chat text field) ended up pushed behind the
-    // keyboard instead of sitting right above it. Shrinking to fit the
-    // space actually left above the keyboard fixes that.
+    // Fixed at 85% of the FULL screen height, bottom-anchored, was the
+    // actual bug -- and shrinking just the height (the first attempt at
+    // this fix) didn't fully solve it either: a shorter box that's still
+    // bottom-anchored to the physical screen edge still has its bottom
+    // sitting BEHIND the keyboard, not above it. Shrinking the height
+    // alone only moves the TOP edge down; it doesn't move the sheet up.
+    // The fix needs both: shrink to the space actually available above
+    // the keyboard, AND shift the whole sheet up by the keyboard's
+    // height via bottom padding, so its bottom edge lands exactly at the
+    // keyboard's top edge instead of underneath it.
     final keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
     final screenHeight = MediaQuery.of(context).size.height;
     final sheetHeight = keyboardHeight > 0 ? (screenHeight - keyboardHeight).clamp(0.0, screenHeight) : screenHeight * 0.85;
 
-    return Container(
-      height: sheetHeight,
-      decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
-        boxShadow: const [
-          BoxShadow(color: Colors.black26, blurRadius: 20, offset: Offset(0, -4)),
-        ],
-      ),
-      child: Column(
+    return AnimatedPadding(
+      duration: const Duration(milliseconds: 180),
+      curve: Curves.easeOut,
+      padding: EdgeInsets.only(bottom: keyboardHeight),
+      child: Container(
+        height: sheetHeight,
+        decoration: BoxDecoration(
+          color: isDark ? const Color(0xFF1E1E1E) : Colors.white,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+          boxShadow: const [
+            BoxShadow(color: Colors.black26, blurRadius: 20, offset: Offset(0, -4)),
+          ],
+        ),
+        child: Column(
         children: [
           // Drag handle
           Center(
@@ -407,6 +414,7 @@ class _AiVoiceAssistantSheetState extends State<AiVoiceAssistantSheet> with Sing
           if (_accumulatedItems.isNotEmpty)
             _buildAppliedItemsBar(context, appState),
         ],
+        ),
       ),
     );
   }

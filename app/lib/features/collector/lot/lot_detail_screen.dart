@@ -7,6 +7,7 @@ import '../../../core/app_state.dart';
 import '../../../core/constants.dart';
 import '../../../core/l10n/app_strings.dart';
 import '../../../core/models/lot.dart';
+import '../../../core/models/recycler.dart';
 import '../../../core/models/traceability_record.dart';
 import '../../../core/services/firestore_service.dart';
 import '../../../core/services/geo_service.dart';
@@ -94,6 +95,42 @@ class _LotDetailScreenState extends State<LotDetailScreen> {
                       ],
                     ),
                   )),
+              // Recycler this lot has been matched with, while still
+              // pending pickup/drop-off -- once handed over the receipt
+              // below already has the full record.
+              if (lot.recyclerId != null && lot.status.index < LotStatus.handedOver.index)
+                StreamBuilder<Recycler?>(
+                  stream: firestore.watchRecycler(lot.recyclerId!),
+                  builder: (context, recyclerSnap) {
+                    final name = recyclerSnap.data?.name;
+                    if (name == null) return const SizedBox.shrink();
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 12),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                        decoration: BoxDecoration(
+                          color: kBrandGreen.withValues(alpha: 0.1),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Row(
+                          children: [
+                            const Icon(Icons.recycling, color: kBrandGreenDark, size: 20),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(t('matchedWith'), style: TextStyle(fontSize: 11, color: Colors.grey.shade600)),
+                                  Text(name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
               const Divider(height: 32),
               _row(t('weight'), '${lot.weightKg} kg'),
               _row(t('estimatedValue'), '₹${lot.estimatedValue.toStringAsFixed(0)}'),

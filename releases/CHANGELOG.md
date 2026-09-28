@@ -7,6 +7,24 @@ phone from the last ~8 years; use the `armeabi-v7a` one only for very old
 warn on install; that's expected for a non-Play-Store build, not a sign of
 a problem.
 
+## v1.9.3 (2026-09-28)
+
+- **Lot detail screen** (collector side) now also shows the matched
+  recycler's name, same as the My Lots list -- placed right under the
+  item list, visible while the lot is matched/inTransit and hidden once
+  handed over.
+- **Actually fixed the AI Copilot chat-input-behind-keyboard bug.** The
+  previous fix (v1.9.1) only shrank the sheet's height when the keyboard
+  opened, which wasn't enough: a shorter box that's still anchored to the
+  physical bottom of the screen still has its bottom edge sitting BEHIND
+  the keyboard -- shrinking height alone only moves the top edge down, it
+  doesn't move the sheet up. Confirmed by reading Flutter's own
+  `bottom_sheet.dart`: `showModalBottomSheet` does NOT auto-adjust for
+  the keyboard itself, so the content has to. Added an `AnimatedPadding`
+  with bottom padding equal to the keyboard height, so the whole sheet
+  now shifts upward and its bottom edge lands exactly at the keyboard's
+  top edge instead of underneath it.
+
 ## v1.9.2 (2026-09-28)
 
 My Lots screen now shows the matched recycler's name on any lot that's
