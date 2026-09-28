@@ -97,6 +97,7 @@ class AppStrings {
     'confirmPickup': {AppLocale.en: 'Confirm Handover Received', AppLocale.hi: 'सुपुर्दगी प्राप्ति की पुष्टि करें', AppLocale.mr: 'हस्तांतरण मिळाल्याची पुष्टी करा'},
     'markPaid': {AppLocale.en: 'Mark as Paid', AppLocale.hi: 'भुगतान हुआ चिह्नित करें', AppLocale.mr: 'पैसे दिले असे नोंदवा'},
     'recyclerProfile': {AppLocale.en: 'Facility Profile', AppLocale.hi: 'सुविधा प्रोफ़ाइल', AppLocale.mr: 'सुविधा प्रोफाइल'},
+    'matchedWith': {AppLocale.en: 'Recycler', AppLocale.hi: 'रीसाइक्लर', AppLocale.mr: 'रिसायकलर'},
     'trendUp': {AppLocale.en: 'Price rising', AppLocale.hi: 'भाव बढ़ रहा है', AppLocale.mr: 'भाव वाढत आहे'},
     'trendDown': {AppLocale.en: 'Price falling', AppLocale.hi: 'भाव घट रहा है', AppLocale.mr: 'भाव घसरत आहे'},
     'trendStable': {AppLocale.en: 'Price stable', AppLocale.hi: 'भाव स्थिर है', AppLocale.mr: 'भाव स्थिर आहे'},

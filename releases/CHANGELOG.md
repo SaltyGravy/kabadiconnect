@@ -7,6 +7,15 @@ phone from the last ~8 years; use the `armeabi-v7a` one only for very old
 warn on install; that's expected for a non-Play-Store build, not a sign of
 a problem.
 
+## v1.9.2 (2026-09-28)
+
+My Lots screen now shows the matched recycler's name on any lot that's
+been matched but not yet handed over (status `matched` or `inTransit`)
+-- a collector waiting on pickup/drop-off can see who they're dealing
+with without opening the lot's detail screen. Hidden again once the lot
+reaches `handedOver` or later, where the receipt/detail screen has the
+full record anyway.
+
 ## v1.9.1 (2026-09-28)
 
 Fixed the AI Copilot chat input being hidden behind the keyboard. The
