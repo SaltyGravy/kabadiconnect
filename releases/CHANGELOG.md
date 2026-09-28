@@ -7,6 +7,24 @@ phone from the last ~8 years; use the `armeabi-v7a` one only for very old
 warn on install; that's expected for a non-Play-Store build, not a sign of
 a problem.
 
+## v1.9.5 (2026-09-28)
+
+Fixed the "Unusual value - review" anomaly flag firing on nearly every
+lot. Root cause, found by hand-checking the exact numbers behind a real
+flagged transaction (cables, 1.5kg, ₹534): the seed price table's
+`baseline_mad` values are unrealistically tight -- measured across all
+48 category/location entries, they average just ~3.3% of the median
+(range 1.8-6%), a low-variance synthetic-dataset artifact rather than
+real scrap-market spread from grade, condition, and negotiation. The
+anomaly check's robust z-score (4x MAD) taken against that tiny MAD
+produced an effective "normal" band of only +/-15-25%, so an entirely
+routine quote (₹356/kg vs. a ₹262/kg baseline -- a realistic price for
+a different cable grade) scored z=9.75, way past the z>4 threshold.
+Floored the MAD at 12% of the median before computing the z-score --
+same robust-statistics approach, but a "normal" band wide enough
+(~+/-48%) for real quotes, while a genuinely wild price (e.g. a 10x
+data-entry error) still trips it.
+
 ## v1.9.4 (2026-09-28)
 
 The recycler-name display was hiding one status too early: it cut off

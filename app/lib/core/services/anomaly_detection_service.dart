@@ -23,10 +23,25 @@ class AnomalyDetectionService {
     if (entry == null || weightKg <= 0) return false;
     final perUnit = finalValue / weightKg;
     final median = entry.baselineMedian;
-    final mad = entry.baselineMad == 0 ? median * 0.1 : entry.baselineMad;
+    final mad = _floorMad(entry.baselineMad, median);
     // ~4x MAD from median is a wide, conservative band (robust z-score style).
     final z = (perUnit - median).abs() / mad;
     return z > 4.0;
+  }
+
+  /// The seed price table's `baseline_mad` values are unrealistically
+  /// tight (measured: ~1.8-6% of the median across every category/
+  /// location, averaging ~3.3%) -- a snapshot of a low-variance synthetic
+  /// dataset, not real scrap-market spread from grade, condition, and
+  /// negotiation. Taken at face value, a 4x-MAD band ends up only
+  /// +/-15-25% wide, so routine, perfectly normal price variation was
+  /// getting flagged as "anomalous" on nearly every transaction. Flooring
+  /// MAD at 12% of the median keeps the same robust z-score approach but
+  /// widens the "normal" band to roughly +/-48%, while a genuinely wild
+  /// price (2x+ off, e.g. a typo) still trips it.
+  double _floorMad(double rawMad, double median) {
+    final floor = median * 0.12;
+    return rawMad < floor ? floor : rawMad;
   }
 
   /// Multi-item version: a lot can bundle several distinct materials (see
@@ -47,7 +62,7 @@ class AnomalyDetectionService {
       final entry = pricing.bestEntryFor(item.category, location);
       if (entry == null || item.weightKg <= 0) continue;
       expectedTotal += entry.baselineMedian * item.weightKg;
-      final mad = entry.baselineMad == 0 ? entry.baselineMedian * 0.1 : entry.baselineMad;
+      final mad = _floorMad(entry.baselineMad, entry.baselineMedian);
       combinedMad += mad * item.weightKg;
     }
     if (expectedTotal <= 0 || combinedMad <= 0) return false;
