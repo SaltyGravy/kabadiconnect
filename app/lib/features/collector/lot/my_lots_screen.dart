@@ -10,12 +10,12 @@ import '../../../core/services/firestore_service.dart';
 import '../../../widgets/status_chip.dart';
 import 'lot_detail_screen.dart';
 
-/// Statuses at/after which the lot has already been physically handed
-/// over -- once that's happened the recycler's name matters less (the
-/// receipt/detail screen has the full record); before that, a collector
-/// waiting on pickup or drop-off wants to know who they're dealing with.
-const _handedOverOrLater = {
-  LotStatus.handedOver,
+/// Statuses at/after which the recycler has actually confirmed the
+/// handover -- the recycler's name matters most right up through
+/// handedOver (a collector on the handover QR / "waiting to confirm"
+/// screen needs to know exactly who they're dealing with), and only
+/// matters less once confirmed, where the receipt has the full record.
+const _confirmedOrLater = {
   LotStatus.confirmed,
   LotStatus.paid,
   LotStatus.completed,
@@ -47,7 +47,7 @@ class MyLotsScreen extends StatelessWidget {
             itemCount: lots.length,
             itemBuilder: (context, i) {
               final lot = lots[i];
-              final showRecycler = lot.recyclerId != null && !_handedOverOrLater.contains(lot.status);
+              final showRecycler = lot.recyclerId != null && !_confirmedOrLater.contains(lot.status);
               return Card(
                 margin: const EdgeInsets.only(bottom: 10),
                 child: ListTile(

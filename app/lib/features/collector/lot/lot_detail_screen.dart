@@ -95,10 +95,14 @@ class _LotDetailScreenState extends State<LotDetailScreen> {
                       ],
                     ),
                   )),
-              // Recycler this lot has been matched with, while still
-              // pending pickup/drop-off -- once handed over the receipt
-              // below already has the full record.
-              if (lot.recyclerId != null && lot.status.index < LotStatus.handedOver.index)
+              // Recycler this lot has been matched with -- stays visible
+              // through handedOver (the collector is looking at the
+              // handover QR / "waiting for recycler to confirm" screen
+              // right when this matters most: they need to know exactly
+              // who they're handing scrap to). Hidden once the recycler
+              // has actually confirmed, where the receipt has the full
+              // record anyway.
+              if (lot.recyclerId != null && lot.status.index < LotStatus.confirmed.index)
                 StreamBuilder<Recycler?>(
                   stream: firestore.watchRecycler(lot.recyclerId!),
                   builder: (context, recyclerSnap) {

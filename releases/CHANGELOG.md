@@ -7,6 +7,16 @@ phone from the last ~8 years; use the `armeabi-v7a` one only for very old
 warn on install; that's expected for a non-Play-Store build, not a sign of
 a problem.
 
+## v1.9.4 (2026-09-28)
+
+The recycler-name display was hiding one status too early: it cut off
+at `handedOver`, which is exactly the screen a collector sees right
+after generating the handover QR code ("Waiting for recycler to
+confirm") -- the moment they most need to know who they're handing
+scrap to. Extended visibility through `handedOver`, now hiding only
+once the recycler has actually confirmed (`confirmed`/`paid`/
+`completed`), on both the My Lots list and the lot detail screen.
+
 ## v1.9.3 (2026-09-28)
 
 - **Lot detail screen** (collector side) now also shows the matched
