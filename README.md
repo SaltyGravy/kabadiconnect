@@ -74,9 +74,6 @@ releases/   Version history (CHANGELOG.md)
 
 ---
 
-## Try it
-
-Download the latest APK from the [Releases](../../releases) page and install it on an Android phone. Use the `arm64` build for most phones from the last ~8 years. Android may warn you because it's not from the Play Store; that's expected.
 
 ## Run it locally
 
