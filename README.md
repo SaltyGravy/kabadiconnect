@@ -6,7 +6,6 @@ KabadiConnect is an Android app that connects *kabadiwalas* (informal e-waste co
 
 It's built around India's **E-Waste (Management) Rules, 2022** and its Extended Producer Responsibility (EPR) framework.
 
-<!-- Add 3–4 screenshots here: price board, AI scanner, recycler matching, handover QR -->
 
 ---
 
