@@ -69,7 +69,6 @@ ml/         Python ML pipeline: image classifier, price model, price sync
 data/       Datasets: materials, prices, recyclers, transactions, traceability, collectors
 firebase/   Firebase emulator config and security rules
 docs/       Dataset documentation and unit-economics analysis
-releases/   Version history (CHANGELOG.md)
 ```
 
 ---
