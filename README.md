@@ -1,103 +1,142 @@
 # KabadiConnect
 
-A vernacular, low-literacy, offline-tolerant mobile platform connecting informal
-e-waste collectors in India to authorized recyclers — price transparency,
-documented handovers, and a usable earnings ledger, without turning formal
-recycling into a compliance burden for the collector.
+**Fair prices and safe, recorded handovers for India's informal e-waste collectors.**
 
-Built against the SIH-style brief on informal e-waste collection under India's
-E-Waste (Management) Rules, 2022 EPR framework.
+KabadiConnect is an Android app that connects *kabadiwalas* (informal e-waste collectors) with authorized recyclers. It shows collectors what their scrap is worth, matches them to nearby recyclers and records every handover. It's built for people with low literacy and patchy internet: it speaks Hindi, Marathi and English, reads prices aloud and keeps working offline.
 
-## What's here
+It's built around India's **E-Waste (Management) Rules, 2022** and its Extended Producer Responsibility (EPR) framework.
 
+<!-- Add 3–4 screenshots here: price board, AI scanner, recycler matching, handover QR -->
+
+---
+
+## The problem
+
+Most of India's e-waste is collected by informal workers who:
+- don't know the fair market price of what they collect,
+- sell to whoever is nearest, often unsafe and unauthorized dismantlers,
+- have no record of what they sold, to whom or for how much.
+
+Formal recycling usually adds paperwork instead of helping them. KabadiConnect aims to make the formal route the easier one.
+
+## Features
+
+**For collectors**
+- **AI scanner:** point the camera at an item and the on-device model suggests its e-waste category, live, like Google Lens
+- **Price board:** current scrap rates with price trends, read aloud with text-to-speech
+- **Instant price estimate:** works fully offline using an on-device pricing model
+- **Recycler matching:** nearby authorized recyclers ranked by distance and price
+- **Handover record:** GPS location, photo and QR code captured at every handover
+- **Earnings ledger:** a clear history of what was sold, to whom and for how much
+- **Safety guidance:** narrated advice on handling hazardous e-waste safely
+- **Voice AI assistant:** ask questions by voice, in your language
+
+**For recyclers**
+- Inbox of incoming lots, handover confirmation by QR and payment recording
+
+**Built-in checks**
+- **Anomaly detection** flags prices that look unusual, so data-entry mistakes and unfair quotes get reviewed
+- **Offline-first:** everything works without internet and syncs later, including photo uploads
+
+---
+
+## How it works
+
+One Flutter app serves both collectors and recyclers; the user picks a role during onboarding. Data lives in **Firebase** (Firestore, Auth, Storage).
+
+- **Offline support:** Firestore's offline persistence handles records, and a custom local queue handles photo uploads, which Firestore doesn't queue on its own.
+- **Image classification:** a **MobileNetV2** model, fine-tuned with transfer learning and exported to **TensorFlow Lite**, runs on the phone. No internet needed.
+- **Price estimation:** a regression model trained in Python, turned into a compact lookup table that ships inside the app for instant offline estimates.
+- **Live prices:** a scheduled GitHub Actions job syncs current scrap rates from MetalMandi every 3 hours.
+- **AI assistant:** optional Google Gemini integration for the voice assistant and item questions (the key is supplied at build time, never stored in the code).
+
+## Tech stack
+
+| Area | Technology |
+|---|---|
+| Mobile app | Flutter (Dart) |
+| Backend | Firebase: Firestore, Authentication, Storage |
+| On-device ML | TensorFlow Lite (MobileNetV2) |
+| ML training | Python, TensorFlow, scikit-learn, pandas |
+| AI assistant | Google Gemini API |
+| Automation | GitHub Actions (price sync) |
+| Languages | Hindi, Marathi, English, with text-to-speech |
+
+## Project structure
+
+```text
+app/        Flutter app (collector + recycler roles in one codebase)
+ml/         Python ML pipeline: image classifier, price model, price sync
+data/       Datasets: materials, prices, recyclers, transactions, traceability, collectors
+firebase/   Firebase emulator config and security rules
+docs/       Dataset documentation and unit-economics analysis
+releases/   Version history (CHANGELOG.md)
 ```
-app/    Flutter app (collector + recycler roles, one codebase)
-ml/     Python ML pipeline: image classifier + price valuation model
-data/   Structured datasets (materials, prices, recyclers, transactions,
-        traceability, collectors) as CSV + combined seed.json
-firebase/  Local Emulator Suite config (Firestore/Auth/Storage rules)
-docs/   Dataset documentation & unit-economics assessment
-```
 
-Read **`docs/dataset_documentation.md` first** — it's blunt about what's real
-(a fully working app + pipeline + schema) versus what's a labeled synthetic
-placeholder pending real field data (the ML training images, the recycler
-directory, the price history, and 20 of the 22 collector profiles).
+---
 
-## Architecture in one paragraph
+## Try it
 
-One Flutter app serves both collector and recycler roles (role chosen at
-onboarding), backed by Firebase (Firestore + Storage + Auth), run here against
-the **Local Emulator Suite** with a `demo-` project id so the whole stack runs
-with zero real cloud credentials. Firestore's own offline persistence handles
-the "core activities work offline, sync later" requirement for documents;
-`LocalQueueService`/`StorageService` add an explicit local queue for the one
-thing Firestore doesn't queue offline — photo uploads. Material classification
-runs a real MobileNetV2-transfer-learning TFLite model on-device on
-Android/iOS/desktop, falling back to a labeled heuristic on Flutter Web (which
-can't run `dart:ffi`-based TFLite). Price valuation is a regression trained
-offline in Python and shipped as a compact on-device lookup table for
-instant, fully-offline estimates.
+Download the latest APK from the [Releases](../../releases) page and install it on an Android phone. Use the `arm64` build for most phones from the last ~8 years. Android may warn you because it's not from the Play Store; that's expected.
 
-## Running the demo
+## Run it locally
 
-Prerequisites: Flutter SDK, Node (for `firebase-tools`), Java (for the
-Firestore emulator), Python 3.12 (for the ML pipeline, optional if you don't
-need to retrain).
+**Requirements:** Flutter SDK, Node.js (for `firebase-tools`), Java (for the Firestore emulator). Python 3.12 is only needed if you want to retrain the models.
 
 ```bash
-# 1. Start the local Firebase backend (Firestore + Auth + Storage emulators)
-npm install -g firebase-tools   # once
-cd firebase && firebase emulators:start --project demo-kabadiconnect
+# 1. Start the local Firebase backend
+npm install -g firebase-tools
+cd firebase
+firebase emulators:start --project demo-kabadiconnect
 
-# 2. Run the app (this repo builds/runs on Flutter Web in this sandbox because
-#    no Android SDK cmdline-tools / full Xcode are installed here; the same
-#    Dart code targets Android normally once you `flutter run` on a real
-#    device or emulator with the Android toolchain set up)
+# 2. In a new terminal, run the app
 cd app
 flutter pub get
-flutter run -d chrome   # or: flutter run  (on a connected Android device)
+flutter run            # on a connected Android phone or emulator
+flutter run -d chrome  # quick preview in the browser
 ```
 
-The app self-seeds the emulator's Firestore with the datasets in `data/` on
-first run (see `SeedDataService`) — no manual import step.
+On first run, the app fills the local database with the sample data from `data/` automatically.
 
-To retrain the ML pipeline (optional; pretrained artifacts are already
-committed under `app/assets/ml/`):
+To enable the AI assistant, pass your own Gemini key at build time:
+
+```bash
+flutter run --dart-define=GEMINI_API_KEY=your_key_here
+```
+
+### Retrain the models (optional)
+
+The trained models are already included in `app/assets/ml/`.
 
 ```bash
 cd ml
-python3.12 -m venv .venv && ./.venv/bin/pip install tensorflow pillow pandas numpy scikit-learn joblib
-./.venv/bin/python generate_datasets.py      # structured datasets -> ../data
-./.venv/bin/python generate_seed_images.py   # synthetic seed images -> seed_dataset/
-./.venv/bin/python train_classifier.py       # -> ../app/assets/ml/classifier.tflite
-./.venv/bin/python train_price_model.py      # -> ../app/assets/ml/price_table.json
+python3.12 -m venv .venv
+./.venv/bin/pip install tensorflow pillow pandas numpy scikit-learn joblib
+./.venv/bin/python generate_datasets.py
+./.venv/bin/python train_classifier.py    # -> app/assets/ml/classifier.tflite
+./.venv/bin/python train_price_model.py   # -> app/assets/ml/price_table.json
 ```
 
-## Deploying against a real Firebase project
+---
 
-Run `flutterfire configure` from `app/` (needs `firebase login`), then set
-`useEmulators = false` in `app/lib/firebase_options.dart`. Tighten
-`firebase/firestore.rules` and `firebase/storage.rules` first — they're wide
-open for the local emulator demo (see the comments in those files for what a
-real deployment needs).
+## Data: what's real and what's sample
 
-## What's genuinely real vs. what's a labeled placeholder
+To be upfront about it:
 
-- **Real**: the full app (onboarding, lot creation with AI-suggested category,
-  price board with trend + TTS, recycler ranking, GPS+photo+QR handover
-  record, recycler confirmation + payment, earnings ledger, safety guidance,
-  anomaly detection, offline queueing), the Firestore schema, the trained
-  MobileNetV2 classifier and its TFLite export, the trained price-regression
-  model and its distilled on-device table (R²=0.996 on held-out synthetic
-  data), Hindi/Marathi/English localization with text-to-speech.
-- **Labeled placeholder, by necessity of this build environment**: the
-  training images (procedurally generated, not photographed), the recycler
-  directory (fictional facilities modeled on real CPCB/SPCB record formats),
-  the price history (modeled, not scraped/live), and 20 of 22 collector
-  profiles (2 are explicit `TODO` slots for the two required field-research
-  interviews, which need an in-person visit this environment can't do).
+- **Real and working:** the full app, the Firestore data model, the trained image classifier, the price model, live price sync, offline queueing, localization and text-to-speech.
+- **Sample data for now:** the recycler directory is fictional but follows real CPCB/SPCB record formats; most collector profiles are generated; part of the training images and price history are generated, not collected in the field.
 
-See `docs/dataset_documentation.md` for the full per-dataset breakdown and
-`docs/unit_economics.md` for the collector-earnings and platform-sustainability
-analysis.
+Replacing these with real field data (collector interviews, a verified recycler list, more real item photos) is the main next step. See [`docs/dataset_documentation.md`](docs/dataset_documentation.md) for details on every dataset, and [`docs/unit_economics.md`](docs/unit_economics.md) for the collector-earnings and sustainability analysis.
+
+## Before a real deployment
+
+- Tighten `firebase/firestore.rules` and `firebase/storage.rules`; they're open for local testing.
+- Restrict every Google/Firebase API key in Google Cloud Console to this app's package name and signing certificate.
+- Sign the APK with a proper release key.
+
+---
+
+## Author
+
+**Archit Kumar**, B.Tech Information Technology, Thakur College of Engineering and Technology, Mumbai
+GitHub: [@SaltyGravy](https://github.com/SaltyGravy)
